@@ -1,0 +1,684 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pirazzoli | Información de despacho</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --panel:#ffffff;
+      --line:#d9e3ec;
+      --text:#10253d;
+      --muted:#63758b;
+      --brand:#0c6fc6;
+      --brand-dark:#084b88;
+      --shadow:0 18px 48px rgba(16,37,61,.10);
+      --white:#ffffff;
+      --green:#dff4e6;
+      --greenText:#157347;
+      --yellow:#fff3cd;
+      --yellowText:#9a6b00;
+      --red:#f8d7da;
+      --redText:#a61b29;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#f9fbfd 0%,#f3f7fb 100%);
+      color:var(--text);
+    }
+
+    .page{
+      max-width:1460px;
+      margin:0 auto;
+      padding:28px;
+    }
+
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:20px;
+      margin-bottom:22px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+
+    .logoBox{
+      width:72px;
+      height:72px;
+      border-radius:18px;
+      background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+      color:#fff;
+      display:grid;
+      place-items:center;
+      font-size:38px;
+      font-weight:900;
+      box-shadow:0 14px 28px rgba(12,111,198,.24);
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:34px;
+      letter-spacing:-.03em;
+    }
+
+    .brand p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .pill{
+      padding:12px 16px;
+      border-radius:999px;
+      background:#eef5fc;
+      color:var(--brand-dark);
+      border:1px solid var(--line);
+      font-weight:700;
+      font-size:13px;
+    }
+
+    .wrap{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .hero{
+      padding:26px 30px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
+    }
+
+    .hero h2{
+      margin:0;
+      font-size:32px;
+      letter-spacing:-.03em;
+    }
+
+    .hero p{
+      margin:8px 0 0;
+      color:var(--muted);
+    }
+
+    .login{
+      max-width:540px;
+      margin:54px auto;
+      padding:30px;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:#fff;
+      box-shadow:0 14px 34px rgba(16,37,61,.08);
+    }
+
+    .login h3{
+      margin:0 0 8px;
+      font-size:28px;
+    }
+
+    .login p{
+      margin:0 0 22px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .field{
+      margin-bottom:14px;
+    }
+
+    .field label{
+      display:block;
+      margin-bottom:8px;
+      font-size:13px;
+      font-weight:700;
+      color:var(--brand-dark);
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
+    .input{
+      width:100%;
+      height:56px;
+      padding:0 16px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      font-size:15px;
+      outline:none;
+    }
+
+    .input:focus{
+      border-color:#7eb4e8;
+      box-shadow:0 0 0 4px rgba(12,111,198,.12);
+    }
+
+    .btn{
+      border:0;
+      border-radius:16px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:15px;
+    }
+
+    .btnMain{
+      width:100%;
+      height:56px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+      box-shadow:0 12px 24px rgba(12,111,198,.22);
+    }
+
+    .hint{
+      margin-top:16px;
+      padding:14px 16px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#f8fbff;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .error{
+      display:none;
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:#fff4f4;
+      border:1px solid #f0c3c3;
+      color:#b42318;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .hidden{display:none !important}
+
+    .dashboard{
+      padding:24px;
+    }
+
+    .banner{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:18px;
+      padding:20px 22px;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:linear-gradient(135deg,#ffffff 0%,#f7fbff 100%);
+      margin-bottom:22px;
+    }
+
+    .banner h3{
+      margin:0;
+      font-size:28px;
+    }
+
+    .banner p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .legend{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:9px 13px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .white{background:var(--white); color:#334155;}
+    .green{background:var(--green); color:var(--greenText); border-color:#b7dfc6;}
+    .yellow{background:var(--yellow); color:var(--yellowText); border-color:#f0d98b;}
+    .red{background:var(--red); color:var(--redText); border-color:#efb5bb;}
+
+    .stats{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .stat{
+      min-width:120px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:#f7fbff;
+      border:1px solid var(--line);
+    }
+
+    .stat span{
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .stat strong{
+      font-size:22px;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:470px 1fr;
+      gap:22px;
+    }
+
+    .panel{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 10px 24px rgba(16,37,61,.06);
+    }
+
+    .panelHead{
+      padding:20px 22px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+    }
+
+    .panelHead h4{
+      margin:0;
+      font-size:22px;
+    }
+
+    .panelHead p{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .cards{
+      padding:16px;
+      display:grid;
+      gap:14px;
+      max-height:calc(100vh - 295px);
+      overflow:auto;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+      overflow:hidden;
+    }
+
+    .cardTop{
+      padding:18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:14px;
+      cursor:pointer;
+    }
+
+    .cardTitle{
+      font-size:22px;
+      font-weight:900;
+      margin:0 0 8px;
+    }
+
+    .cardSub{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .cardBody{
+      display:none;
+      padding:0 18px 18px;
+    }
+
+    .card.open .cardBody{
+      display:block;
+    }
+
+    .meta{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .metaBox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:#fcfdff;
+    }
+
+    .metaBox span{
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .metaBox strong{
+      font-size:14px;
+    }
+
+    .btnSoft{
+      height:44px;
+      padding:0 16px;
+      background:#eef5fc;
+      color:var(--brand-dark);
+      border:1px solid var(--line);
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .viewer{
+      min-height:760px;
+      display:grid;
+      grid-template-rows:auto 1fr;
+    }
+
+    .viewerTop{
+      padding:20px 22px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+    }
+
+    .viewerTop h4{
+      margin:0;
+      font-size:24px;
+    }
+
+    .viewerTop p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .viewerFrame{
+      background:#eef2f7;
+      height:100%;
+    }
+
+    .viewerFrame iframe{
+      width:100%;
+      height:100%;
+      min-height:700px;
+      border:0;
+      background:#fff;
+    }
+
+    .empty{
+      min-height:700px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:40px;
+      color:var(--muted);
+      background:linear-gradient(180deg,#fbfdff 0%,#f4f8fc 100%);
+    }
+
+    .empty h5{
+      margin:0 0 10px;
+      color:var(--text);
+      font-size:28px;
+    }
+
+    @media (max-width:1180px){
+      .layout{grid-template-columns:1fr}
+      .cards{max-height:none}
+      .viewerFrame iframe,.empty{min-height:540px}
+    }
+
+    @media (max-width:780px){
+      .page{padding:14px}
+      .top,.banner{flex-direction:column; align-items:flex-start}
+      .cardTop{flex-direction:column}
+      .meta{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div class="brand">
+        <div class="logoBox">P</div>
+        <div>
+          <h1>PIRAZZOLI</h1>
+          <p>Agencia de Aduanas · Estado de operaciones y documentos</p>
+        </div>
+      </div>
+      <div class="pill">Demo localhost</div>
+    </div>
+
+    <section class="wrap">
+      <div class="hero">
+        <h2>Ver información de despacho</h2>
+        <p>Consulta tus operaciones, revisa su estado actual y abre el documento asociado cuando corresponda.</p>
+      </div>
+
+      <div id="loginView" class="login">
+        <h3>Ingreso cliente</h3>
+        <p>Usa el cliente y contraseña definidos para esta demo.</p>
+
+        <div class="field">
+          <label>Cliente</label>
+          <input id="cliente" class="input" type="text" placeholder="Ingresa nombre del cliente">
+        </div>
+
+        <div class="field">
+          <label>Contraseña</label>
+          <input id="clave" class="input" type="password" placeholder="Ingresa contraseña">
+        </div>
+
+        <button id="btnLogin" class="btn btnMain">Ingresar</button>
+
+        <div id="loginError" class="error">Cliente o contraseña incorrectos.</div>
+
+        <div class="hint">
+          <strong>Demo:</strong> cliente <strong>CIVI</strong> · contraseña <strong>12345</strong>
+        </div>
+      </div>
+
+      <div id="dashboardView" class="dashboard hidden">
+        <div class="banner">
+          <div>
+            <h3>Cliente CIVI</h3>
+            <p>Resumen de despachos disponibles para esta demostración local.</p>
+            <div class="legend">
+              <span class="badge white">Por presentar</span>
+              <span class="badge green">Pendiente de Pago</span>
+              <span class="badge yellow">Urgente</span>
+              <span class="badge red">Por retirar</span>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><span>Despachos</span><strong>4</strong></div>
+            <div class="stat"><span>Cliente</span><strong>CIVI</strong></div>
+            <div class="stat"><span>PDF activo</span><strong>1</strong></div>
+          </div>
+        </div>
+
+        <div class="layout">
+          <section class="panel">
+            <div class="panelHead">
+              <h4>Despachos</h4>
+              <p>Haz clic en un despacho para desplegar su detalle. El estado <strong>Por retirar</strong> abre el PDF demo.</p>
+            </div>
+            <div id="cards" class="cards"></div>
+          </section>
+
+          <section class="panel viewer">
+            <div class="viewerTop">
+              <h4 id="viewerTitle">Documento no seleccionado</h4>
+              <p id="viewerSub">Selecciona un despacho para ver el detalle o abrir el PDF asociado.</p>
+            </div>
+
+            <div id="viewerContent" class="viewerFrame">
+              <div class="empty">
+                <div>
+                  <h5>Esperando selección</h5>
+                  <p>El PDF se mostrará aquí mismo cuando abras el despacho correspondiente.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const CLIENTE_VALIDO = "CIVI";
+    const CLAVE_VALIDA = "12345";
+
+    const despachos = [
+      {
+        codigo: "O/87250-6",
+        estado: "Por presentar",
+        clase: "white",
+        descripcion: "Operación lista para presentación documental.",
+        fecha: "05/03/2026",
+        ejecutivo: "Mesa Operaciones",
+        pdf: null
+      },
+      {
+        codigo: "CN 6526-1",
+        estado: "Pendiente de Pago",
+        clase: "green",
+        descripcion: "Despacho pendiente de regularización de pago.",
+        fecha: "05/03/2026",
+        ejecutivo: "Área Finanzas",
+        pdf: null
+      },
+      {
+        codigo: "SO/6370-22",
+        estado: "Urgente",
+        clase: "yellow",
+        descripcion: "Requiere gestión prioritaria para continuidad operativa.",
+        fecha: "06/03/2026",
+        ejecutivo: "Coordinación Aduana",
+        pdf: null
+      },
+      {
+        codigo: "SO/6370-23",
+        estado: "Por retirar",
+        clase: "red",
+        descripcion: "Documento disponible para revisión y retiro.",
+        fecha: "06/03/2026",
+        ejecutivo: "Atención Cliente",
+        pdf: "127124.pdf"
+      }
+    ];
+
+    const loginView = document.getElementById("loginView");
+    const dashboardView = document.getElementById("dashboardView");
+    const loginError = document.getElementById("loginError");
+    const btnLogin = document.getElementById("btnLogin");
+    const inputCliente = document.getElementById("cliente");
+    const inputClave = document.getElementById("clave");
+    const cards = document.getElementById("cards");
+    const viewerTitle = document.getElementById("viewerTitle");
+    const viewerSub = document.getElementById("viewerSub");
+    const viewerContent = document.getElementById("viewerContent");
+
+    function renderCards() {
+      cards.innerHTML = "";
+
+      despachos.forEach((item, index) => {
+        const article = document.createElement("article");
+        article.className = "card";
+        article.innerHTML = `
+          <div class="cardTop">
+            <div>
+              <div class="cardTitle">${item.codigo}</div>
+              <p class="cardSub">${item.descripcion}</p>
+            </div>
+            <span class="badge ${item.clase}">${item.estado}</span>
+          </div>
+          <div class="cardBody">
+            <div class="meta">
+              <div class="metaBox"><span>Estado</span><strong>${item.estado}</strong></div>
+              <div class="metaBox"><span>Fecha</span><strong>${item.fecha}</strong></div>
+              <div class="metaBox"><span>Ejecutivo</span><strong>${item.ejecutivo}</strong></div>
+              <div class="metaBox"><span>Código</span><strong>${item.codigo}</strong></div>
+            </div>
+            <button class="btnSoft" data-index="${index}">Ver detalle</button>
+          </div>
+        `;
+
+        article.querySelector(".cardTop").addEventListener("click", () => {
+          article.classList.toggle("open");
+        });
+
+        cards.appendChild(article);
+      });
+
+      document.querySelectorAll(".btnSoft").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const item = despachos[Number(btn.dataset.index)];
+          showViewer(item);
+        });
+      });
+    }
+
+    function showViewer(item) {
+      viewerTitle.textContent = item.codigo;
+      viewerSub.textContent = `Estado: ${item.estado} · ${item.descripcion}`;
+
+      if (item.pdf) {
+        viewerContent.innerHTML = `<iframe src="${item.pdf}#toolbar=0"></iframe>`;
+      } else {
+        viewerContent.innerHTML = `
+          <div class="empty">
+            <div>
+              <h5>${item.codigo}</h5>
+              <p>Este despacho no tiene PDF demo asociado en esta prueba local.</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function login() {
+      const cliente = inputCliente.value.trim().toUpperCase();
+      const clave = inputClave.value.trim();
+
+      if (cliente === CLIENTE_VALIDO && clave === CLAVE_VALIDA) {
+        loginError.style.display = "none";
+        loginView.classList.add("hidden");
+        dashboardView.classList.remove("hidden");
+        renderCards();
+      } else {
+        loginError.style.display = "block";
+      }
+    }
+
+    btnLogin.addEventListener("click", login);
+    inputCliente.addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+    inputClave.addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+  </script>
+</body>
+</html>
