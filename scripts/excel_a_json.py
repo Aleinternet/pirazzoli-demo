@@ -1,6 +1,7 @@
 ﻿import os
 import json
 import openpyxl
+from urllib.parse import urlparse, parse_qs, unquote
 
 BASE = os.path.dirname(os.path.dirname(__file__))
 
@@ -27,35 +28,47 @@ for col in range(1, ws.max_column + 1):
     if val is not None:
         headers[str(val).strip()] = col
 
-required = [
-    "Referencia de cliente.",
-    "Número de despacho.",
-    "Estado: INSTRUCCIÓN de DESCARGA",
-    "Resolucion Sanitaria UYD",
-    "DIN",
-    "COMPROBANTE PAGO TGR ",
-    "Fecha de aprobación/liberación.",
-    "Observaciones",
-    "Estado actual del proceso.",
-    "ESTADO OPERACION "
-]
-
-for r in required:
-    if r not in headers:
-        print(f"Advertencia: no se encontró la columna: {r}")
-
 def clean_text(value):
     if value is None:
         return ""
     return str(value).strip()
 
-def hyperlink_or_value(cell):
+def get_link_info(cell):
+    text = clean_text(cell.value)
+    url = None
+
     if cell.hyperlink and cell.hyperlink.target:
-        return cell.hyperlink.target
-    value = cell.value
-    if isinstance(value, str) and value.startswith("http"):
-        return value
-    return None
+        url = cell.hyperlink.target
+    elif isinstance(cell.value, str) and cell.value.startswith("http"):
+        url = cell.value
+
+    local_url = None
+    filename = None
+
+    if url:
+        try:
+            parsed = urlparse(url)
+            qs = parse_qs(parsed.query)
+
+            if "id" in qs and qs["id"]:
+                path_value = unquote(qs["id"][0])
+                filename = os.path.basename(path_value)
+            else:
+                filename = os.path.basename(parsed.path)
+
+            if filename:
+                local_path = os.path.join(BASE, filename)
+                if os.path.exists(local_path):
+                    local_url = f"./{filename}"
+        except Exception:
+            pass
+
+    return {
+        "text": text,
+        "url": url,
+        "localUrl": local_url,
+        "filename": filename
+    }
 
 def estado_visual(estado_operacion, estado_proceso, instruccion_descarga, observaciones):
     eo = clean_text(estado_operacion).upper()
@@ -73,7 +86,9 @@ def estado_visual(estado_operacion, estado_proceso, instruccion_descarga, observ
         "OBS" in obs or
         "PENDIENTE" in obs or
         "CORREGIR" in obs or
-        "OBJET" in obs
+        "OBJET" in obs or
+        "ERROR" in obs or
+        "VALIDAR" in obs
     ):
         return "Observación", "red"
 
@@ -89,7 +104,6 @@ for row in range(DATA_START_ROW, ws.max_row + 1):
     numero_despacho = clean_text(ws.cell(row, headers["Número de despacho."]).value) if "Número de despacho." in headers else ""
 
     codigo = referencia_cliente if referencia_cliente else numero_despacho
-
     if not codigo:
         continue
 
@@ -97,7 +111,7 @@ for row in range(DATA_START_ROW, ws.max_row + 1):
     fecha_liberacion = clean_text(ws.cell(row, headers["Fecha de aprobación/liberación."]).value) if "Fecha de aprobación/liberación." in headers else ""
     observaciones = clean_text(ws.cell(row, headers["Observaciones"]).value) if "Observaciones" in headers else ""
     estado_proceso = clean_text(ws.cell(row, headers["Estado actual del proceso."]).value) if "Estado actual del proceso." in headers else ""
-    estado_operacion = clean_text(ws.cell(row, headers["ESTADO OPERACION "]).value) if "ESTADO OPERACION " in headers else ""
+    estado_operacion = clean_text(ws.cell(row, headers["ESTADO OPERACION"]).value) if "ESTADO OPERACION" in headers else clean_text(ws.cell(row, headers["ESTADO OPERACION "]).value) if "ESTADO OPERACION " in headers else ""
 
     estado, clase = estado_visual(
         estado_operacion=estado_operacion,
@@ -109,22 +123,43 @@ for row in range(DATA_START_ROW, ws.max_row + 1):
     pdfs = []
 
     if "Resolucion Sanitaria UYD" in headers:
-        cell = ws.cell(row, headers["Resolucion Sanitaria UYD"])
-        url = hyperlink_or_value(cell)
-        if url:
-            pdfs.append({"tipo": "Resolución Sanitaria", "url": url})
+        info = get_link_info(ws.cell(row, headers["Resolucion Sanitaria UYD"]))
+        if info["url"] or info["text"]:
+            pdfs.append({
+                "tipo": "Resolución Sanitaria",
+                "text": info["text"],
+                "url": info["url"],
+                "localUrl": info["localUrl"],
+                "filename": info["filename"]
+            })
 
     if "DIN" in headers:
-        cell = ws.cell(row, headers["DIN"])
-        url = hyperlink_or_value(cell)
-        if url:
-            pdfs.append({"tipo": "DIN", "url": url})
+        info = get_link_info(ws.cell(row, headers["DIN"]))
+        if info["url"] or info["text"]:
+            pdfs.append({
+                "tipo": "DIN",
+                "text": info["text"],
+                "url": info["url"],
+                "localUrl": info["localUrl"],
+                "filename": info["filename"]
+            })
 
-    if "COMPROBANTE PAGO TGR " in headers:
-        cell = ws.cell(row, headers["COMPROBANTE PAGO TGR "])
-        url = hyperlink_or_value(cell)
-        if url:
-            pdfs.append({"tipo": "Comprobante Pago TGR", "url": url})
+    comp_key = None
+    for key in headers.keys():
+        if key.strip().upper() == "COMPROBANTE PAGO TGR":
+            comp_key = key
+            break
+
+    if comp_key:
+        info = get_link_info(ws.cell(row, headers[comp_key]))
+        if info["url"] or info["text"]:
+            pdfs.append({
+                "tipo": "Comprobante Pago TGR",
+                "text": info["text"],
+                "url": info["url"],
+                "localUrl": info["localUrl"],
+                "filename": info["filename"]
+            })
 
     despachos.append({
         "codigo": codigo,

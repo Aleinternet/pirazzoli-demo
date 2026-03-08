@@ -5,7 +5,7 @@
     "referenciaCliente": "O/87250-6",
     "estado": "En curso",
     "clase": "white",
-    "estadoOperacion": "",
+    "estadoOperacion": "EN CURSO",
     "estadoProceso": "En Almacén",
     "instruccionDescarga": "EMITIDA",
     "fechaLiberacion": "IGUAL A AF",
@@ -13,7 +13,17 @@
     "pdfs": [
       {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBzTwwAoafEQLkF0KY_xAolAaUAaLjM0qu5eTqrJegH4rg?e=w1Vmff"
+        "text": "4090179930",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBzTwwAoafEQLkF0KY_xAolAaUAaLjM0qu5eTqrJegH4rg?e=w1Vmff",
+        "localUrl": null,
+        "filename": "IQBzTwwAoafEQLkF0KY_xAolAaUAaLjM0qu5eTqrJegH4rg"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 17:25:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAlpPTnJw1cToM_odqpG9C0AY4rK71v96G-Udn_EMVCMw4?e=c44sUr",
+        "localUrl": null,
+        "filename": "IQAlpPTnJw1cToM_odqpG9C0AY4rK71v96G-Udn_EMVCMw4"
       }
     ]
   },
@@ -30,8 +40,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605109992",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCYsZY5t4nbQpTK4y8ycj34AQghVR2o_LdKbaFA0v0kS7s?e=JeHF81"
+        "text": "4090179947",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCYsZY5t4nbQpTK4y8ycj34AQghVR2o_LdKbaFA0v0kS7s?e=JeHF81",
+        "localUrl": null,
+        "filename": "IQCYsZY5t4nbQpTK4y8ycj34AQghVR2o_LdKbaFA0v0kS7s"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-04 13:17:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBgDoQwXqL6Sofg5vb8s4B8AcRsR_vS1qvpBD_k92C9R4I?e=FkhrUo",
+        "localUrl": null,
+        "filename": "IQBgDoQwXqL6Sofg5vb8s4B8AcRsR_vS1qvpBD_k92C9R4I"
       }
     ]
   },
@@ -49,11 +76,24 @@
     "pdfs": [
       {
         "tipo": "Resolución Sanitaria",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDAHJ_oGHDSS6zfk3O8TxdjAVvOnodLhEozk5hOKHcXfY8?e=lMEgqJ"
+        "text": "2605107634",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDAHJ_oGHDSS6zfk3O8TxdjAVvOnodLhEozk5hOKHcXfY8?e=lMEgqJ",
+        "localUrl": null,
+        "filename": "IQDAHJ_oGHDSS6zfk3O8TxdjAVvOnodLhEozk5hOKHcXfY8"
       },
       {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA0zURE8ne2TaHtRiZZwXeSASU4DyB_5kbyoULvNW4gUkU?e=ZYBEde"
+        "text": "4090179972",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA0zURE8ne2TaHtRiZZwXeSASU4DyB_5kbyoULvNW4gUkU?e=ZYBEde",
+        "localUrl": null,
+        "filename": "IQA0zURE8ne2TaHtRiZZwXeSASU4DyB_5kbyoULvNW4gUkU"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-04 15:40:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDb9W2O7Ce_RpOihQTp8L3-AYgHB5Ui-o_6O069BCzbt74?e=d2R4sP",
+        "localUrl": null,
+        "filename": "IQDb9W2O7Ce_RpOihQTp8L3-AYgHB5Ui-o_6O069BCzbt74"
       }
     ]
   },
@@ -70,8 +110,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "260597318",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQB53PU7p4zTTp3NzRBhA4xHAbSLZ02-21v_Aml_BFJOXqY?e=hAagQC"
+        "text": "4090180001",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQB53PU7p4zTTp3NzRBhA4xHAbSLZ02-21v_Aml_BFJOXqY?e=hAagQC",
+        "localUrl": null,
+        "filename": "IQB53PU7p4zTTp3NzRBhA4xHAbSLZ02-21v_Aml_BFJOXqY"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBalDVWetSeSLU9F3ftQUIPAWaBaCr_iGYGap7-yUIzxvU?e=sP4SQn",
+        "localUrl": null,
+        "filename": "IQBalDVWetSeSLU9F3ftQUIPAWaBaCr_iGYGap7-yUIzxvU"
       }
     ]
   },
@@ -89,11 +146,24 @@
     "pdfs": [
       {
         "tipo": "Resolución Sanitaria",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAMEuyV0rZmQ5lCP_jvZgYhAYQLDxz73568ZCQd1RMaIh8?e=kVC3Pw"
+        "text": "260599583",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAMEuyV0rZmQ5lCP_jvZgYhAYQLDxz73568ZCQd1RMaIh8?e=kVC3Pw",
+        "localUrl": null,
+        "filename": "IQAMEuyV0rZmQ5lCP_jvZgYhAYQLDxz73568ZCQd1RMaIh8"
       },
       {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAmK8BR8VcuRYWHprjH67t1ATdqsGaSEOB5KFOPEKxLUfE?e=XP7MyW"
+        "text": "4090180023",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAmK8BR8VcuRYWHprjH67t1ATdqsGaSEOB5KFOPEKxLUfE?e=XP7MyW",
+        "localUrl": null,
+        "filename": "IQAmK8BR8VcuRYWHprjH67t1ATdqsGaSEOB5KFOPEKxLUfE"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-04 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQABhYUwNW8VT7fXexDh3KVAASUSS7F2PcuhK7eeN8ZUp9w?e=ShLQzW",
+        "localUrl": null,
+        "filename": "IQABhYUwNW8VT7fXexDh3KVAASUSS7F2PcuhK7eeN8ZUp9w"
       }
     ]
   },
@@ -110,8 +180,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605107573",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDv3UYgaLFDSJfsuM5f6A3xATtethd6EYww25bsTf3d1eA?e=B5E0F8"
+        "text": "4090180040",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDv3UYgaLFDSJfsuM5f6A3xATtethd6EYww25bsTf3d1eA?e=B5E0F8",
+        "localUrl": null,
+        "filename": "IQDv3UYgaLFDSJfsuM5f6A3xATtethd6EYww25bsTf3d1eA"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-03 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAuWHXj6PAzT6LFJs__n9ceAVjizPlV50ZHhFtXKcriAZY?e=OOrwOc",
+        "localUrl": null,
+        "filename": "IQAuWHXj6PAzT6LFJs__n9ceAVjizPlV50ZHhFtXKcriAZY"
       }
     ]
   },
@@ -128,8 +215,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605102768",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCli2ESe1XGTIHIrDlxJaOIAUcP-F-hY0ieYE_hTDk9BcU?e=M2BRli"
+        "text": "4090180056",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCli2ESe1XGTIHIrDlxJaOIAUcP-F-hY0ieYE_hTDk9BcU?e=M2BRli",
+        "localUrl": null,
+        "filename": "IQCli2ESe1XGTIHIrDlxJaOIAUcP-F-hY0ieYE_hTDk9BcU"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQB1tactyNf3SLKcqA7DiU46AUMnUObbq3zOMBOUN3uA0U4?e=7YEauV",
+        "localUrl": null,
+        "filename": "IQB1tactyNf3SLKcqA7DiU46AUMnUObbq3zOMBOUN3uA0U4"
       }
     ]
   },
@@ -146,8 +250,25 @@
     "observaciones": "C.O. ERROR",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605101997",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDhchmjj9XLRZ7KvynxZAQ7ARbx7emBC5Bt1kEOKVtFnxo?e=jbAyfy"
+        "text": "4090180057",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDhchmjj9XLRZ7KvynxZAQ7ARbx7emBC5Bt1kEOKVtFnxo?e=jbAyfy",
+        "localUrl": null,
+        "filename": "IQDhchmjj9XLRZ7KvynxZAQ7ARbx7emBC5Bt1kEOKVtFnxo"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-03 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCXLuEHJO_DRLuSSD5uDDCXAVPkgvlThqktbzrhR2IMEC4?e=qZTufZ",
+        "localUrl": null,
+        "filename": "IQCXLuEHJO_DRLuSSD5uDDCXAVPkgvlThqktbzrhR2IMEC4"
       }
     ]
   },
@@ -164,8 +285,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605101999",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBwOZ7r3eZ8T65w544cc4PEAYjlTOvPlMJGcxAvDv6AcTY?e=eonjnO"
+        "text": "4090180059",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBwOZ7r3eZ8T65w544cc4PEAYjlTOvPlMJGcxAvDv6AcTY?e=eonjnO",
+        "localUrl": null,
+        "filename": "IQBwOZ7r3eZ8T65w544cc4PEAYjlTOvPlMJGcxAvDv6AcTY"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBk3CcXJvtpRIP531uh2h6cAZDjUv47YsQvZvwbiIoGm7A?e=Q6qv5T",
+        "localUrl": null,
+        "filename": "IQBk3CcXJvtpRIP531uh2h6cAZDjUv47YsQvZvwbiIoGm7A"
       }
     ]
   },
@@ -182,8 +320,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605107743",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCXdD1jaJNQTqrFgNlAFowzAYj3xjfMb3DHH1RTKQhJaY4?e=9hsAdP"
+        "text": "4090180066",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCXdD1jaJNQTqrFgNlAFowzAYj3xjfMb3DHH1RTKQhJaY4?e=9hsAdP",
+        "localUrl": null,
+        "filename": "IQCXdD1jaJNQTqrFgNlAFowzAYj3xjfMb3DHH1RTKQhJaY4"
       }
     ]
   },
@@ -191,8 +339,8 @@
     "codigo": "SO/6356-5",
     "numeroDespacho": "180067",
     "referenciaCliente": "SO/6356-5",
-    "estado": "En curso",
-    "clase": "white",
+    "estado": "Observación",
+    "clase": "red",
     "estadoOperacion": "",
     "estadoProceso": "",
     "instruccionDescarga": "PENDIENTE",
@@ -200,8 +348,18 @@
     "observaciones": "C.O. ERROR",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605102001",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBc65r2qlNmSrrGCE-ZuD2NAZHqGEZbWERzymDrzkJCNoM?e=dK43Y6"
+        "text": "4090180067",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBc65r2qlNmSrrGCE-ZuD2NAZHqGEZbWERzymDrzkJCNoM?e=dK43Y6",
+        "localUrl": null,
+        "filename": "IQBc65r2qlNmSrrGCE-ZuD2NAZHqGEZbWERzymDrzkJCNoM"
       }
     ]
   },
@@ -218,8 +376,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605107710",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC4ha_8uusQQbrieIGcZTZzAbsgok8_SGYz9lzyDrAyOK8?e=g42nzt"
+        "text": "4090180070",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC4ha_8uusQQbrieIGcZTZzAbsgok8_SGYz9lzyDrAyOK8?e=g42nzt",
+        "localUrl": null,
+        "filename": "IQC4ha_8uusQQbrieIGcZTZzAbsgok8_SGYz9lzyDrAyOK8"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-04 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBDhKliqhb7TKQPuCheGwB9ARh5Utm4FOmAehPAhmurivo?e=HPfyML",
+        "localUrl": null,
+        "filename": "IQBDhKliqhb7TKQPuCheGwB9ARh5Utm4FOmAehPAhmurivo"
       }
     ]
   },
@@ -236,8 +411,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605105058",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC0uxa3nF4yQ5I8eiDgi_dDAfmUhPzt-HyX1tJytMS-N8w?e=OXdGg2"
+        "text": "4090180072",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC0uxa3nF4yQ5I8eiDgi_dDAfmUhPzt-HyX1tJytMS-N8w?e=OXdGg2",
+        "localUrl": null,
+        "filename": "IQC0uxa3nF4yQ5I8eiDgi_dDAfmUhPzt-HyX1tJytMS-N8w"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-04 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBCBvjQkvxNRqmllvl3Rms9Aa2JnKH2bEgjo0b5FTeO9EA?e=wKEaOw",
+        "localUrl": null,
+        "filename": "IQBCBvjQkvxNRqmllvl3Rms9Aa2JnKH2bEgjo0b5FTeO9EA"
       }
     ]
   },
@@ -254,8 +446,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605105078",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAbF-YkeaTDSZMKHCeFZ39AAS-FzKs4IzkgJ31x41NZu8k?e=4Phxvl"
+        "text": "4090180073",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAbF-YkeaTDSZMKHCeFZ39AAS-FzKs4IzkgJ31x41NZu8k?e=4Phxvl",
+        "localUrl": null,
+        "filename": "IQAbF-YkeaTDSZMKHCeFZ39AAS-FzKs4IzkgJ31x41NZu8k"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-04 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC3bKfqXqEyR47QNovD65jCAfLS541s4FaByTrdxW2ErqY?e=E568mE",
+        "localUrl": null,
+        "filename": "IQC3bKfqXqEyR47QNovD65jCAfLS541s4FaByTrdxW2ErqY"
       }
     ]
   },
@@ -263,8 +472,8 @@
     "codigo": "SO/6354-43",
     "numeroDespacho": "180074",
     "referenciaCliente": "SO/6354-43",
-    "estado": "En curso",
-    "clase": "white",
+    "estado": "Observación",
+    "clase": "red",
     "estadoOperacion": "",
     "estadoProceso": "En Almacén",
     "instruccionDescarga": "PENDIENTE",
@@ -272,8 +481,25 @@
     "observaciones": "C.O. VALIDAR",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605105134",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBGQN0NsAKqT7jQBJTb9c6QAWiU1xkCeqqEZLkBHpO_7q4?e=v2vZLC"
+        "text": "4090180074",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBGQN0NsAKqT7jQBJTb9c6QAWiU1xkCeqqEZLkBHpO_7q4?e=v2vZLC",
+        "localUrl": null,
+        "filename": "IQBGQN0NsAKqT7jQBJTb9c6QAWiU1xkCeqqEZLkBHpO_7q4"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDB_v-s1Pk4QpI_87XubvSsAWOCjeuT7ZUm3o8e45TPUZ4?e=eqMjWp",
+        "localUrl": null,
+        "filename": "IQDB_v-s1Pk4QpI_87XubvSsAWOCjeuT7ZUm3o8e45TPUZ4"
       }
     ]
   },
@@ -290,8 +516,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605102626",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQB22NwB2BmhT71HL6njkwsaAb51cJmozj_7hVeV4QatpFQ?e=2jQUme"
+        "text": "4090180075",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQB22NwB2BmhT71HL6njkwsaAb51cJmozj_7hVeV4QatpFQ?e=2jQUme",
+        "localUrl": null,
+        "filename": "IQB22NwB2BmhT71HL6njkwsaAb51cJmozj_7hVeV4QatpFQ"
       }
     ]
   },
@@ -308,8 +544,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605104792",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA7UQ9mFbMwTqBKMw-UnJPKAY-MDpQa3WlC8tsL93yA-X0?e=2gm0bL"
+        "text": "4090180109",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA7UQ9mFbMwTqBKMw-UnJPKAY-MDpQa3WlC8tsL93yA-X0?e=2gm0bL",
+        "localUrl": null,
+        "filename": "IQA7UQ9mFbMwTqBKMw-UnJPKAY-MDpQa3WlC8tsL93yA-X0"
       }
     ]
   },
@@ -326,8 +572,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110378",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBx-mPgGb0OTr7AzdjhjJtLAbxukwZnQ-FgvfThY8Q6Kcs?e=6soqGc"
+        "text": "4090180110",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBx-mPgGb0OTr7AzdjhjJtLAbxukwZnQ-FgvfThY8Q6Kcs?e=6soqGc",
+        "localUrl": null,
+        "filename": "IQBx-mPgGb0OTr7AzdjhjJtLAbxukwZnQ-FgvfThY8Q6Kcs"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD61ocMQ-XlTJc0TCDbXDB6AYLJxzikqB3Ano-Eo1bsGD0?e=rNfS12",
+        "localUrl": null,
+        "filename": "IQD61ocMQ-XlTJc0TCDbXDB6AYLJxzikqB3Ano-Eo1bsGD0"
       }
     ]
   },
@@ -344,8 +607,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110317",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAXJKNq2RrDQKhiS4ur1GhuASMVoFvJWX_LfbX09cU-fwk?e=7g2Jzj"
+        "text": "4090180112",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAXJKNq2RrDQKhiS4ur1GhuASMVoFvJWX_LfbX09cU-fwk?e=7g2Jzj",
+        "localUrl": null,
+        "filename": "IQAXJKNq2RrDQKhiS4ur1GhuASMVoFvJWX_LfbX09cU-fwk"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQButXBS2PR9RJhpwVnT5d6eAeZnEMwvM-h_CFh4v-IGwKU?e=tC3c4r",
+        "localUrl": null,
+        "filename": "IQButXBS2PR9RJhpwVnT5d6eAeZnEMwvM-h_CFh4v-IGwKU"
       }
     ]
   },
@@ -362,8 +642,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110277",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCdv31XtOu3QaIQSvidz50bAcqejHtwcm4A5yy8DwzCvmo?e=b2MlEi"
+        "text": "4090180114",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCdv31XtOu3QaIQSvidz50bAcqejHtwcm4A5yy8DwzCvmo?e=b2MlEi",
+        "localUrl": null,
+        "filename": "IQCdv31XtOu3QaIQSvidz50bAcqejHtwcm4A5yy8DwzCvmo"
       }
     ]
   },
@@ -380,8 +670,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605104765",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDIELqmORgKSIBsBoFm8I_5AT3WHHLxrNXsGl2QDcnN9Lw?e=KRJnGt"
+        "text": "4090180115",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDIELqmORgKSIBsBoFm8I_5AT3WHHLxrNXsGl2QDcnN9Lw?e=KRJnGt",
+        "localUrl": null,
+        "filename": "IQDIELqmORgKSIBsBoFm8I_5AT3WHHLxrNXsGl2QDcnN9Lw"
       }
     ]
   },
@@ -398,8 +698,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110144",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCOZvieo4hDT7jVvXQLLIOFAQWY_cy9T626aiOiXcB7bEs?e=KH4vRy"
+        "text": "4090180133",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCOZvieo4hDT7jVvXQLLIOFAQWY_cy9T626aiOiXcB7bEs?e=KH4vRy",
+        "localUrl": null,
+        "filename": "IQCOZvieo4hDT7jVvXQLLIOFAQWY_cy9T626aiOiXcB7bEs"
       }
     ]
   },
@@ -416,8 +726,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605112548",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC7St0DTiXOQKNfiuHelMEpARI0jolNwCQp57j4yGxZPhU?e=h2Ux8Q"
+        "text": "4090180136",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC7St0DTiXOQKNfiuHelMEpARI0jolNwCQp57j4yGxZPhU?e=h2Ux8Q",
+        "localUrl": null,
+        "filename": "IQC7St0DTiXOQKNfiuHelMEpARI0jolNwCQp57j4yGxZPhU"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAgd-fXueH4RJ8R2Kfpsj83AYMXFmw1bW_MZPJ6fbVGUvE?e=aHJbJn",
+        "localUrl": null,
+        "filename": "IQAgd-fXueH4RJ8R2Kfpsj83AYMXFmw1bW_MZPJ6fbVGUvE"
       }
     ]
   },
@@ -435,11 +762,24 @@
     "pdfs": [
       {
         "tipo": "Resolución Sanitaria",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA8O8jwJF8NSaCxkHPNySvCAaUotLwP_gYEc5FjoW83rgI?e=qlcxPU"
+        "text": "2605107984",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA8O8jwJF8NSaCxkHPNySvCAaUotLwP_gYEc5FjoW83rgI?e=qlcxPU",
+        "localUrl": null,
+        "filename": "IQA8O8jwJF8NSaCxkHPNySvCAaUotLwP_gYEc5FjoW83rgI"
       },
       {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAQDr71lPUVQJ6vDVyoi6wbAZeRoPKP6V9isPtDcbZXJvw?e=slt90d"
+        "text": "4090180137",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAQDr71lPUVQJ6vDVyoi6wbAZeRoPKP6V9isPtDcbZXJvw?e=slt90d",
+        "localUrl": null,
+        "filename": "IQAQDr71lPUVQJ6vDVyoi6wbAZeRoPKP6V9isPtDcbZXJvw"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-04 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCRylei8qmpRLxBR4eoAXLgAcREJOr9IGEqx78A1LHIWio?e=tUnVfh",
+        "localUrl": null,
+        "filename": "IQCRylei8qmpRLxBR4eoAXLgAcREJOr9IGEqx78A1LHIWio"
       }
     ]
   },
@@ -456,8 +796,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110090",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD_kGAm2_aoRIGwKWiimpZcAU_cRdRtzTw15DWsHbsfvE8?e=SZh6cU"
+        "text": "4090180139",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD_kGAm2_aoRIGwKWiimpZcAU_cRdRtzTw15DWsHbsfvE8?e=SZh6cU",
+        "localUrl": null,
+        "filename": "IQD_kGAm2_aoRIGwKWiimpZcAU_cRdRtzTw15DWsHbsfvE8"
       }
     ]
   },
@@ -474,8 +824,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110037",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD5Hw2qIULfTaHBfoij8HHgAQT14PL04uusOX2LF_PbRdU?e=Be7YwE"
+        "text": "4090180145",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD5Hw2qIULfTaHBfoij8HHgAQT14PL04uusOX2LF_PbRdU?e=Be7YwE",
+        "localUrl": null,
+        "filename": "IQD5Hw2qIULfTaHBfoij8HHgAQT14PL04uusOX2LF_PbRdU"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-07 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQChNbpD8n77SJQ9cauPo_7YAVUPFjTg9Z5C6ECb8YhNaN8?e=UUvwfq",
+        "localUrl": null,
+        "filename": "IQChNbpD8n77SJQ9cauPo_7YAVUPFjTg9Z5C6ECb8YhNaN8"
       }
     ]
   },
@@ -492,8 +859,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110562",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD3qG_0pK19TpmuNaMI2q0CAStqhXLd8nLnJj7bTNQYNxE?e=AE7FlH"
+        "text": "4090180146",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD3qG_0pK19TpmuNaMI2q0CAStqhXLd8nLnJj7bTNQYNxE?e=AE7FlH",
+        "localUrl": null,
+        "filename": "IQD3qG_0pK19TpmuNaMI2q0CAStqhXLd8nLnJj7bTNQYNxE"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-05 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBnR4yUkrQ7TYWOISPyrCInAYfWiBZy1qLz1N-_3bfQ3Jk?e=viN2Ja",
+        "localUrl": null,
+        "filename": "IQBnR4yUkrQ7TYWOISPyrCInAYfWiBZy1qLz1N-_3bfQ3Jk"
       }
     ]
   },
@@ -510,8 +894,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605107389",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBM6Le9_VgaTJty1RxOrBnvAYyEEXXypSgMpHbyOs0FajE?e=IckfIq"
+        "text": "4090180147",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBM6Le9_VgaTJty1RxOrBnvAYyEEXXypSgMpHbyOs0FajE?e=IckfIq",
+        "localUrl": null,
+        "filename": "IQBM6Le9_VgaTJty1RxOrBnvAYyEEXXypSgMpHbyOs0FajE"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-04 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDTqNfE8ZCcSbxz3pEPGUaWAR9V0o08075ACiZ8l2bisqE?e=TrWhH8",
+        "localUrl": null,
+        "filename": "IQDTqNfE8ZCcSbxz3pEPGUaWAR9V0o08075ACiZ8l2bisqE"
       }
     ]
   },
@@ -528,8 +929,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605112533",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDQXLwm_Z_wTpvkm2vi6rYVAcctrnJV7LqpAmyLgWlI0Lk?e=ieDYj7"
+        "text": "4090180152",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDQXLwm_Z_wTpvkm2vi6rYVAcctrnJV7LqpAmyLgWlI0Lk?e=ieDYj7",
+        "localUrl": null,
+        "filename": "IQDQXLwm_Z_wTpvkm2vi6rYVAcctrnJV7LqpAmyLgWlI0Lk"
       }
     ]
   },
@@ -546,8 +957,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605107383",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCovjAK7dg7QrEDhlPo_5pdAYUjh5X03EgtpNigOrCi5Y4?e=hPltH7"
+        "text": "4090180153",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCovjAK7dg7QrEDhlPo_5pdAYUjh5X03EgtpNigOrCi5Y4?e=hPltH7",
+        "localUrl": null,
+        "filename": "IQCovjAK7dg7QrEDhlPo_5pdAYUjh5X03EgtpNigOrCi5Y4"
       }
     ]
   },
@@ -564,8 +985,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110377",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDfrgVfs6ZnRp8KlQZi-UokAT14Tl-d5vO0KVtr8vvzfLo?e=HeouFw"
+        "text": "4090180154",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDfrgVfs6ZnRp8KlQZi-UokAT14Tl-d5vO0KVtr8vvzfLo?e=HeouFw",
+        "localUrl": null,
+        "filename": "IQDfrgVfs6ZnRp8KlQZi-UokAT14Tl-d5vO0KVtr8vvzfLo"
       }
     ]
   },
@@ -582,8 +1013,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605112433",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD_j42M526GS67Omc7Hp0vGAbkWx69Ba3vu8R-u6gRH-V8?e=mGpwuv"
+        "text": "4090180178",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD_j42M526GS67Omc7Hp0vGAbkWx69Ba3vu8R-u6gRH-V8?e=mGpwuv",
+        "localUrl": null,
+        "filename": "IQD_j42M526GS67Omc7Hp0vGAbkWx69Ba3vu8R-u6gRH-V8"
       }
     ]
   },
@@ -600,8 +1041,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605109863",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAWMi42VHimSbnMpy6k1bONAZwkB1FK577uiQdV7aNd2CM?e=LcuKii"
+        "text": "4090180180",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAWMi42VHimSbnMpy6k1bONAZwkB1FK577uiQdV7aNd2CM?e=LcuKii",
+        "localUrl": null,
+        "filename": "IQAWMi42VHimSbnMpy6k1bONAZwkB1FK577uiQdV7aNd2CM"
       }
     ]
   },
@@ -618,8 +1069,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110139",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDEEFYQngW-RaYXjl5rvJWsAdnVIa5ryPRDEDjc-uBT3OU?e=ddbTlW"
+        "text": "4090180181",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDEEFYQngW-RaYXjl5rvJWsAdnVIa5ryPRDEDjc-uBT3OU?e=ddbTlW",
+        "localUrl": null,
+        "filename": "IQDEEFYQngW-RaYXjl5rvJWsAdnVIa5ryPRDEDjc-uBT3OU"
       }
     ]
   },
@@ -636,8 +1097,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110120",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBQkoIsFjB7T6LfCHLX-8a1AfZtaHnpz8gMvNTfZDaKmiI?e=tUJ3fO"
+        "text": "4090180183",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBQkoIsFjB7T6LfCHLX-8a1AfZtaHnpz8gMvNTfZDaKmiI?e=tUJ3fO",
+        "localUrl": null,
+        "filename": "IQBQkoIsFjB7T6LfCHLX-8a1AfZtaHnpz8gMvNTfZDaKmiI"
       }
     ]
   },
@@ -654,8 +1125,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605112430",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQABrj6xadZJTo2iFCffuWqZAY5a2UjYPIGiPyj0BcInIkA?e=mfz9mY"
+        "text": "4090180184",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQABrj6xadZJTo2iFCffuWqZAY5a2UjYPIGiPyj0BcInIkA?e=mfz9mY",
+        "localUrl": null,
+        "filename": "IQABrj6xadZJTo2iFCffuWqZAY5a2UjYPIGiPyj0BcInIkA"
       }
     ]
   },
@@ -672,8 +1153,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605112514",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBwSCY8MqxtRKpkOG4g5xzaAd4jmSwjXib__lB4sLNEetk?e=xXAe4d"
+        "text": "4090180186",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBwSCY8MqxtRKpkOG4g5xzaAd4jmSwjXib__lB4sLNEetk?e=xXAe4d",
+        "localUrl": null,
+        "filename": "IQBwSCY8MqxtRKpkOG4g5xzaAd4jmSwjXib__lB4sLNEetk"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBVHYRca0vUTpiYmgzdRscTAeNTFTJ1rwtLWWzSouD1dq4?e=ZvqIXD",
+        "localUrl": null,
+        "filename": "IQBVHYRca0vUTpiYmgzdRscTAeNTFTJ1rwtLWWzSouD1dq4"
       }
     ]
   },
@@ -690,8 +1188,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605109858",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAgY9Sd45f5SJq-fd-5Zs1TAarWFMf-ALxt8KN363ojz7Q?e=KyNl2c"
+        "text": "4090180188",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAgY9Sd45f5SJq-fd-5Zs1TAarWFMf-ALxt8KN363ojz7Q?e=KyNl2c",
+        "localUrl": null,
+        "filename": "IQAgY9Sd45f5SJq-fd-5Zs1TAarWFMf-ALxt8KN363ojz7Q"
       }
     ]
   },
@@ -708,8 +1216,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110213",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC4Negn-QHdSKkZYorObLGOAVAP56t0wo7aX1K2tqbxOc8?e=DEnC4J"
+        "text": "4090180190",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC4Negn-QHdSKkZYorObLGOAVAP56t0wo7aX1K2tqbxOc8?e=DEnC4J",
+        "localUrl": null,
+        "filename": "IQC4Negn-QHdSKkZYorObLGOAVAP56t0wo7aX1K2tqbxOc8"
       }
     ]
   },
@@ -726,8 +1244,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605109851",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQASdNUtJcPVSIyiYtFq0gBaAcCPyi1JpJf090uk6dPMbZc?e=1idJKQ"
+        "text": "4090180192",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQASdNUtJcPVSIyiYtFq0gBaAcCPyi1JpJf090uk6dPMbZc?e=1idJKQ",
+        "localUrl": null,
+        "filename": "IQASdNUtJcPVSIyiYtFq0gBaAcCPyi1JpJf090uk6dPMbZc"
       }
     ]
   },
@@ -744,8 +1272,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110161",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCyiOBWqWiCRZjohsiWZlPQAbjNWHsBNZgZrONs1oseIQI?e=FUAx2L"
+        "text": "4090180193",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCyiOBWqWiCRZjohsiWZlPQAbjNWHsBNZgZrONs1oseIQI?e=FUAx2L",
+        "localUrl": null,
+        "filename": "IQCyiOBWqWiCRZjohsiWZlPQAbjNWHsBNZgZrONs1oseIQI"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBOAUbenQgXTaLMiaZDG7UoARjdBiJ31Qs6lYxgvt35zvI?e=7U3t3l",
+        "localUrl": null,
+        "filename": "IQBOAUbenQgXTaLMiaZDG7UoARjdBiJ31Qs6lYxgvt35zvI"
       }
     ]
   },
@@ -762,8 +1307,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605114534",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA0nSt4ckb9RKzBwtcUtqf5AbkRvGQ_HSYXntqwCILJFZI?e=vsK8pf"
+        "text": "4090180195",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA0nSt4ckb9RKzBwtcUtqf5AbkRvGQ_HSYXntqwCILJFZI?e=vsK8pf",
+        "localUrl": null,
+        "filename": "IQA0nSt4ckb9RKzBwtcUtqf5AbkRvGQ_HSYXntqwCILJFZI"
       }
     ]
   },
@@ -780,8 +1335,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605114515",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBmV_PZunB7TZG1k3OFr0OnARbojzzpdBVcy2d5CEDTbbY?e=EoXBt6"
+        "text": "4090180196",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBmV_PZunB7TZG1k3OFr0OnARbojzzpdBVcy2d5CEDTbbY?e=EoXBt6",
+        "localUrl": null,
+        "filename": "IQBmV_PZunB7TZG1k3OFr0OnARbojzzpdBVcy2d5CEDTbbY"
       }
     ]
   },
@@ -798,8 +1363,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605109841",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAI8kqP3vaBRonppBBFnJUmAaYk7pMw1gTieKlkBQCmC-0?e=0sKyL6"
+        "text": "4090180198",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAI8kqP3vaBRonppBBFnJUmAaYk7pMw1gTieKlkBQCmC-0?e=0sKyL6",
+        "localUrl": null,
+        "filename": "IQAI8kqP3vaBRonppBBFnJUmAaYk7pMw1gTieKlkBQCmC-0"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-05 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDBhC1jeV-aS76Jg3rxSWfsAV7-HVkNFaRyq-B6Aow7ivY?e=mzj6NX",
+        "localUrl": null,
+        "filename": "IQDBhC1jeV-aS76Jg3rxSWfsAV7-HVkNFaRyq-B6Aow7ivY"
       }
     ]
   },
@@ -816,8 +1398,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605112451",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAY-eCFU6WyTaN5vCbLjhEuAYvyUuzCZtvMuBdGxvkn0Us?e=DF0BSh"
+        "text": "4090180199",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAY-eCFU6WyTaN5vCbLjhEuAYvyUuzCZtvMuBdGxvkn0Us?e=DF0BSh",
+        "localUrl": null,
+        "filename": "IQAY-eCFU6WyTaN5vCbLjhEuAYvyUuzCZtvMuBdGxvkn0Us"
       }
     ]
   },
@@ -834,8 +1426,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605110346",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQALyj4EW6XMRLtHHUwu3VKxAWWT2z9XxNKW2afPoJl_mUQ?e=lQeew5"
+        "text": "4090180201",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQALyj4EW6XMRLtHHUwu3VKxAWWT2z9XxNKW2afPoJl_mUQ?e=lQeew5",
+        "localUrl": null,
+        "filename": "IQALyj4EW6XMRLtHHUwu3VKxAWWT2z9XxNKW2afPoJl_mUQ"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-05 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAKYYA1DhsbSbz1EfnoXO_SAQBooDtCCCUs0mk5jDRjmjY?e=S9fu0i",
+        "localUrl": null,
+        "filename": "IQAKYYA1DhsbSbz1EfnoXO_SAQBooDtCCCUs0mk5jDRjmjY"
       }
     ]
   },
@@ -853,7 +1462,10 @@
     "pdfs": [
       {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDpQBeX5nzcQL81XaGYhi2MAbBZFf64gK1y5kh3xFQq5V8?e=bTMnfE"
+        "text": "4090180202",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDpQBeX5nzcQL81XaGYhi2MAbBZFf64gK1y5kh3xFQq5V8?e=bTMnfE",
+        "localUrl": null,
+        "filename": "IQDpQBeX5nzcQL81XaGYhi2MAbBZFf64gK1y5kh3xFQq5V8"
       }
     ]
   },
@@ -870,8 +1482,25 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605112505",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCy5lnGrqWHQ6fMOVb-_tilASlvqQ2oFL5Q4aNUuTpIkvo?e=Nkrpj6"
+        "text": "4090180213",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCy5lnGrqWHQ6fMOVb-_tilASlvqQ2oFL5Q4aNUuTpIkvo?e=Nkrpj6",
+        "localUrl": null,
+        "filename": "IQCy5lnGrqWHQ6fMOVb-_tilASlvqQ2oFL5Q4aNUuTpIkvo"
+      },
+      {
+        "tipo": "Comprobante Pago TGR",
+        "text": "2026-03-06 00:00:00",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQApIrXBI2CWTZMHl-_Slfj5ASaqQL3ZvCrY3vVqs7YorkE?e=2QEfET",
+        "localUrl": null,
+        "filename": "IQApIrXBI2CWTZMHl-_Slfj5ASaqQL3ZvCrY3vVqs7YorkE"
       }
     ]
   },
@@ -888,8 +1517,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605114358",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAnVTh5HaOXTpVlQ1A3XHvmAewXr9CPHJaWplU-S-eBvlA?e=ASsqyd"
+        "text": "4090180226",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAnVTh5HaOXTpVlQ1A3XHvmAewXr9CPHJaWplU-S-eBvlA?e=ASsqyd",
+        "localUrl": null,
+        "filename": "IQAnVTh5HaOXTpVlQ1A3XHvmAewXr9CPHJaWplU-S-eBvlA"
       }
     ]
   },
@@ -906,8 +1545,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605114359",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCcT5QUFMSSQ6YqPBx0_M7rAe5TOX2Et062QkgDC20jHRw?e=hVf11Z"
+        "text": "4090180228",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCcT5QUFMSSQ6YqPBx0_M7rAe5TOX2Et062QkgDC20jHRw?e=hVf11Z",
+        "localUrl": null,
+        "filename": "IQCcT5QUFMSSQ6YqPBx0_M7rAe5TOX2Et062QkgDC20jHRw"
       }
     ]
   },
@@ -922,7 +1571,15 @@
     "instruccionDescarga": "PENDIENTE",
     "fechaLiberacion": "",
     "observaciones": "",
-    "pdfs": []
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "text": "4090180230",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      }
+    ]
   },
   {
     "codigo": "SO/6397-10",
@@ -937,8 +1594,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605112639",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCtLadyozzyRaXTAMNDadQDAWv-fcF9KIgOOKLUpQFGUm0?e=Gkyaro"
+        "text": "4090180242",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCtLadyozzyRaXTAMNDadQDAWv-fcF9KIgOOKLUpQFGUm0?e=Gkyaro",
+        "localUrl": null,
+        "filename": "IQCtLadyozzyRaXTAMNDadQDAWv-fcF9KIgOOKLUpQFGUm0"
       }
     ]
   },
@@ -955,8 +1622,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605112425",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBbQ8_uAqYpS7Z1k34QLp7KAZcX-2ddZGdUOdmSUuVTAdE?e=f6Qe95"
+        "text": "4090180249",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBbQ8_uAqYpS7Z1k34QLp7KAZcX-2ddZGdUOdmSUuVTAdE?e=f6Qe95",
+        "localUrl": null,
+        "filename": "IQBbQ8_uAqYpS7Z1k34QLp7KAZcX-2ddZGdUOdmSUuVTAdE"
       }
     ]
   },
@@ -973,8 +1650,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605114351",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC3RLMNwGFpSqS-uemI7PUbAcs1nfVTAFyzQ_7fJ0T0Pr0?e=SWccKF"
+        "text": "4090180257",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC3RLMNwGFpSqS-uemI7PUbAcs1nfVTAFyzQ_7fJ0T0Pr0?e=SWccKF",
+        "localUrl": null,
+        "filename": "IQC3RLMNwGFpSqS-uemI7PUbAcs1nfVTAFyzQ_7fJ0T0Pr0"
       }
     ]
   },
@@ -989,7 +1676,15 @@
     "instruccionDescarga": "PENDIENTE",
     "fechaLiberacion": "",
     "observaciones": "",
-    "pdfs": []
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "text": "4090180261",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      }
+    ]
   },
   {
     "codigo": "CN 25412-1",
@@ -1004,8 +1699,18 @@
     "observaciones": "",
     "pdfs": [
       {
+        "tipo": "Resolución Sanitaria",
+        "text": "2605114353",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      },
+      {
         "tipo": "DIN",
-        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC3RLMNwGFpSqS-uemI7PUbAcs1nfVTAFyzQ_7fJ0T0Pr0?e=SWccKF"
+        "text": "4090180263",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC3RLMNwGFpSqS-uemI7PUbAcs1nfVTAFyzQ_7fJ0T0Pr0?e=SWccKF",
+        "localUrl": null,
+        "filename": "IQC3RLMNwGFpSqS-uemI7PUbAcs1nfVTAFyzQ_7fJ0T0Pr0"
       }
     ]
   },
@@ -1020,7 +1725,15 @@
     "instruccionDescarga": "PENDIENTE",
     "fechaLiberacion": "",
     "observaciones": "",
-    "pdfs": []
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "text": "4090180265",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      }
+    ]
   },
   {
     "codigo": "CN 6358-13",
@@ -1033,7 +1746,15 @@
     "instruccionDescarga": "PENDIENTE",
     "fechaLiberacion": "",
     "observaciones": "",
-    "pdfs": []
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "text": "4090180284",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      }
+    ]
   },
   {
     "codigo": "SO/6397-7",
@@ -1046,7 +1767,15 @@
     "instruccionDescarga": "PENDIENTE",
     "fechaLiberacion": "",
     "observaciones": "",
-    "pdfs": []
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "text": "4090180286",
+        "url": null,
+        "localUrl": null,
+        "filename": null
+      }
+    ]
   },
   {
     "codigo": "SO/6354-48",

@@ -809,8 +809,8 @@
     function getPdfMap(item) {
       const map = {};
       (item.pdfs || []).forEach(pdf => {
-        if (!pdf || !pdf.tipo || !pdf.url) return;
-        map[pdf.tipo] = pdf.url;
+        if (!pdf || !pdf.tipo) return;
+        map[pdf.tipo] = pdf;
       });
       return map;
     }
@@ -914,9 +914,24 @@
         { label: "Estado: instrucción de descarga", value: item.instruccionDescarga },
         { label: "Fecha de aprobación / liberación", value: item.fechaLiberacion },
         { label: "Observaciones", value: item.observaciones },
-        { label: "Resolución Sanitaria", value: pdfMap["Resolución Sanitaria"] ? "Ver PDF Resolución Sanitaria" : "Sin PDF", pdf: pdfMap["Resolución Sanitaria"], tipo: "Resolución Sanitaria" },
-        { label: "DIN", value: pdfMap["DIN"] ? "Ver PDF DIN" : "Sin PDF", pdf: pdfMap["DIN"], tipo: "DIN" },
-        { label: "Comprobante Pago TGR", value: pdfMap["Comprobante Pago TGR"] ? "Ver PDF Comprobante Pago TGR" : "Sin PDF", pdf: pdfMap["Comprobante Pago TGR"], tipo: "Comprobante Pago TGR" }
+        {
+          label: "Resolución Sanitaria",
+          value: pdfMap["Resolución Sanitaria"] ? (pdfMap["Resolución Sanitaria"].text || "Ver PDF Resolución Sanitaria") : "Sin PDF",
+          pdf: pdfMap["Resolución Sanitaria"] ? (pdfMap["Resolución Sanitaria"].localUrl || pdfMap["Resolución Sanitaria"].url) : null,
+          tipo: "Resolución Sanitaria"
+        },
+        {
+          label: "DIN",
+          value: pdfMap["DIN"] ? (pdfMap["DIN"].text || "Ver PDF DIN") : "Sin PDF",
+          pdf: pdfMap["DIN"] ? (pdfMap["DIN"].localUrl || pdfMap["DIN"].url) : null,
+          tipo: "DIN"
+        },
+        {
+          label: "Comprobante Pago TGR",
+          value: pdfMap["Comprobante Pago TGR"] ? (pdfMap["Comprobante Pago TGR"].text || "Ver PDF Comprobante Pago TGR") : "Sin PDF",
+          pdf: pdfMap["Comprobante Pago TGR"] ? (pdfMap["Comprobante Pago TGR"].localUrl || pdfMap["Comprobante Pago TGR"].url) : null,
+          tipo: "Comprobante Pago TGR"
+        }
       ];
 
       return rows.map(row => {
@@ -925,7 +940,7 @@
             <div class="metaRow">
               <span class="metaLabel">${row.label}</span>
               <span class="metaValue is-link" data-pdf="${row.pdf}" data-title="${item.codigo}" data-subtitle="${row.label} · ${row.tipo}">
-                ${row.value}
+                ${safeText(row.value)}
               </span>
             </div>
           `;
@@ -981,8 +996,8 @@
             ${(item.pdfs || []).length ? `
               <div class="pdfList">
                 ${(item.pdfs || []).map(pdf => `
-                  <button class="pdfChip" type="button" data-pdf="${pdf.url}" data-title="${item.codigo}" data-subtitle="Documento · ${pdf.tipo}">
-                    ${pdf.tipo}
+                  <button class="pdfChip" type="button" data-pdf="${pdf.localUrl || pdf.url || ''}" data-title="${item.codigo}" data-subtitle="Documento · ${pdf.tipo}">
+                    ${pdf.text || pdf.tipo}
                   </button>
                 `).join("")}
               </div>
@@ -1080,3 +1095,4 @@
   </script>
 </body>
 </html>
+
