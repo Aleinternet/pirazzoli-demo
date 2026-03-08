@@ -652,110 +652,6 @@
       .cardTop:hover{background:transparent}
     }
   </style>
-
-  @media (max-width: 780px){
-  .viewer{
-    display:none;
-  }
-
-  .mobilePdfOverlay{
-    position:fixed;
-    inset:0;
-    background:rgba(16,37,61,.45);
-    z-index:9999;
-    display:none;
-    align-items:flex-end;
-    justify-content:center;
-    padding:0;
-  }
-
-  .mobilePdfOverlay.show{
-    display:flex;
-  }
-
-  .mobilePdfSheet{
-    width:100%;
-    height:88vh;
-    background:#fff;
-    border-radius:18px 18px 0 0;
-    overflow:hidden;
-    box-shadow:0 -12px 30px rgba(16,37,61,.18);
-    display:grid;
-    grid-template-rows:auto 1fr;
-  }
-
-  .mobilePdfHeader{
-    padding:14px 16px;
-    border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-  }
-
-  .mobilePdfInfo{
-    min-width:0;
-  }
-
-  .mobilePdfInfo h4{
-    margin:0;
-    font-size:18px;
-    line-height:1.2;
-    word-break:break-word;
-  }
-
-  .mobilePdfInfo p{
-    margin:4px 0 0;
-    color:var(--muted);
-    font-size:12px;
-    line-height:1.4;
-  }
-
-  .mobilePdfClose{
-    border:1px solid var(--line);
-    background:#fff;
-    color:var(--text);
-    border-radius:10px;
-    padding:8px 12px;
-    font-weight:700;
-    cursor:pointer;
-    flex-shrink:0;
-  }
-
-  .mobilePdfBody{
-    background:#eef2f7;
-    height:100%;
-  }
-
-  .mobilePdfBody iframe{
-    width:100%;
-    height:100%;
-    border:0;
-    background:#fff;
-  }
-
-  .mobilePdfEmpty{
-    height:100%;
-    display:grid;
-    place-items:center;
-    text-align:center;
-    padding:24px;
-    color:var(--muted);
-    background:linear-gradient(180deg,#fbfdff 0%,#f4f8fc 100%);
-  }
-
-  .mobilePdfEmpty h5{
-    margin:0 0 10px;
-    color:var(--text);
-    font-size:22px;
-  }
-
-  .mobilePdfEmpty p{
-    margin:0;
-    line-height:1.5;
-  }
-}
 </head>
 <body>
   <div class="page">
@@ -898,11 +794,6 @@
     const statPdf = document.getElementById("statPdf");
     const filterButtons = document.querySelectorAll(".filterBtn");
     const searchBox = document.getElementById("searchBox");
-    const mobilePdfOverlay = document.getElementById("mobilePdfOverlay");
-    const mobilePdfBody = document.getElementById("mobilePdfBody");
-    const mobilePdfTitle = document.getElementById("mobilePdfTitle");
-    const mobilePdfSubtitle = document.getElementById("mobilePdfSubtitle");
-    const mobilePdfClose = document.getElementById("mobilePdfClose");
 
     searchBox.addEventListener("input", () => {
       currentSearch = searchBox.value.toLowerCase();
@@ -957,132 +848,59 @@
       });
     }
 
-    function isMobileView() {
-  return window.innerWidth <= 780;
-}
+    function openPdf(url, title, subtitle) {
+      viewerTitle.textContent = title;
+      viewerSub.textContent = subtitle;
 
-function closeMobilePdf() {
-  mobilePdfOverlay.classList.remove("show");
-  mobilePdfBody.innerHTML = `
-    <div class="mobilePdfEmpty">
-      <div>
-        <h5>Sin documento</h5>
-        <p>No hay PDF para mostrar.</p>
-      </div>
-    </div>
-  `;
-}
-
-   function openPdf(url, title, subtitle) {
-  viewerTitle.textContent = title;
-  viewerSub.textContent = subtitle;
-
-  const renderEmpty = `
-    <div class="empty">
-      <div>
-        <h5>${title}</h5>
-        <p>No hay PDF asociado para esta casilla.</p>
-      </div>
-    </div>
-  `;
-
-  if (!url) {
-    if (isMobileView()) {
-      mobilePdfTitle.textContent = title;
-      mobilePdfSubtitle.textContent = subtitle;
-      mobilePdfBody.innerHTML = `
-        <div class="mobilePdfEmpty">
-          <div>
-            <h5>${title}</h5>
-            <p>No hay PDF asociado para esta casilla.</p>
-          </div>
-        </div>
-      `;
-      mobilePdfOverlay.classList.add("show");
-    } else {
-      viewerContent.innerHTML = renderEmpty;
-    }
-    return;
-  }
-
-  const isSharePoint =
-    url.includes("sharepoint.com") ||
-    url.includes("onedrive.com") ||
-    url.includes("-my.sharepoint.com");
-
-  if (isSharePoint) {
-    const sharepointHtml = `
-      <div class="empty">
-        <div>
-          <h5>${title}</h5>
-          <p>Este documento debe abrirse en una nueva pestaña.</p>
-          <div style="margin-top:18px;">
-            <a
-              href="${url}"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="
-                display:inline-block;
-                padding:12px 18px;
-                background:#0c6fc6;
-                color:#fff;
-                text-decoration:none;
-                border-radius:10px;
-                font-weight:700;
-              "
-            >
-              Abrir documento
-            </a>
-          </div>
-        </div>
-      </div>
-    `;
-
-    if (isMobileView()) {
-      mobilePdfTitle.textContent = title;
-      mobilePdfSubtitle.textContent = subtitle;
-      mobilePdfBody.innerHTML = `
-        <div class="mobilePdfEmpty">
-          <div>
-            <h5>${title}</h5>
-            <p>Este documento debe abrirse en una nueva pestaña.</p>
-            <div style="margin-top:18px;">
-              <a
-                href="${url}"
-                target="_blank"
-                rel="noopener noreferrer"
-                style="
-                  display:inline-block;
-                  padding:12px 18px;
-                  background:#0c6fc6;
-                  color:#fff;
-                  text-decoration:none;
-                  border-radius:10px;
-                  font-weight:700;
-                "
-              >
-                Abrir documento
-              </a>
+      if (!url) {
+        viewerContent.innerHTML = `
+          <div class="empty">
+            <div>
+              <h5>${title}</h5>
+              <p>No hay PDF asociado para esta casilla.</p>
             </div>
           </div>
-        </div>
-      `;
-      mobilePdfOverlay.classList.add("show");
-    } else {
-      viewerContent.innerHTML = sharepointHtml;
-    }
-    return;
-  }
+        `;
+        return;
+      }
 
-  if (isMobileView()) {
-    mobilePdfTitle.textContent = title;
-    mobilePdfSubtitle.textContent = subtitle;
-    mobilePdfBody.innerHTML = `<iframe src="${url}" title="${title}"></iframe>`;
-    mobilePdfOverlay.classList.add("show");
-  } else {
-    viewerContent.innerHTML = `<iframe src="${url}" title="${title}"></iframe>`;
-  }
-}
+      const isSharePoint =
+        url.includes("sharepoint.com") ||
+        url.includes("onedrive.com") ||
+        url.includes("-my.sharepoint.com");
+
+      if (isSharePoint) {
+        viewerContent.innerHTML = `
+          <div class="empty">
+            <div>
+              <h5>${title}</h5>
+              <p>Este documento debe abrirse en una nueva pestaña.</p>
+              <div style="margin-top:18px;">
+                <a
+                  href="${url}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="
+                    display:inline-block;
+                    padding:12px 18px;
+                    background:#0c6fc6;
+                    color:#fff;
+                    text-decoration:none;
+                    border-radius:10px;
+                    font-weight:700;
+                  "
+                >
+                  Abrir documento
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      viewerContent.innerHTML = `<iframe src="${url}" title="${title}"></iframe>`;
+    }
 
     function buildMetaRows(item) {
       const pdfMap = getPdfMap(item);
@@ -1274,38 +1092,7 @@ function closeMobilePdf() {
     btnLogin.addEventListener("click", login);
     inputCliente.addEventListener("keydown", e => { if (e.key === "Enter") login(); });
     inputClave.addEventListener("keydown", e => { if (e.key === "Enter") login(); });
-
-    mobilePdfClose.addEventListener("click", closeMobilePdf);
-
-mobilePdfOverlay.addEventListener("click", (e) => {
-  if (e.target === mobilePdfOverlay) {
-    closeMobilePdf();
-  }
-});
   </script>
-
-<div id="mobilePdfOverlay" class="mobilePdfOverlay">
-  <div class="mobilePdfSheet">
-    <div class="mobilePdfHeader">
-      <div class="mobilePdfInfo">
-        <h4 id="mobilePdfTitle">Documento</h4>
-        <p id="mobilePdfSubtitle">Vista previa</p>
-      </div>
-      <button id="mobilePdfClose" class="mobilePdfClose" type="button">Cerrar</button>
-    </div>
-
-    <div id="mobilePdfBody" class="mobilePdfBody">
-      <div class="mobilePdfEmpty">
-        <div>
-          <h5>Sin documento</h5>
-          <p>No hay PDF para mostrar.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 </body>
 </html>
 
