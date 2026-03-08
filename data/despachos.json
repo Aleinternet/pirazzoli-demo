@@ -1,0 +1,1103 @@
+[
+  {
+    "codigo": "O/87250-6",
+    "numeroDespacho": "179930",
+    "referenciaCliente": "O/87250-6",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "EMITIDA",
+    "fechaLiberacion": "IGUAL A AF",
+    "observaciones": "Solo envio de doctos draft",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBzTwwAoafEQLkF0KY_xAolAaUAaLjM0qu5eTqrJegH4rg?e=w1Vmff"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 6526-1",
+    "numeroDespacho": "179947",
+    "referenciaCliente": "CN 6526-1",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCYsZY5t4nbQpTK4y8ycj34AQghVR2o_LdKbaFA0v0kS7s?e=JeHF81"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6370-22",
+    "numeroDespacho": "179972",
+    "referenciaCliente": "SO/6370-22",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "DOCS ORIGINALES PENDIENTES",
+    "pdfs": [
+      {
+        "tipo": "Resolución Sanitaria",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDAHJ_oGHDSS6zfk3O8TxdjAVvOnodLhEozk5hOKHcXfY8?e=lMEgqJ"
+      },
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA0zURE8ne2TaHtRiZZwXeSASU4DyB_5kbyoULvNW4gUkU?e=ZYBEde"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6370-23",
+    "numeroDespacho": "180001",
+    "referenciaCliente": "SO/6370-23",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQB53PU7p4zTTp3NzRBhA4xHAbSLZ02-21v_Aml_BFJOXqY?e=hAagQC"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6370-26",
+    "numeroDespacho": "180023",
+    "referenciaCliente": "SO/6370-26",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "Resolución Sanitaria",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAMEuyV0rZmQ5lCP_jvZgYhAYQLDxz73568ZCQd1RMaIh8?e=kVC3Pw"
+      },
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAmK8BR8VcuRYWHprjH67t1ATdqsGaSEOB5KFOPEKxLUfE?e=XP7MyW"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 25221",
+    "numeroDespacho": "180040",
+    "referenciaCliente": "CN 25221",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDv3UYgaLFDSJfsuM5f6A3xATtethd6EYww25bsTf3d1eA?e=B5E0F8"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6360-28",
+    "numeroDespacho": "180056",
+    "referenciaCliente": "SO/6360-28",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCli2ESe1XGTIHIrDlxJaOIAUcP-F-hY0ieYE_hTDk9BcU?e=M2BRli"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6360-25",
+    "numeroDespacho": "180057",
+    "referenciaCliente": "SO/6360-25",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "C.O. ERROR",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDhchmjj9XLRZ7KvynxZAQ7ARbx7emBC5Bt1kEOKVtFnxo?e=jbAyfy"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6356-4",
+    "numeroDespacho": "180059",
+    "referenciaCliente": "SO/6356-4",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBwOZ7r3eZ8T65w544cc4PEAYjlTOvPlMJGcxAvDv6AcTY?e=eonjnO"
+      }
+    ]
+  },
+  {
+    "codigo": "O/87304-3",
+    "numeroDespacho": "180066",
+    "referenciaCliente": "O/87304-3",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCXdD1jaJNQTqrFgNlAFowzAYj3xjfMb3DHH1RTKQhJaY4?e=9hsAdP"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6356-5",
+    "numeroDespacho": "180067",
+    "referenciaCliente": "SO/6356-5",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "C.O. ERROR",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBc65r2qlNmSrrGCE-ZuD2NAZHqGEZbWERzymDrzkJCNoM?e=dK43Y6"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 6357-10",
+    "numeroDespacho": "180070",
+    "referenciaCliente": "CN 6357-10",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC4ha_8uusQQbrieIGcZTZzAbsgok8_SGYz9lzyDrAyOK8?e=g42nzt"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 6358-10",
+    "numeroDespacho": "180072",
+    "referenciaCliente": "CN 6358-10",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC0uxa3nF4yQ5I8eiDgi_dDAfmUhPzt-HyX1tJytMS-N8w?e=OXdGg2"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 6359-8",
+    "numeroDespacho": "180073",
+    "referenciaCliente": "CN 6359-8",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAbF-YkeaTDSZMKHCeFZ39AAS-FzKs4IzkgJ31x41NZu8k?e=4Phxvl"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6354-43",
+    "numeroDespacho": "180074",
+    "referenciaCliente": "SO/6354-43",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "C.O. VALIDAR",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBGQN0NsAKqT7jQBJTb9c6QAWiU1xkCeqqEZLkBHpO_7q4?e=v2vZLC"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6354-37",
+    "numeroDespacho": "180075",
+    "referenciaCliente": "SO/6354-37",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQB22NwB2BmhT71HL6njkwsaAb51cJmozj_7hVeV4QatpFQ?e=2jQUme"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 25320-6",
+    "numeroDespacho": "180109",
+    "referenciaCliente": "CN 25320-6",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA7UQ9mFbMwTqBKMw-UnJPKAY-MDpQa3WlC8tsL93yA-X0?e=2gm0bL"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6354-41",
+    "numeroDespacho": "180110",
+    "referenciaCliente": "SO/6354-41",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBx-mPgGb0OTr7AzdjhjJtLAbxukwZnQ-FgvfThY8Q6Kcs?e=6soqGc"
+      }
+    ]
+  },
+  {
+    "codigo": "O/87315-2",
+    "numeroDespacho": "180112",
+    "referenciaCliente": "O/87315-2",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAXJKNq2RrDQKhiS4ur1GhuASMVoFvJWX_LfbX09cU-fwk?e=7g2Jzj"
+      }
+    ]
+  },
+  {
+    "codigo": "O/87568",
+    "numeroDespacho": "180114",
+    "referenciaCliente": "O/87568",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCdv31XtOu3QaIQSvidz50bAcqejHtwcm4A5yy8DwzCvmo?e=b2MlEi"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 6360-30",
+    "numeroDespacho": "180115",
+    "referenciaCliente": "CN 6360-30",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDIELqmORgKSIBsBoFm8I_5AT3WHHLxrNXsGl2QDcnN9Lw?e=KRJnGt"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6397-2P",
+    "numeroDespacho": "180133",
+    "referenciaCliente": "SO/6397-2P",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCOZvieo4hDT7jVvXQLLIOFAQWY_cy9T626aiOiXcB7bEs?e=KH4vRy"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6456-3",
+    "numeroDespacho": "180136",
+    "referenciaCliente": "SO/6456-3",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC7St0DTiXOQKNfiuHelMEpARI0jolNwCQp57j4yGxZPhU?e=h2Ux8Q"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6354-39",
+    "numeroDespacho": "180137",
+    "referenciaCliente": "SO/6354-39",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "Resolución Sanitaria",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA8O8jwJF8NSaCxkHPNySvCAaUotLwP_gYEc5FjoW83rgI?e=qlcxPU"
+      },
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAQDr71lPUVQJ6vDVyoi6wbAZeRoPKP6V9isPtDcbZXJvw?e=slt90d"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6370-27",
+    "numeroDespacho": "180139",
+    "referenciaCliente": "SO/6370-27",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD_kGAm2_aoRIGwKWiimpZcAU_cRdRtzTw15DWsHbsfvE8?e=SZh6cU"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6354-42",
+    "numeroDespacho": "180145",
+    "referenciaCliente": "SO/6354-42",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD5Hw2qIULfTaHBfoij8HHgAQT14PL04uusOX2LF_PbRdU?e=Be7YwE"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6331-15",
+    "numeroDespacho": "180146",
+    "referenciaCliente": "SO/6331-15",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD3qG_0pK19TpmuNaMI2q0CAStqhXLd8nLnJj7bTNQYNxE?e=AE7FlH"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6330-11",
+    "numeroDespacho": "180147",
+    "referenciaCliente": "SO/6330-11",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBM6Le9_VgaTJty1RxOrBnvAYyEEXXypSgMpHbyOs0FajE?e=IckfIq"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6354-38",
+    "numeroDespacho": "180152",
+    "referenciaCliente": "SO/6354-38",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDQXLwm_Z_wTpvkm2vi6rYVAcctrnJV7LqpAmyLgWlI0Lk?e=ieDYj7"
+      }
+    ]
+  },
+  {
+    "codigo": "O/87772-1",
+    "numeroDespacho": "180153",
+    "referenciaCliente": "O/87772-1",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCovjAK7dg7QrEDhlPo_5pdAYUjh5X03EgtpNigOrCi5Y4?e=hPltH7"
+      }
+    ]
+  },
+  {
+    "codigo": "O/87772-2",
+    "numeroDespacho": "180154",
+    "referenciaCliente": "O/87772-2",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDfrgVfs6ZnRp8KlQZi-UokAT14Tl-d5vO0KVtr8vvzfLo?e=HeouFw"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6360-31",
+    "numeroDespacho": "180178",
+    "referenciaCliente": "SO/6360-31",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQD_j42M526GS67Omc7Hp0vGAbkWx69Ba3vu8R-u6gRH-V8?e=mGpwuv"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6354-45",
+    "numeroDespacho": "180180",
+    "referenciaCliente": "SO/6354-45",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAWMi42VHimSbnMpy6k1bONAZwkB1FK577uiQdV7aNd2CM?e=LcuKii"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6370-29",
+    "numeroDespacho": "180181",
+    "referenciaCliente": "SO/6370-29",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDEEFYQngW-RaYXjl5rvJWsAdnVIa5ryPRDEDjc-uBT3OU?e=ddbTlW"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6354-46",
+    "numeroDespacho": "180183",
+    "referenciaCliente": "SO/6354-46",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBQkoIsFjB7T6LfCHLX-8a1AfZtaHnpz8gMvNTfZDaKmiI?e=tUJ3fO"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 6360-29",
+    "numeroDespacho": "180184",
+    "referenciaCliente": "CN 6360-29",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQABrj6xadZJTo2iFCffuWqZAY5a2UjYPIGiPyj0BcInIkA?e=mfz9mY"
+      }
+    ]
+  },
+  {
+    "codigo": "AR/18899-1",
+    "numeroDespacho": "180186",
+    "referenciaCliente": "AR/18899-1",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBwSCY8MqxtRKpkOG4g5xzaAd4jmSwjXib__lB4sLNEetk?e=xXAe4d"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6362-3",
+    "numeroDespacho": "180188",
+    "referenciaCliente": "SO/6362-3",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAgY9Sd45f5SJq-fd-5Zs1TAarWFMf-ALxt8KN363ojz7Q?e=KyNl2c"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6354-44",
+    "numeroDespacho": "180190",
+    "referenciaCliente": "SO/6354-44",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC4Negn-QHdSKkZYorObLGOAVAP56t0wo7aX1K2tqbxOc8?e=DEnC4J"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6362-1",
+    "numeroDespacho": "180192",
+    "referenciaCliente": "SO/6362-1",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQASdNUtJcPVSIyiYtFq0gBaAcCPyi1JpJf090uk6dPMbZc?e=1idJKQ"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 6357-8",
+    "numeroDespacho": "180193",
+    "referenciaCliente": "CN 6357-8",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCyiOBWqWiCRZjohsiWZlPQAbjNWHsBNZgZrONs1oseIQI?e=FUAx2L"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6456-4",
+    "numeroDespacho": "180195",
+    "referenciaCliente": "SO/6456-4",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQA0nSt4ckb9RKzBwtcUtqf5AbkRvGQ_HSYXntqwCILJFZI?e=vsK8pf"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6356-6",
+    "numeroDespacho": "180196",
+    "referenciaCliente": "SO/6356-6",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBmV_PZunB7TZG1k3OFr0OnARbojzzpdBVcy2d5CEDTbbY?e=EoXBt6"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6330-13",
+    "numeroDespacho": "180198",
+    "referenciaCliente": "SO/6330-13",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAI8kqP3vaBRonppBBFnJUmAaYk7pMw1gTieKlkBQCmC-0?e=0sKyL6"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 25314-3",
+    "numeroDespacho": "180199",
+    "referenciaCliente": "CN 25314-3",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAY-eCFU6WyTaN5vCbLjhEuAYvyUuzCZtvMuBdGxvkn0Us?e=DF0BSh"
+      }
+    ]
+  },
+  {
+    "codigo": "AR/18699-5",
+    "numeroDespacho": "180201",
+    "referenciaCliente": "AR/18699-5",
+    "estado": "Finalizado",
+    "clase": "green",
+    "estadoOperacion": "",
+    "estadoProceso": "LIBERADO",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQALyj4EW6XMRLtHHUwu3VKxAWWT2z9XxNKW2afPoJl_mUQ?e=lQeew5"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 25235-2",
+    "numeroDespacho": "180202",
+    "referenciaCliente": "CN 25235-2",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "Pend. arribo",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQDpQBeX5nzcQL81XaGYhi2MAbBZFf64gK1y5kh3xFQq5V8?e=bTMnfE"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6330-12",
+    "numeroDespacho": "180213",
+    "referenciaCliente": "SO/6330-12",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "En Almacén",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCy5lnGrqWHQ6fMOVb-_tilASlvqQ2oFL5Q4aNUuTpIkvo?e=Nkrpj6"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6370-30",
+    "numeroDespacho": "180226",
+    "referenciaCliente": "SO/6370-30",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQAnVTh5HaOXTpVlQ1A3XHvmAewXr9CPHJaWplU-S-eBvlA?e=ASsqyd"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6362-4",
+    "numeroDespacho": "180228",
+    "referenciaCliente": "SO/6362-4",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCcT5QUFMSSQ6YqPBx0_M7rAe5TOX2Et062QkgDC20jHRw?e=hVf11Z"
+      }
+    ]
+  },
+  {
+    "codigo": "O/87315-3",
+    "numeroDespacho": "180230",
+    "referenciaCliente": "O/87315-3",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": []
+  },
+  {
+    "codigo": "SO/6397-10",
+    "numeroDespacho": "180242",
+    "referenciaCliente": "SO/6397-10",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQCtLadyozzyRaXTAMNDadQDAWv-fcF9KIgOOKLUpQFGUm0?e=Gkyaro"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6369-10",
+    "numeroDespacho": "180249",
+    "referenciaCliente": "SO/6369-10",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQBbQ8_uAqYpS7Z1k34QLp7KAZcX-2ddZGdUOdmSUuVTAdE?e=f6Qe95"
+      }
+    ]
+  },
+  {
+    "codigo": "SO/6575-1",
+    "numeroDespacho": "180257",
+    "referenciaCliente": "SO/6575-1",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC3RLMNwGFpSqS-uemI7PUbAcs1nfVTAFyzQ_7fJ0T0Pr0?e=SWccKF"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 25320-5",
+    "numeroDespacho": "180261",
+    "referenciaCliente": "CN 25320-5",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": []
+  },
+  {
+    "codigo": "CN 25412-1",
+    "numeroDespacho": "180263",
+    "referenciaCliente": "CN 25412-1",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": [
+      {
+        "tipo": "DIN",
+        "url": "https://agenciadeaduanapirazzoli-my.sharepoint.com/:b:/g/personal/mmorales_pirazzoli_cl/IQC3RLMNwGFpSqS-uemI7PUbAcs1nfVTAFyzQ_7fJ0T0Pr0?e=SWccKF"
+      }
+    ]
+  },
+  {
+    "codigo": "CN 25368-2",
+    "numeroDespacho": "180265",
+    "referenciaCliente": "CN 25368-2",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": []
+  },
+  {
+    "codigo": "CN 6358-13",
+    "numeroDespacho": "180284",
+    "referenciaCliente": "CN 6358-13",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": []
+  },
+  {
+    "codigo": "SO/6397-7",
+    "numeroDespacho": "180286",
+    "referenciaCliente": "SO/6397-7",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "PENDIENTE",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": []
+  },
+  {
+    "codigo": "SO/6354-48",
+    "numeroDespacho": "180288",
+    "referenciaCliente": "SO/6354-48",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": []
+  },
+  {
+    "codigo": "SO/6362-5",
+    "numeroDespacho": "180289",
+    "referenciaCliente": "SO/6362-5",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": []
+  },
+  {
+    "codigo": "O/88092",
+    "numeroDespacho": "180290",
+    "referenciaCliente": "O/88092",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": []
+  },
+  {
+    "codigo": "SO/6370-32",
+    "numeroDespacho": "180292",
+    "referenciaCliente": "SO/6370-32",
+    "estado": "En curso",
+    "clase": "white",
+    "estadoOperacion": "",
+    "estadoProceso": "",
+    "instruccionDescarga": "",
+    "fechaLiberacion": "",
+    "observaciones": "",
+    "pdfs": []
+  }
+]

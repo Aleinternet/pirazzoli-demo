@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pirazzoli | Información de despacho</title>
   <style>
+
+    .filterBtn.inactive{
+      opacity:0.35;
+      filter:grayscale(100%);
+    }
     :root{
       --bg:#f4f7fb;
       --panel:#ffffff;
@@ -23,14 +28,11 @@
       --yellowText:#9a6b00;
       --red:#f8d7da;
       --redText:#a61b29;
-      --transition: .18s ease;
+      --transition:.18s ease;
     }
 
     *{box-sizing:border-box}
-
-    html{
-      scroll-behavior:smooth;
-    }
+    html{scroll-behavior:smooth}
 
     body{
       margin:0;
@@ -41,13 +43,10 @@
       color:var(--text);
     }
 
-    button,
-    input{
-      font:inherit;
-    }
+    button,input{font:inherit}
 
     .page{
-      max-width:1460px;
+      max-width:1500px;
       margin:0 auto;
       padding:28px;
     }
@@ -102,7 +101,6 @@
       border:1px solid var(--line);
       font-weight:700;
       font-size:13px;
-      transition:background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
     }
 
     .wrap{
@@ -153,9 +151,7 @@
       line-height:1.5;
     }
 
-    .field{
-      margin-bottom:14px;
-    }
+    .field{margin-bottom:14px}
 
     .field label{
       display:block;
@@ -175,7 +171,7 @@
       border-radius:16px;
       font-size:15px;
       outline:none;
-      transition:border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+      transition:border-color var(--transition), box-shadow var(--transition);
       background:#fff;
     }
 
@@ -190,22 +186,11 @@
       cursor:pointer;
       font-weight:800;
       font-size:15px;
-      transition:
-        background var(--transition),
-        color var(--transition),
-        border-color var(--transition),
-        box-shadow var(--transition),
-        transform var(--transition),
-        opacity var(--transition);
+      transition:background var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition);
     }
 
-    .btn:hover{
-      transform:translateY(-1px);
-    }
-
-    .btn:active{
-      transform:translateY(0);
-    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
 
     .btnMain{
       width:100%;
@@ -245,9 +230,7 @@
 
     .hidden{display:none !important}
 
-    .dashboard{
-      padding:24px;
-    }
+    .dashboard{padding:24px}
 
     .banner{
       display:flex;
@@ -307,12 +290,7 @@
     .filterBtn{
       background:#fff;
       cursor:pointer;
-      transition:
-        background var(--transition),
-        color var(--transition),
-        border-color var(--transition),
-        box-shadow var(--transition),
-        transform var(--transition);
+      transition:background var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition);
     }
 
     .filterBtn:hover{
@@ -352,7 +330,7 @@
       border-radius:16px;
       background:#f7fbff;
       border:1px solid var(--line);
-      transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      transition:transform var(--transition), box-shadow var(--transition);
     }
 
     .stat:hover{
@@ -377,7 +355,7 @@
 
     .layout{
       display:grid;
-      grid-template-columns:470px 1fr;
+      grid-template-columns:440px 1fr;
       gap:22px;
       align-items:start;
     }
@@ -470,25 +448,25 @@
 
     .meta{
       display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
+      grid-template-columns:1fr;
+      gap:10px;
       margin-bottom:0;
     }
 
-    .metaBox{
+    .metaRow{
       border:1px solid var(--line);
       border-radius:14px;
       padding:12px;
       background:#fcfdff;
-      transition:border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+      transition:border-color var(--transition), box-shadow var(--transition);
     }
 
-    .metaBox:hover{
+    .metaRow:hover{
       border-color:#c3d5e6;
       box-shadow:0 8px 18px rgba(16,37,61,.05);
     }
 
-    .metaBox span{
+    .metaLabel{
       display:block;
       font-size:11px;
       color:var(--muted);
@@ -498,9 +476,53 @@
       letter-spacing:.04em;
     }
 
-    .metaBox strong{
+    .metaValue{
       font-size:14px;
-      line-height:1.4;
+      line-height:1.5;
+      color:var(--text);
+      word-break:break-word;
+    }
+
+    .metaValue.is-link{
+      color:var(--brand-dark);
+      text-decoration:underline;
+      font-style:italic;
+      cursor:pointer;
+      font-weight:700;
+      transition:color var(--transition), opacity var(--transition);
+    }
+
+    .metaValue.is-link:hover{
+      color:var(--brand);
+      opacity:.9;
+    }
+
+    .pdfList{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .pdfChip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid #c9dff4;
+      background:#eef5fc;
+      color:var(--brand-dark);
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:12px;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    .pdfChip:hover{
+      transform:translateY(-1px);
+      box-shadow:0 8px 16px rgba(12,111,198,.12);
+      background:#e6f1fb;
     }
 
     .viewer{
@@ -566,198 +588,68 @@
       max-width:520px;
     }
 
+    .loading{
+      padding:24px;
+      color:var(--muted);
+      text-align:center;
+    }
+
     @media (max-width:1180px){
-      .layout{
-        grid-template-columns:1fr;
-      }
-
-      .cards{
-        max-height:none;
-      }
-
-      .viewer{
-        min-height:auto;
-      }
-
-      .viewerFrame iframe,
-      .empty{
-        min-height:540px;
-      }
+      .layout{grid-template-columns:1fr}
+      .cards{max-height:none}
+      .viewer{min-height:auto}
+      .viewerFrame iframe,.empty{min-height:540px}
     }
 
     @media (max-width:900px){
-      .page{
-        padding:18px;
-      }
-
-      .banner{
-        flex-direction:column;
-        align-items:stretch;
-      }
-
-      .stats{
-        justify-content:flex-start;
-      }
+      .page{padding:18px}
+      .banner{flex-direction:column;align-items:stretch}
+      .stats{justify-content:flex-start}
     }
 
     @media (max-width:780px){
-      .page{
-        padding:14px;
-      }
-
-      .top{
-        align-items:flex-start;
-      }
-
-      .brand{
-        width:100%;
-      }
-
-      .logoBox{
-        width:60px;
-        height:60px;
-        font-size:30px;
-        border-radius:16px;
-      }
-
-      .brand h1{
-        font-size:28px;
-      }
-
-      .hero{
-        padding:22px 20px;
-      }
-
-      .hero h2{
-        font-size:26px;
-      }
-
-      .login{
-        margin:28px 14px;
-        padding:22px 18px;
-      }
-
-      .dashboard{
-        padding:14px;
-      }
-
-      .banner{
-        padding:18px 16px;
-      }
-
-      .banner h3{
-        font-size:24px;
-      }
-
-      .legend{
-        gap:8px;
-      }
-
-      .filterBtn{
-        font-size:11px;
-        padding:8px 11px;
-      }
-
-      .panelHead,
-      .viewerTop{
-        padding:18px 16px;
-      }
-
-      .cards{
-        padding:12px;
-      }
-
-      .cardTop{
-        flex-direction:column;
-        align-items:flex-start;
-        padding:16px;
-      }
-
-      .cardTitle{
-        font-size:20px;
-      }
-
-      .cardBody{
-        padding:0 16px 16px;
-      }
-
-      .meta{
-        grid-template-columns:1fr;
-      }
-
-      .viewerTop h4{
-        font-size:22px;
-      }
-
-      .viewerFrame iframe,
-      .empty{
-        min-height:460px;
-      }
+      .page{padding:14px}
+      .top{align-items:flex-start}
+      .brand{width:100%}
+      .logoBox{width:60px;height:60px;font-size:30px;border-radius:16px}
+      .brand h1{font-size:28px}
+      .hero{padding:22px 20px}
+      .hero h2{font-size:26px}
+      .login{margin:28px 14px;padding:22px 18px}
+      .dashboard{padding:14px}
+      .banner{padding:18px 16px}
+      .banner h3{font-size:24px}
+      .legend{gap:8px}
+      .filterBtn{font-size:11px;padding:8px 11px}
+      .panelHead,.viewerTop{padding:18px 16px}
+      .cards{padding:12px}
+      .cardTop{flex-direction:column;align-items:flex-start;padding:16px}
+      .cardTitle{font-size:20px}
+      .cardBody{padding:0 16px 16px}
+      .viewerTop h4{font-size:22px}
+      .viewerFrame iframe,.empty{min-height:460px}
     }
 
     @media (max-width:520px){
-      .top{
-        gap:12px;
-      }
-
-      .brand{
-        gap:12px;
-      }
-
-      .brand h1{
-        font-size:24px;
-      }
-
-      .brand p{
-        font-size:13px;
-      }
-
-      .pill{
-        padding:10px 14px;
-        font-size:12px;
-      }
-
-      .hero h2{
-        font-size:24px;
-      }
-
-      .hero p,
-      .banner p,
-      .viewerTop p{
-        font-size:13px;
-      }
-
-      .stat{
-        width:100%;
-      }
-
-      .viewerFrame iframe,
-      .empty{
-        min-height:380px;
-      }
-
-      .empty{
-        padding:26px 18px;
-      }
-
-      .empty h5{
-        font-size:24px;
-      }
+      .top{gap:12px}
+      .brand{gap:12px}
+      .brand h1{font-size:24px}
+      .brand p{font-size:13px}
+      .pill{padding:10px 14px;font-size:12px}
+      .hero h2{font-size:24px}
+      .hero p,.banner p,.viewerTop p{font-size:13px}
+      .stat{width:100%}
+      .viewerFrame iframe,.empty{min-height:380px}
+      .empty{padding:26px 18px}
+      .empty h5{font-size:24px}
     }
 
     @media (hover:none){
-      .btn:hover,
-      .card:hover,
-      .filterBtn:hover,
-      .stat:hover,
-      .metaBox:hover{
+      .btn:hover,.card:hover,.filterBtn:hover,.stat:hover,.metaRow:hover,.pdfChip:hover{
         transform:none;
         box-shadow:none;
       }
-
-      .cardTop:hover{
-        background:transparent;
-      }
+      .cardTop:hover{background:transparent}
     }
   </style>
 </head>
@@ -806,44 +698,71 @@
       <div id="dashboardView" class="dashboard hidden">
         <div class="banner">
           <div class="banner-left">
+            
+
+
+
+
+
             <h3>Cliente CIVI</h3>
-            <p>Resumen de despachos disponibles para esta demostración.</p>
+            <p>Resumen de despachos disponibles para esta demostración con datos reales desde Excel.</p>
             <div class="legend">
               <button class="badge filterBtn filter-all active" data-filter="all" type="button">Ver todas</button>
-              <button class="badge filterBtn white" data-filter="Por presentar" type="button">Por presentar</button>
-              <button class="badge filterBtn green" data-filter="Pendiente de Pago" type="button">Pendiente de Pago</button>
+              <button class="badge filterBtn white" data-filter="En curso" type="button">En curso</button>
+              <button class="badge filterBtn green" data-filter="Finalizado" type="button">Finalizado</button>
               <button class="badge filterBtn yellow" data-filter="Urgente" type="button">Urgente</button>
-              <button class="badge filterBtn red" data-filter="Por retirar" type="button">Por retirar</button>
+              <button class="badge filterBtn red" data-filter="Observación" type="button">Observación</button>
             </div>
           </div>
 
           <div class="stats">
-            <div class="stat"><span>Despachos visibles</span><strong id="statCount">4</strong></div>
+            <div class="stat"><span>Despachos visibles</span><strong id="statCount">0</strong></div>
             <div class="stat"><span>Cliente</span><strong>CIVI</strong></div>
-            <div class="stat"><span>PDF activo</span><strong id="statPdf">1</strong></div>
+            <div class="stat"><span>Con PDF</span><strong id="statPdf">0</strong></div>
           </div>
         </div>
 
         <div class="layout">
           <section class="panel">
+
+
             <div class="panelHead">
               <h4>Despachos</h4>
-              <p>Haz clic en un despacho para desplegar su detalle y abrir inmediatamente el documento asociado, si existe.</p>
+              <p>Haz clic en un despacho para desplegar todas sus casillas. Las casillas con PDF aparecen subrayadas e inclinadas.</p>
+
+              <div style="margin-top:14px;">
+                <input
+                  id="searchBox"
+                  type="text"
+                  placeholder="Buscar despacho..."
+                  style="
+                    width:100%;
+                    padding:10px 14px;
+                    border-radius:12px;
+                    border:1px solid var(--line);
+                    font-size:14px;
+                    outline:none;
+                    background:#fff;
+                  "
+                >
+              </div>
+</div>
+            <div id="cards" class="cards">
+              <div class="loading">Cargando datos...</div>
             </div>
-            <div id="cards" class="cards"></div>
           </section>
 
           <section class="panel viewer">
             <div class="viewerTop">
               <h4 id="viewerTitle">Documento no seleccionado</h4>
-              <p id="viewerSub">Selecciona un despacho para ver el detalle o abrir el PDF asociado.</p>
+              <p id="viewerSub">Selecciona un despacho y luego haz clic en una casilla con documento para abrir su PDF.</p>
             </div>
 
             <div id="viewerContent" class="viewerFrame">
               <div class="empty">
                 <div>
                   <h5>Esperando selección</h5>
-                  <p>El PDF se mostrará aquí mismo cuando abras el despacho correspondiente.</p>
+                  <p>El PDF se mostrará aquí mismo cuando abras una casilla documental del despacho.</p>
                 </div>
               </div>
             </div>
@@ -857,44 +776,9 @@
     const CLIENTE_VALIDO = "CIVI";
     const CLAVE_VALIDA = "12345";
 
-    const despachos = [
-      {
-        codigo: "O/87250-6",
-        estado: "Por presentar",
-        clase: "white",
-        descripcion: "Operación lista para presentación documental.",
-        fecha: "05/03/2026",
-        ejecutivo: "Mesa Operaciones",
-        pdf: null
-      },
-      {
-        codigo: "CN 6526-1",
-        estado: "Pendiente de Pago",
-        clase: "green",
-        descripcion: "Despacho pendiente de regularización de pago.",
-        fecha: "05/03/2026",
-        ejecutivo: "Área Finanzas",
-        pdf: null
-      },
-      {
-        codigo: "SO/6370-22",
-        estado: "Urgente",
-        clase: "yellow",
-        descripcion: "Requiere gestión prioritaria para continuidad operativa.",
-        fecha: "06/03/2026",
-        ejecutivo: "Coordinación Aduana",
-        pdf: null
-      },
-      {
-        codigo: "SO/6370-23",
-        estado: "Por retirar",
-        clase: "red",
-        descripcion: "Documento disponible para revisión y retiro.",
-        fecha: "06/03/2026",
-        ejecutivo: "Atención Cliente",
-        pdf: "127124.pdf"
-      }
-    ];
+    let despachos = [];
+    let currentFilter = "all";
+    let currentSearch = "";
 
     const loginView = document.getElementById("loginView");
     const dashboardView = document.getElementById("dashboardView");
@@ -909,25 +793,151 @@
     const statCount = document.getElementById("statCount");
     const statPdf = document.getElementById("statPdf");
     const filterButtons = document.querySelectorAll(".filterBtn");
+    const searchBox = document.getElementById("searchBox");
 
-    let currentFilter = "all";
+    searchBox.addEventListener("input", () => {
+      currentSearch = searchBox.value.toLowerCase();
+      renderCards();
+    });
+
+    function safeText(value) {
+      if (value === null || value === undefined) return "—";
+      const text = String(value).trim();
+      return text === "" ? "—" : text;
+    }
+
+    function getPdfMap(item) {
+      const map = {};
+      (item.pdfs || []).forEach(pdf => {
+        if (!pdf || !pdf.tipo || !pdf.url) return;
+        map[pdf.tipo] = pdf.url;
+      });
+      return map;
+    }
 
     function getFilteredDespachos() {
-      if (currentFilter === "all") {
-        return despachos;
+
+      let resultado = despachos;
+
+      if (currentFilter !== "all") {
+        resultado = resultado.filter(item => item.estado === currentFilter);
       }
-      return despachos.filter(item => item.estado === currentFilter);
+
+      if (currentSearch !== "") {
+        resultado = resultado.filter(item =>
+          item.codigo.toLowerCase().includes(currentSearch)
+        );
+      }
+
+      return resultado;
     }
 
     function updateStats(items) {
       statCount.textContent = items.length;
-      statPdf.textContent = items.filter(item => !!item.pdf).length;
+      statPdf.textContent = items.filter(item => (item.pdfs || []).length > 0).length;
     }
 
     function setActiveFilterButton() {
       filterButtons.forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.filter === currentFilter);
+
+        const active = btn.dataset.filter === currentFilter;
+
+        btn.classList.toggle("active", active);
+        btn.classList.toggle("inactive", !active);
+
       });
+    }
+
+    function openPdf(url, title, subtitle) {
+      viewerTitle.textContent = title;
+      viewerSub.textContent = subtitle;
+
+      if (!url) {
+        viewerContent.innerHTML = `
+          <div class="empty">
+            <div>
+              <h5>${title}</h5>
+              <p>No hay PDF asociado para esta casilla.</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const isSharePoint =
+        url.includes("sharepoint.com") ||
+        url.includes("onedrive.com") ||
+        url.includes("-my.sharepoint.com");
+
+      if (isSharePoint) {
+        viewerContent.innerHTML = `
+          <div class="empty">
+            <div>
+              <h5>${title}</h5>
+              <p>Este documento debe abrirse en una nueva pestaña.</p>
+              <div style="margin-top:18px;">
+                <a
+                  href="${url}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="
+                    display:inline-block;
+                    padding:12px 18px;
+                    background:#0c6fc6;
+                    color:#fff;
+                    text-decoration:none;
+                    border-radius:10px;
+                    font-weight:700;
+                  "
+                >
+                  Abrir documento
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      viewerContent.innerHTML = `<iframe src="${url}" title="${title}"></iframe>`;
+    }
+
+    function buildMetaRows(item) {
+      const pdfMap = getPdfMap(item);
+
+      const rows = [
+        { label: "Número de despacho", value: item.numeroDespacho },
+        { label: "Referencia de cliente", value: item.referenciaCliente },
+        { label: "Estado visual", value: item.estado },
+        { label: "Estado operación", value: item.estadoOperacion },
+        { label: "Estado actual del proceso", value: item.estadoProceso },
+        { label: "Estado: instrucción de descarga", value: item.instruccionDescarga },
+        { label: "Fecha de aprobación / liberación", value: item.fechaLiberacion },
+        { label: "Observaciones", value: item.observaciones },
+        { label: "Resolución Sanitaria", value: pdfMap["Resolución Sanitaria"] ? "Ver PDF Resolución Sanitaria" : "Sin PDF", pdf: pdfMap["Resolución Sanitaria"], tipo: "Resolución Sanitaria" },
+        { label: "DIN", value: pdfMap["DIN"] ? "Ver PDF DIN" : "Sin PDF", pdf: pdfMap["DIN"], tipo: "DIN" },
+        { label: "Comprobante Pago TGR", value: pdfMap["Comprobante Pago TGR"] ? "Ver PDF Comprobante Pago TGR" : "Sin PDF", pdf: pdfMap["Comprobante Pago TGR"], tipo: "Comprobante Pago TGR" }
+      ];
+
+      return rows.map(row => {
+        if (row.pdf) {
+          return `
+            <div class="metaRow">
+              <span class="metaLabel">${row.label}</span>
+              <span class="metaValue is-link" data-pdf="${row.pdf}" data-title="${item.codigo}" data-subtitle="${row.label} · ${row.tipo}">
+                ${row.value}
+              </span>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="metaRow">
+            <span class="metaLabel">${row.label}</span>
+            <span class="metaValue">${safeText(row.value)}</span>
+          </div>
+        `;
+      }).join("");
     }
 
     function renderCards() {
@@ -949,24 +959,34 @@
         return;
       }
 
-      filtered.forEach((item) => {
+      filtered.forEach(item => {
         const article = document.createElement("article");
         article.className = "card";
         article.innerHTML = `
           <div class="cardTop">
             <div>
-              <div class="cardTitle">${item.codigo}</div>
-              <p class="cardSub">${item.descripcion}</p>
+              <div class="cardTitle">${safeText(item.codigo)}</div>
+              <p class="cardSub">
+                Nº despacho: ${safeText(item.numeroDespacho)} ·
+                Estado proceso: ${safeText(item.estadoProceso)} ·
+                PDFs: ${(item.pdfs || []).length}
+              </p>
             </div>
-            <span class="badge ${item.clase}">${item.estado}</span>
+            <span class="badge ${item.clase || 'white'}">${safeText(item.estado)}</span>
           </div>
           <div class="cardBody">
             <div class="meta">
-              <div class="metaBox"><span>Estado</span><strong>${item.estado}</strong></div>
-              <div class="metaBox"><span>Fecha</span><strong>${item.fecha}</strong></div>
-              <div class="metaBox"><span>Ejecutivo</span><strong>${item.ejecutivo}</strong></div>
-              <div class="metaBox"><span>Código</span><strong>${item.codigo}</strong></div>
+              ${buildMetaRows(item)}
             </div>
+            ${(item.pdfs || []).length ? `
+              <div class="pdfList">
+                ${(item.pdfs || []).map(pdf => `
+                  <button class="pdfChip" type="button" data-pdf="${pdf.url}" data-title="${item.codigo}" data-subtitle="Documento · ${pdf.tipo}">
+                    ${pdf.tipo}
+                  </button>
+                `).join("")}
+              </div>
+            ` : ""}
           </div>
         `;
 
@@ -976,25 +996,57 @@
           if (!alreadyOpen) {
             article.classList.add("open");
           }
-          showViewer(item);
+
+          viewerTitle.textContent = item.codigo || "Despacho";
+          viewerSub.textContent = `Estado: ${safeText(item.estado)} · Selecciona una casilla documental para abrir su PDF`;
+
+          if (!(item.pdfs || []).length) {
+            viewerContent.innerHTML = `
+              <div class="empty">
+                <div>
+                  <h5>${safeText(item.codigo)}</h5>
+                  <p>Este despacho no tiene PDFs asociados en esta prueba.</p>
+                </div>
+              </div>
+            `;
+          }
         });
 
         cards.appendChild(article);
       });
+
+      document.querySelectorAll("[data-pdf]").forEach(el => {
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openPdf(
+            el.dataset.pdf,
+            el.dataset.title || "Documento",
+            el.dataset.subtitle || "PDF asociado"
+          );
+        });
+      });
     }
 
-    function showViewer(item) {
-      viewerTitle.textContent = item.codigo;
-      viewerSub.textContent = `Estado: ${item.estado} · ${item.descripcion}`;
+    async function loadData() {
+      const response = await fetch("./data/despachos.json", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("No se pudo cargar despachos.json");
+      }
+      despachos = await response.json();
+    }
 
-      if (item.pdf) {
-        viewerContent.innerHTML = `<iframe src="${item.pdf}#toolbar=0" title="${item.codigo}"></iframe>`;
-      } else {
-        viewerContent.innerHTML = `
-          <div class="empty">
+    async function initDashboard() {
+      cards.innerHTML = `<div class="loading">Cargando datos...</div>`;
+
+      try {
+        await loadData();
+        renderCards();
+      } catch (error) {
+        cards.innerHTML = `
+          <div class="empty" style="min-height:320px;">
             <div>
-              <h5>${item.codigo}</h5>
-              <p>Este despacho no tiene PDF demo asociado en esta prueba local.</p>
+              <h5>Error al cargar datos</h5>
+              <p>${error.message}</p>
             </div>
           </div>
         `;
@@ -1009,7 +1061,7 @@
         loginError.style.display = "none";
         loginView.classList.add("hidden");
         dashboardView.classList.remove("hidden");
-        renderCards();
+        initDashboard();
       } else {
         loginError.style.display = "block";
       }
