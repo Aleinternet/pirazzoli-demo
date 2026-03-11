@@ -17,6 +17,7 @@
       --brand-2:#0d67a7;
       --brand-3:#0a5488;
       --brand-soft:#eaf5fd;
+      --brand-soft-2:#dff0fb;
 
       --shadow:0 14px 32px rgba(17,119,191,.08);
 
@@ -43,10 +44,11 @@
       font-family:Arial, Helvetica, sans-serif;
       background:var(--bg);
       color:var(--text);
+      overflow:hidden;
     }
 
     .app{
-      min-height:100vh;
+      height:100vh;
       display:grid;
       grid-template-rows:auto auto 1fr;
     }
@@ -140,7 +142,7 @@
     }
 
     .searchWrap{
-      flex:1 1 420px;
+      flex:1;
       min-width:280px;
     }
 
@@ -161,41 +163,35 @@
       box-shadow:0 0 0 4px rgba(17,119,191,.10);
     }
 
-    .btn{
-      height:38px;
-      border:1px solid var(--line);
-      border-radius:10px;
-      background:#fff;
-      color:var(--text);
-      padding:0 14px;
-      cursor:pointer;
-      font-weight:700;
-      transition:.15s ease;
-    }
-
-    .btn:hover{
-      transform:translateY(-1px);
-      box-shadow:0 8px 18px rgba(17,119,191,.08);
-    }
-
     .content{
       min-height:0;
+      height:100%;
       display:grid;
-      grid-template-columns:1fr 360px;
+      grid-template-columns:minmax(0,1fr) 0px;
+      transition:grid-template-columns .26s ease;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .content.sidebar-open{
+      grid-template-columns:minmax(0,1fr) 380px;
     }
 
     .main{
       min-width:0;
       display:grid;
       grid-template-rows:auto 1fr;
-      border-right:1px solid var(--line);
       background:#fff;
+      overflow:hidden;
+      position:relative;
     }
 
     .columnTabsWrap{
       background:#fff;
       border-bottom:1px solid var(--line);
       padding:10px 16px 0;
+      overflow:hidden;
+      flex-shrink:0;
     }
 
     .columnTabs{
@@ -205,8 +201,6 @@
       padding-bottom:10px;
     }
 
-
-
     .columnTab{
       position:relative;
       border:1px solid #cfe0ee;
@@ -214,9 +208,9 @@
       background:linear-gradient(180deg,#ffffff 0%, #f7fbff 100%);
       color:#23415d;
       border-radius:12px 12px 0 0;
-      padding:11px 16px;
+      padding:10px 14px;
       cursor:pointer;
-      font-size:13px;
+      font-size:12px;
       font-weight:800;
       white-space:nowrap;
       transition:
@@ -227,9 +221,6 @@
         box-shadow .22s ease;
       box-shadow:inset 0 -1px 0 rgba(255,255,255,.75);
     }
-
-
-
 
     .columnTab.active{
       background:linear-gradient(135deg,var(--brand) 0%, var(--brand-3) 100%);
@@ -244,7 +235,7 @@
 
     .columnTab:hover{
       background:linear-gradient(180deg,#fafdff 0%, #edf7ff 100%);
-      border-color:#aecdE5;
+      border-color:#aecde5;
       color:var(--brand-3);
       transform:translateY(-1px);
       box-shadow:0 8px 18px rgba(17,119,191,.10);
@@ -261,9 +252,6 @@
         0 8px 18px rgba(17,119,191,.10);
     }
 
-
-
-
     .tableWrap{
       min-height:0;
       overflow:auto;
@@ -275,7 +263,7 @@
       min-width:100%;
       border-collapse:separate;
       border-spacing:0;
-      font-size:13px;
+      font-size:10.5px;
     }
 
     thead th{
@@ -287,8 +275,8 @@
       border-bottom:1px solid var(--line);
       border-right:1px solid #e8eef4;
       text-align:left;
-      padding:10px 10px;
-      font-size:12px;
+      padding:6px 7px;
+      font-size:10px;
       font-weight:900;
       white-space:nowrap;
     }
@@ -296,8 +284,8 @@
     .thInner{
       display:flex;
       align-items:center;
-      gap:8px;
-      min-height:24px;
+      gap:5px;
+      min-height:18px;
     }
 
     .thLabel{
@@ -307,13 +295,13 @@
     }
 
     .sortBtn{
-      width:22px;
-      height:22px;
+      width:18px;
+      height:18px;
       border:1px solid #cfe0ef;
-      border-radius:6px;
+      border-radius:5px;
       background:#fff;
       color:#4d6580;
-      font-size:11px;
+      font-size:9px;
       line-height:1;
       cursor:pointer;
       display:inline-flex;
@@ -339,10 +327,12 @@
     tbody td{
       border-bottom:1px solid var(--line-soft);
       border-right:1px solid #f2f5f8;
-      padding:10px;
-      vertical-align:top;
+      padding:5px 7px;
+      vertical-align:middle;
       white-space:nowrap;
       background:#fff;
+      font-size:10.5px;
+      line-height:1.2;
     }
 
     tbody tr:hover td{
@@ -350,87 +340,249 @@
     }
 
     tbody tr.selected td{
-      background:#ebf5fd;
+      background:#ebf5fd !important;
+    }
+
+    tbody tr.multiSelected td{
+      background:#f1f8fe !important;
     }
 
     .rowClickable{cursor:pointer}
 
+    .rowCheckCell,.headCheckCell{
+      width:28px;
+      min-width:28px;
+      max-width:28px;
+      text-align:center;
+      padding:0 4px !important;
+      position:sticky;
+      left:0;
+      z-index:4;
+      background:#fff;
+      border-right:1px solid #e8eef4;
+    }
+
+    .groupIndentCell{
+      width:28px;
+      min-width:28px;
+      max-width:28px;
+      text-align:center;
+      padding:0 4px !important;
+      position:sticky;
+      left:28px;
+      z-index:4;
+      background:#fff;
+      border-right:1px solid #e8eef4;
+    }
+
+    .groupHeaderCell{
+      min-width:220px;
+      width:220px;
+      max-width:220px;
+      position:sticky;
+      left:28px;
+      z-index:6;
+      background:#f5f9fd;
+      border-right:1px solid #e8eef4;
+      text-align:left;
+    }
+
+    .groupCell{
+      min-width:220px;
+      width:220px;
+      max-width:220px;
+      position:sticky;
+      left:28px;
+      z-index:3;
+      background:#fff;
+      border-right:1px solid #e8eef4;
+      padding:0 8px !important;
+      vertical-align:middle;
+    }
+
+    .groupRow{
+      cursor:pointer;
+    }
+
+    .groupCell{
+      cursor:pointer;
+    }
+
+    .groupCellEmpty{
+      min-width:220px;
+      width:220px;
+      max-width:220px;
+      position:sticky;
+      left:28px;
+      z-index:3;
+      background:#fff;
+      border-right:1px solid #e8eef4;
+      padding:0 !important;
+    }
+
+    thead .headCheckCell{
+      z-index:7;
+      background:#f5f9fd;
+    }
+
+    thead .groupIndentCell{
+      z-index:6;
+      background:#f5f9fd;
+    }
+
+    thead .groupHeaderCell{
+      z-index:6;
+      background:#f5f9fd;
+    }
+
+    tbody tr:hover .rowCheckCell,
+    tbody tr:hover .groupIndentCell,
+    tbody tr:hover .groupCell,
+    tbody tr:hover .groupCellEmpty{
+      background:#f9fcff;
+    }
+
+    tbody tr.selected .rowCheckCell,
+      tbody tr.selected .groupIndentCell,
+      tbody tr.selected .groupCell,
+      tbody tr.selected .groupCellEmpty,
+      tbody tr.multiSelected .rowCheckCell,
+      tbody tr.multiSelected .groupIndentCell,
+      tbody tr.multiSelected .groupCell,
+      tbody tr.multiSelected .groupCellEmpty{
+        background:#ebf5fd !important;
+      }
+
+    .rowCheck,.masterCheck,.statusCheck{
+      width:14px;
+      height:14px;
+      border:1px solid #bad2e5;
+      border-radius:3px;
+      appearance:none;
+      -webkit-appearance:none;
+      background:#fff;
+      cursor:pointer;
+      position:relative;
+      margin:0;
+    }
+
+    .rowCheck:checked,.masterCheck:checked,.statusCheck:checked{
+      background:var(--brand-soft-2);
+      border-color:#7fb7dc;
+    }
+
+    .rowCheck:checked::after,.masterCheck:checked::after,.statusCheck:checked::after{
+      content:"";
+      position:absolute;
+      left:3px;
+      top:0px;
+      width:4px;
+      height:7px;
+      border:solid var(--brand-3);
+      border-width:0 2px 2px 0;
+      transform:rotate(45deg);
+    }
+    .groupRowMetaCell{
+      background:#f8fbff !important;
+    }
+
+    .groupRow.selectedGroup .groupCell,
+    .groupRow.selectedGroup .groupRowMetaCell{
+      background:#eaf5fd !important;
+    }
+
     .groupRow td{
       background:#f8fbff !important;
       border-bottom:1px solid #d9e7f2;
-      padding:0;
+      font-size:11px;
+      padding:6px 7px;
     }
 
-    .groupButton{
-      width:100%;
-      border:0;
-      background:transparent;
-      text-align:left;
-      padding:12px 14px;
+    .groupRow.selectedGroup td{
+      background:#eaf5fd !important;
+    }
+
+    
+
+    .groupRow .rowCheckCell,
+    .groupRow .groupIndentCell{
+      background:#f8fbff !important;
+    }
+
+    .groupRow.selectedGroup .rowCheckCell,
+    .groupRow.selectedGroup .groupIndentCell{
+      background:#eaf5fd !important;
+    }
+
+    .groupRowMain{
       display:flex;
       align-items:center;
-      gap:10px;
+      gap:7px;
+      min-height:22px;
       cursor:pointer;
-      font-weight:800;
-      color:var(--text);
-      font-size:13px;
+      white-space:nowrap;
     }
 
-    .groupButton:hover{
-      background:#eef7fd;
-    }
-
-    .groupCaret{
-      width:18px;
-      display:inline-flex;
-      justify-content:center;
+    .groupCaretBtn{
+      width:16px;
+      border:0;
+      background:transparent;
       color:#50708d;
-      font-size:12px;
+      font-size:11px;
+      cursor:pointer;
+      padding:0;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
       flex-shrink:0;
     }
 
     .groupDot{
-      width:10px;
-      height:10px;
+      width:8px;
+      height:8px;
       border-radius:999px;
       background:var(--brand);
       flex-shrink:0;
     }
 
     .groupName{
-      flex:0 0 auto;
+      font-weight:800;
+      color:var(--text);
+      font-size:11px;
     }
 
     .groupCount{
       color:var(--muted);
       font-weight:800;
+      margin-left:3px;
+      font-size:11px;
     }
 
     .groupMeta{
       margin-left:auto;
       color:#6a8399;
-      font-size:12px;
+      font-size:10px;
       font-weight:700;
     }
 
     .cellWrap{
-      max-width:210px;
+      max-width:150px;
       overflow:hidden;
       text-overflow:ellipsis;
     }
 
     .cellWrap.long{
-      max-width:330px;
+      max-width:220px;
     }
 
     .chip{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-height:28px;
-      padding:4px 10px;
+      min-height:19px;
+      padding:2px 7px;
       border-radius:999px;
-      font-size:12px;
+      font-size:10px;
       font-weight:900;
       white-space:nowrap;
       border:1px solid transparent;
@@ -451,33 +603,96 @@
     }
 
     .sidebar{
+      min-width:0;
       min-height:0;
-      display:grid;
-      grid-template-rows:auto 1fr auto;
       background:#fbfdff;
+      border-left:1px solid var(--line);
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      overflow:visible;
+      position:relative;
+      z-index:20;
     }
 
-    .sideHead{
-      padding:18px 18px 14px;
+    .sidebarOpenHandle{
+      position:absolute;
+      right:0;
+      top:14px;
+      width:34px;
+      height:34px;
+      border:1px solid var(--line);
+      border-right:0;
+      border-radius:10px 0 0 10px;
+      background:#fff;
+      color:var(--brand-3);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow:0 8px 18px rgba(17,119,191,.10);
+      z-index:40;
+      transition:
+        background .18s ease,
+        opacity .18s ease,
+        transform .18s ease,
+        box-shadow .18s ease;
+    }
+
+.sidebarOpenHandle:hover{
+  background:#eef7fd;
+}
+
+.content.sidebar-open .sidebarOpenHandle{
+  opacity:0;
+  pointer-events:none;
+}
+
+  .sidebarToggle{
+    position:absolute;
+    left:-34px;
+    top:14px;
+    width:34px;
+    height:34px;
+    border:1px solid var(--line);
+    border-right:0;
+    border-radius:10px 0 0 10px;
+    background:#fff;
+    color:var(--brand-3);
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    box-shadow:0 8px 18px rgba(17,119,191,.10);
+    z-index:40;
+  }
+
+    .sidebarToggle:hover{
+      background:#eef7fd;
+    }
+
+    .sidebarHead{
+      padding:16px 18px 12px;
       border-bottom:1px solid var(--line);
       background:#fff;
+      flex-shrink:0;
     }
 
-    .sideHead h3{
+    .sidebarHead h3{
       margin:0;
-      font-size:20px;
+      font-size:16px;
       line-height:1.2;
     }
 
-    .sideHead p{
-      margin:8px 0 0;
-      font-size:13px;
+    .sidebarHead p{
+      margin:6px 0 0;
+      font-size:12px;
       color:var(--muted);
       line-height:1.5;
     }
 
-    .sideBody{
-      overflow:auto;
+    .sidebarInner{
+      min-height:0;
+      height:100%;
+      overflow-y:auto;
+      overflow-x:hidden;
       padding:14px;
     }
 
@@ -486,25 +701,25 @@
       border:1px solid var(--line);
       border-radius:16px;
       overflow:hidden;
-      margin-bottom:14px;
+      margin-bottom:12px;
       box-shadow:0 8px 18px rgba(17,119,191,.04);
     }
 
     .detailGroupTitle{
-      padding:12px 14px;
+      padding:10px 12px;
       border-bottom:1px solid var(--line);
       background:#f4f9fd;
       color:#5a7086;
-      font-size:12px;
+      font-size:11px;
       font-weight:900;
       text-transform:uppercase;
       letter-spacing:.04em;
     }
 
     .detailGrid{
-      padding:10px 12px 12px;
+      padding:10px;
       display:grid;
-      gap:10px;
+      gap:8px;
     }
 
     .detailItem{
@@ -516,7 +731,7 @@
 
     .detailItem label{
       display:block;
-      font-size:11px;
+      font-size:10px;
       font-weight:900;
       color:#6e8194;
       text-transform:uppercase;
@@ -525,8 +740,8 @@
     }
 
     .detailItem div{
-      font-size:13px;
-      line-height:1.45;
+      font-size:12px;
+      line-height:1.4;
       word-break:break-word;
     }
 
@@ -544,7 +759,7 @@
       border-radius:12px;
       padding:10px 12px;
       cursor:pointer;
-      font-size:13px;
+      font-size:12px;
       font-weight:800;
     }
 
@@ -552,31 +767,18 @@
       background:#e7f2fb;
     }
 
-    .sideFoot{
-      padding:14px;
-      border-top:1px solid var(--line);
-      background:#fff;
-    }
-
-    .viewerLabel{
-      font-size:12px;
-      font-weight:800;
-      color:var(--muted);
-      margin-bottom:8px;
-    }
-
-    .viewerBox{
-      min-height:74px;
+    .viewerBlock{
       border:1px dashed #bfd2e4;
       border-radius:12px;
       background:#f7fbff;
       padding:12px;
-      font-size:13px;
+      font-size:12px;
       line-height:1.5;
       color:#4f6479;
+      margin-bottom:12px;
     }
 
-    .viewerBox a{
+    .viewerBlock a{
       color:#0d67a7;
       font-weight:800;
     }
@@ -585,43 +787,35 @@
       padding:34px 18px;
       text-align:center;
       color:var(--muted);
+      font-size:13px;
     }
 
     .emptyState strong{
       display:block;
       color:var(--text);
       margin-bottom:8px;
-      font-size:16px;
+      font-size:15px;
     }
 
-    @media (max-width:1100px){
-      .content{
+    @media (max-width:1200px){
+      .content.sidebar-open{
+        grid-template-columns:minmax(0,1fr) 340px;
+      }
+    }
+
+    @media (max-width:980px){
+      body{overflow:auto}
+      .app{height:auto; min-height:100vh}
+      .content,
+      .content.sidebar-open{
         grid-template-columns:1fr;
       }
-      .main{
-        border-right:0;
-        border-bottom:1px solid var(--line);
+      .sidebar{
+        border-left:0;
+        border-top:1px solid var(--line);
       }
-    }
-
-    @media (max-width:760px){
-      .topbar{
-        align-items:flex-start;
-        flex-direction:column;
-      }
-      .topStats{
-        justify-content:flex-start;
-      }
-      .toolbar,
-      .columnTabsWrap{
-        padding-left:12px;
-        padding-right:12px;
-      }
-      .sideHead,
-      .sideBody,
-      .sideFoot{
-        padding-left:12px;
-        padding-right:12px;
+      .sidebarToggle{
+        display:none;
       }
     }
   </style>
@@ -644,17 +838,14 @@
       </div>
     </header>
 
-
-
     <section class="toolbar">
       <div class="searchWrap">
         <input id="searchInput" type="text" placeholder="Buscar por despacho, referencia, cliente final, origen, chofer, MIC/CRT, observaciones..." />
       </div>
     </section>
 
-
-
-    <section class="content">
+    <section class="content" id="content">
+      <button class="sidebarOpenHandle" id="sidebarOpenHandle" type="button" title="Mostrar panel">◀</button>
       <main class="main">
         <div class="columnTabsWrap">
           <div class="columnTabs" id="columnTabs"></div>
@@ -670,23 +861,18 @@
         </div>
       </main>
 
-      <aside class="sidebar">
-        <div class="sideHead">
+      <aside class="sidebar" id="sidebar">
+        <button class="sidebarToggle" id="sidebarToggle" type="button" title="Mostrar / ocultar panel">◀</button>
+
+        <div class="sidebarHead">
           <h3 id="detailTitle">Selecciona una operación</h3>
           <p id="detailSub">Haz clic en una fila para ver el detalle completo y los documentos asociados.</p>
         </div>
 
-        <div class="sideBody" id="detailBody">
-          <div class="emptyState">
+        <div class="sidebarInner" id="sidebarInner">
+          <div class="emptyState" id="detailBody">
             <strong>Sin selección</strong>
             El detalle de la operación aparecerá aquí.
-          </div>
-        </div>
-
-        <div class="sideFoot">
-          <div class="viewerLabel">Documento seleccionado</div>
-          <div class="viewerBox" id="docViewer">
-            Aún no has abierto ningún documento.
           </div>
         </div>
       </aside>
@@ -850,22 +1036,24 @@
     let selectedId = null;
 
     let expandedStatuses = new Set();
-    let currentSort = {
-      key: null,
-      direction: 0
-    };
+    let currentSort = { key: null, direction: 0 };
+    let selectedRowIds = new Set();
+    let selectedStatusIds = new Set();
+    let sidebarOpen = false;
 
+    const content = document.getElementById("content");
     const columnTabs = document.getElementById("columnTabs");
     const tableHead = document.getElementById("tableHead");
     const tableBody = document.getElementById("tableBody");
     const detailTitle = document.getElementById("detailTitle");
     const detailSub = document.getElementById("detailSub");
     const detailBody = document.getElementById("detailBody");
-    const docViewer = document.getElementById("docViewer");
     const searchInput = document.getElementById("searchInput");
     const statTotal = document.getElementById("statTotal");
     const statVisible = document.getElementById("statVisible");
     const statDocs = document.getElementById("statDocs");
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const sidebarOpenHandle = document.getElementById("sidebarOpenHandle");
 
     function safe(v){
       if(v === null || v === undefined) return "—";
@@ -874,75 +1062,34 @@
     }
 
     function normalize(v){
-      return safe(v)
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toUpperCase()
-        .trim();
+      return safe(v).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
     }
 
     function chipClassFromValue(value){
       const v = normalize(value);
-
       if (["LIBERADO","COMPLETADO","APROBADO","OK","EMITIDA","PAGADO","CERRADO"].some(x => v.includes(x))) return "chip-ok";
       if (["PRESENTADO","EN TRANSITO","ARRIBADA EN PUERTO","EN ALMACEN","DESPACHADO"].some(x => v.includes(x))) return "chip-pending";
       if (["PENDIENTE","OBSERVADO","OBSERVACION","EN ESPERA"].some(x => v.includes(x))) return "chip-warn";
       if (["ERROR","RECHAZADO","NO CONFORME"].some(x => v.includes(x))) return "chip-danger";
-
       return "chip-neutral";
     }
 
     function isDocField(key){
-      return [
-        "docCdaSeremi",
-        "docResolucionSanitaria",
-        "docSag",
-        "docIipa",
-        "docDin",
-        "docComprobanteTgr"
-      ].includes(key);
+      return ["docCdaSeremi","docResolucionSanitaria","docSag","docIipa","docDin","docComprobanteTgr"].includes(key);
     }
 
     function countDocs(row){
-      return [
-        row.docCdaSeremi,
-        row.docResolucionSanitaria,
-        row.docSag,
-        row.docIipa,
-        row.docDin,
-        row.docComprobanteTgr
-      ].filter(d => d && d.url).length;
+      return [row.docCdaSeremi,row.docResolucionSanitaria,row.docSag,row.docIipa,row.docDin,row.docComprobanteTgr].filter(d => d && d.url).length;
     }
 
     function rowMatchesSearch(row){
       if(!currentSearch) return true;
-
       const haystack = [
-        row.numeroDespacho,
-        row.referenciaCliente,
-        row.estadoCarga,
-        row.tipoCarga,
-        row.origenCarga,
-        row.tipoOperacion,
-        row.pasoAduanero,
-        row.micCrt,
-        row.patenteTracto,
-        row.patenteRemolque,
-        row.numeroContenedor,
-        row.clienteFinal,
-        row.direccionDescarga,
-        row.chofer,
-        row.estadoInstruccionDescarga,
-        row.cdaSeremiEstado,
-        row.resolucionSanitariaEstado,
-        row.sagEstado,
-        row.iipaEstado,
-        row.dinEstado,
-        row.observaciones,
-        row.estadoOperacion,
-        row.remesa
+        row.numeroDespacho,row.referenciaCliente,row.estadoCarga,row.tipoCarga,row.origenCarga,row.tipoOperacion,
+        row.pasoAduanero,row.micCrt,row.patenteTracto,row.patenteRemolque,row.numeroContenedor,row.clienteFinal,
+        row.direccionDescarga,row.chofer,row.estadoInstruccionDescarga,row.cdaSeremiEstado,row.resolucionSanitariaEstado,
+        row.sagEstado,row.iipaEstado,row.dinEstado,row.observaciones,row.estadoOperacion,row.remesa
       ].map(v => safe(v).toLowerCase()).join(" ");
-
       return haystack.includes(currentSearch);
     }
 
@@ -952,28 +1099,21 @@
 
     function parseSortableValue(value){
       if (value === null || value === undefined) return { type:"empty", value:"" };
-
-      if (typeof value === "object" && value !== null) {
-        return { type:"text", value:safe(value.text || value.label || value.filename || "") };
-      }
+      if (typeof value === "object" && value !== null) return { type:"text", value:safe(value.text || value.label || value.filename || "") };
 
       const raw = safe(value);
       if (raw === "—") return { type:"empty", value:"" };
 
       const normalized = raw.replace(/\./g, "").replace(",", ".").trim();
 
-      if (/^-?\d+(\.\d+)?$/.test(normalized)) {
-        return { type:"number", value:parseFloat(normalized) };
-      }
+      if (/^-?\d+(\.\d+)?$/.test(normalized)) return { type:"number", value:parseFloat(normalized) };
 
       if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(raw)) {
         const [d,m,y] = raw.split("/").map(Number);
         return { type:"date", value:new Date(y, m - 1, d).getTime() };
       }
 
-      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
-        return { type:"date", value:new Date(raw + "T00:00:00").getTime() };
-      }
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return { type:"date", value:new Date(raw + "T00:00:00").getTime() };
 
       return { type:"text", value:normalize(raw) };
     }
@@ -987,10 +1127,7 @@
       if (va.type === "empty" && vb.type === "empty") return 0;
 
       const rank = { number:1, date:2, text:3, empty:4 };
-
-      if (va.type !== vb.type) {
-        return rank[va.type] - rank[vb.type];
-      }
+      if (va.type !== vb.type) return rank[va.type] - rank[vb.type];
 
       if (va.value < vb.value) return -1;
       if (va.value > vb.value) return 1;
@@ -999,13 +1136,10 @@
 
     function sortRows(rows){
       if (!currentSort.key || currentSort.direction === 0) return [...rows];
-
-      const sorted = [...rows].sort((a,b) => {
+      return [...rows].sort((a,b) => {
         const cmp = compareValues(a[currentSort.key], b[currentSort.key]);
         return currentSort.direction === 1 ? cmp : -cmp;
       });
-
-      return sorted;
     }
 
     function getRowsByStatus(status){
@@ -1013,9 +1147,15 @@
       return sortRows(filtered);
     }
 
+    function setSidebarOpen(open){
+      sidebarOpen = open;
+      content.classList.toggle("sidebar-open", sidebarOpen);
+      sidebarToggle.textContent = "▶";
+      sidebarToggle.title = "Ocultar panel";
+    }
+
     function renderColumnTabs(){
       const groupNames = Object.keys(COLUMN_GROUPS);
-
       columnTabs.innerHTML = groupNames.map(group => `
         <button class="columnTab ${group === currentGroup ? 'active' : ''}" data-group="${group}">
           ${group}
@@ -1038,47 +1178,54 @@
     }
 
     function toggleSort(key){
-      if (currentSort.key !== key) {
-        currentSort = { key, direction:1 };
-      } else if (currentSort.direction === 1) {
-        currentSort = { key, direction:-1 };
-      } else if (currentSort.direction === -1) {
-        currentSort = { key:null, direction:0 };
-      } else {
-        currentSort = { key, direction:1 };
-      }
-
+      if (currentSort.key !== key) currentSort = { key, direction:1 };
+      else if (currentSort.direction === 1) currentSort = { key, direction:-1 };
+      else if (currentSort.direction === -1) currentSort = { key:null, direction:0 };
+      else currentSort = { key, direction:1 };
       renderTable();
+    }
+
+    function syncSelectedStatuses(){
+      selectedStatusIds.clear();
+      STATUS_ORDER.forEach(status => {
+        const rows = getRowsByStatus(status);
+        if (rows.length && rows.every(r => selectedRowIds.has(r._id))) {
+          selectedStatusIds.add(status);
+        }
+      });
     }
 
     function renderTable(){
       const cols = COLUMN_GROUPS[currentGroup];
 
-      tableHead.innerHTML = cols.map(key => `
-        <th>
+
+      tableHead.innerHTML = `
+        <th class="headCheckCell"><input class="masterCheck" id="masterCheck" type="checkbox"></th>
+        <th class="groupHeaderCell">
           <div class="thInner">
-            <span class="thLabel">${LABELS[key] || key}</span>
-            <button
-              class="sortBtn ${(currentSort.key === key && currentSort.direction !== 0) ? 'active' : ''}"
-              type="button"
-              data-sort="${key}"
-              title="Ordenar"
-            >${getSortSymbol(key)}</button>
+            <span class="thLabel">Grupos según estado</span>
           </div>
         </th>
-      `).join("");
+        ${cols.map(key => `
+          <th>
+            <div class="thInner">
+              <span class="thLabel">${LABELS[key] || key}</span>
+              <button class="sortBtn ${(currentSort.key === key && currentSort.direction !== 0) ? 'active' : ''}" type="button" data-sort="${key}" title="Ordenar">${getSortSymbol(key)}</button>
+            </div>
+          </th>
+        `).join("")}
+      `;
+
 
       tableHead.querySelectorAll("[data-sort]").forEach(btn => {
         btn.addEventListener("click", () => toggleSort(btn.dataset.sort));
       });
 
       const visibleRows = getFilteredRows();
-      const totalVisible = visibleRows.length;
-
-      if(!totalVisible){
+      if(!visibleRows.length){
         tableBody.innerHTML = `
           <tr>
-            <td colspan="${cols.length}">
+            <td colspan="${cols.length + 2}">
               <div class="emptyState">
                 <strong>Sin resultados</strong>
                 No hay operaciones con el filtro actual.
@@ -1094,27 +1241,36 @@
 
       STATUS_ORDER.forEach(status => {
         const rows = getRowsByStatus(status);
-        const count = rows.length;
         const isOpen = expandedStatuses.has(status);
+        const isSelectedGroup = selectedStatusIds.has(status);
         const caret = isOpen ? "▾" : "▸";
 
         html += `
-          <tr class="groupRow">
-            <td colspan="${cols.length}">
-              <button class="groupButton" type="button" data-group-status="${status}">
-                <span class="groupCaret">${caret}</span>
+          <tr class="groupRow ${isSelectedGroup ? 'selectedGroup' : ''}" data-group-row="${status}">
+            <td class="rowCheckCell">
+              <input class="statusCheck" type="checkbox" data-status-check="${status}" ${isSelectedGroup ? "checked" : ""}>
+            </td>
+            <td class="groupCell">
+              <div class="groupRowMain">
+                <button class="groupCaretBtn" type="button" data-group-status="${status}">${caret}</button>
                 <span class="groupDot"></span>
                 <span class="groupName">${status}</span>
-                <span class="groupCount">(${count})</span>
-                <span class="groupMeta">${isOpen ? "Contraer" : "Expandir"}</span>
-              </button>
+                <span class="groupCount">(${rows.length})</span>
+              </div>
             </td>
+            ${cols.map((_, index) => `
+              <td class="${index === 0 ? 'groupRowMetaCell' : ''}">
+                ${index === cols.length - 1 ? `<span class="groupMeta">${isOpen ? "Contraer" : "Expandir"}</span>` : ``}
+              </td>
+            `).join("")}
           </tr>
         `;
 
-        if (isOpen && count > 0) {
+        if (isOpen) {
           html += rows.map(row => {
             const selectedClass = row._id === selectedId ? "selected" : "";
+            const multiSelectedClass = selectedRowIds.has(row._id) ? "multiSelected" : "";
+
             const cells = cols.map(key => {
               const value = row[key];
 
@@ -1122,13 +1278,7 @@
                 if (value && value.url) {
                   const encoded = encodeURIComponent(JSON.stringify(value));
                   const text = safe(value.text || value.label || "Abrir");
-                  return `
-                    <td>
-                      <div class="cellWrap">
-                        <span class="docLink" data-doc="${encoded}">${text}</span>
-                      </div>
-                    </td>
-                  `;
+                  return `<td><div class="cellWrap"><span class="docLink" data-doc="${encoded}">${text}</span></div></td>`;
                 }
                 return `<td><div class="cellWrap">—</div></td>`;
               }
@@ -1141,30 +1291,105 @@
               return `<td><div class="${cls}">${safe(value)}</div></td>`;
             }).join("");
 
-            return `<tr class="rowClickable ${selectedClass}" data-id="${row._id}">${cells}</tr>`;
+            return `
+              <tr class="rowClickable ${selectedClass} ${multiSelectedClass}" data-id="${row._id}">
+                <td class="rowCheckCell">
+                  <input class="rowCheck" type="checkbox" data-row-check="${row._id}" ${selectedRowIds.has(row._id) ? "checked" : ""}>
+                </td>
+                <td class="groupCellEmpty"></td>
+                ${cells}
+              </tr>
+            `;
           }).join("");
         }
       });
 
       tableBody.innerHTML = html;
 
+      const expandedRows = STATUS_ORDER.flatMap(status => expandedStatuses.has(status) ? getRowsByStatus(status) : []);
+      const allExpandedSelected = expandedRows.length > 0 && expandedRows.every(r => selectedRowIds.has(r._id));
+      const masterCheck = document.getElementById("masterCheck");
+      if (masterCheck) masterCheck.checked = allExpandedSelected;
+
+      if (masterCheck) {
+        masterCheck.addEventListener("click", (e) => {
+          const checked = e.target.checked;
+          expandedRows.forEach(r => {
+            if (checked) selectedRowIds.add(r._id);
+            else selectedRowIds.delete(r._id);
+          });
+          syncSelectedStatuses();
+          renderTable();
+        });
+      }
+
       tableBody.querySelectorAll("[data-group-status]").forEach(btn => {
-        btn.addEventListener("click", () => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
           const status = btn.dataset.groupStatus;
-          if (expandedStatuses.has(status)) {
-            expandedStatuses.delete(status);
+          if (expandedStatuses.has(status)) expandedStatuses.delete(status);
+          else expandedStatuses.add(status);
+          renderTable();
+        });
+      });
+
+      tableBody.querySelectorAll("[data-group-row]").forEach(row => {
+        row.addEventListener("click", (e) => {
+          if (e.target.matches("[data-status-check]")) return;
+          if (e.target.closest("[data-status-check]")) return;
+          if (e.target.matches("[data-group-status]")) return;
+          if (e.target.closest("[data-group-status]")) return;
+
+          const status = row.dataset.groupRow;
+          if (expandedStatuses.has(status)) expandedStatuses.delete(status);
+          else expandedStatuses.add(status);
+          renderTable();
+        });
+      });
+
+      tableBody.querySelectorAll("[data-status-check]").forEach(chk => {
+        chk.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const status = chk.dataset.statusCheck;
+          const rows = getRowsByStatus(status);
+
+          if (chk.checked) {
+            selectedStatusIds.add(status);
+            rows.forEach(r => selectedRowIds.add(r._id));
           } else {
-            expandedStatuses.add(status);
+            selectedStatusIds.delete(status);
+            rows.forEach(r => selectedRowIds.delete(r._id));
           }
+
+          renderTable();
+        });
+      });
+
+      tableBody.querySelectorAll("[data-row-check]").forEach(chk => {
+        chk.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const id = chk.dataset.rowCheck;
+          if (chk.checked) selectedRowIds.add(id);
+          else selectedRowIds.delete(id);
+          syncSelectedStatuses();
           renderTable();
         });
       });
 
       tableBody.querySelectorAll("tr.rowClickable").forEach(tr => {
-        tr.addEventListener("click", () => {
+        tr.addEventListener("click", (e) => {
+          if (e.target.matches("[data-row-check]") || e.target.matches(".docLink")) return;
+
+          selectedRowIds.clear();
+          selectedStatusIds.clear();
           selectedId = tr.dataset.id;
+
           renderTable();
-          renderDetail();
+          if (sidebarOpen) renderDetail();
+          else {
+            detailTitle.textContent = "Detalle cargado";
+            detailSub.textContent = "Abre el panel con la flecha derecha para ver la información.";
+          }
         });
       });
 
@@ -1172,7 +1397,7 @@
         el.addEventListener("click", (e) => {
           e.stopPropagation();
           const doc = JSON.parse(decodeURIComponent(el.dataset.doc));
-          openDocument(doc);
+          if (sidebarOpen) openDocument(doc);
         });
       });
 
@@ -1197,7 +1422,7 @@
 
       if(!row){
         detailTitle.textContent = "Selecciona una operación";
-        detailSub.textContent = "Haz clic en una fila para ver el detalle completo y los documentos asociados.";
+        detailSub.textContent = "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
         detailBody.innerHTML = `
           <div class="emptyState">
             <strong>Sin selección</strong>
@@ -1207,13 +1432,54 @@
         return;
       }
 
-      detailTitle.textContent = safe(row.referenciaCliente) !== "—"
-        ? safe(row.referenciaCliente)
-        : `Despacho ${safe(row.numeroDespacho)}`;
-
+      detailTitle.textContent = safe(row.referenciaCliente) !== "—" ? safe(row.referenciaCliente) : `Despacho ${safe(row.numeroDespacho)}`;
       detailSub.textContent = `N° despacho: ${safe(row.numeroDespacho)} · Estado carga: ${safe(row.estadoCarga)} · Documentos: ${countDocs(row)}`;
 
-      const sectionHtml = detailSections.map(section => `
+      const docs = [
+        { label:"CDA / SEREMI", value: row.docCdaSeremi },
+        { label:"Resolución Sanitaria", value: row.docResolucionSanitaria },
+        { label:"SAG", value: row.docSag },
+        { label:"IIPA", value: row.docIipa },
+        { label:"DIN", value: row.docDin },
+        { label:"Comprobante pago TGR", value: row.docComprobanteTgr }
+      ].filter(d => d.value && d.value.url);
+
+      const viewerHtml = `
+        <div class="viewerBlock" id="docViewer">
+          Aún no has abierto ningún documento.
+        </div>
+      `;
+
+      const docsHtml = `
+        <section class="detailGroup">
+          <div class="detailGroupTitle">Documentos</div>
+          <div class="detailGrid">
+            ${
+              docs.length
+              ? `<div class="docsList">
+                  ${docs.map(d => `<button class="docBtn" data-doc="${encodeURIComponent(JSON.stringify(d.value))}">${d.label} · ${safe(d.value.text || "Abrir documento")}</button>`).join("")}
+                </div>`
+              : `<div class="detailItem"><label>Documentos</label><div>No hay documentos asociados en esta fila.</div></div>`
+            }
+          </div>
+        </section>
+      `;
+
+      const summarySection = `
+        <section class="detailGroup">
+          <div class="detailGroupTitle">Resumen</div>
+          <div class="detailGrid">
+            ${detailSections[0].fields.map(field => `
+              <div class="detailItem">
+                <label>${LABELS[field] || field}</label>
+                <div>${renderDetailValue(field, row[field])}</div>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+      `;
+
+      const restSections = detailSections.slice(1).map(section => `
         <section class="detailGroup">
           <div class="detailGroupTitle">${section.title}</div>
           <div class="detailGrid">
@@ -1227,38 +1493,7 @@
         </section>
       `).join("");
 
-      const docs = [
-        { label:"CDA / SEREMI", value: row.docCdaSeremi },
-        { label:"Resolución Sanitaria", value: row.docResolucionSanitaria },
-        { label:"SAG", value: row.docSag },
-        { label:"IIPA", value: row.docIipa },
-        { label:"DIN", value: row.docDin },
-        { label:"Comprobante pago TGR", value: row.docComprobanteTgr }
-      ].filter(d => d.value && d.value.url);
-
-      const docsHtml = `
-        <section class="detailGroup">
-          <div class="detailGroupTitle">Documentos</div>
-          <div class="detailGrid">
-            ${
-              docs.length
-              ? `<div class="docsList">
-                  ${docs.map(d => `
-                    <button class="docBtn" data-doc="${encodeURIComponent(JSON.stringify(d.value))}">
-                      ${d.label} · ${safe(d.value.text || "Abrir documento")}
-                    </button>
-                  `).join("")}
-                </div>`
-              : `<div class="detailItem">
-                  <label>Documentos</label>
-                  <div>No hay documentos asociados en esta fila.</div>
-                </div>`
-            }
-          </div>
-        </section>
-      `;
-
-      detailBody.innerHTML = sectionHtml + docsHtml;
+      detailBody.innerHTML = viewerHtml + docsHtml + summarySection + restSections;
 
       detailBody.querySelectorAll(".docBtn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1276,8 +1511,11 @@
     }
 
     function openDocument(doc){
+      const viewer = document.getElementById("docViewer");
+      if(!viewer) return;
+
       if(!doc || !doc.url){
-        docViewer.innerHTML = "Este documento no tiene URL disponible.";
+        viewer.innerHTML = "Este documento no tiene URL disponible.";
         return;
       }
 
@@ -1290,23 +1528,19 @@
         String(url).includes("-my.sharepoint.com");
 
       if(isSharepoint){
-        docViewer.innerHTML = `
+        viewer.innerHTML = `
           <div><strong>${text}</strong></div>
           <div style="margin-top:8px;">Este documento se abre en nueva pestaña.</div>
-          <div style="margin-top:10px;">
-            <a href="${url}" target="_blank" rel="noopener noreferrer">Abrir documento</a>
-          </div>
+          <div style="margin-top:10px;"><a href="${url}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>
         `;
         window.open(url, "_blank", "noopener,noreferrer");
         return;
       }
 
-      docViewer.innerHTML = `
+      viewer.innerHTML = `
         <div><strong>${text}</strong></div>
         <div style="margin-top:8px;">Archivo listo para abrir.</div>
-        <div style="margin-top:10px;">
-          <a href="${url}" target="_blank" rel="noopener noreferrer">Abrir documento</a>
-        </div>
+        <div style="margin-top:10px;"><a href="${url}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>
       `;
     }
 
@@ -1319,27 +1553,49 @@
     function renderAll(){
       renderColumnTabs();
       renderTable();
-      renderDetail();
+      if (sidebarOpen) renderDetail();
+      else {
+        detailTitle.textContent = "Selecciona una operación";
+        detailSub.textContent = "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
+        detailBody.innerHTML = `
+          <div class="emptyState">
+            <strong>Panel oculto</strong>
+            Usa la flecha del costado para abrir el detalle.
+          </div>
+        `;
+      }
+      setSidebarOpen(sidebarOpen);
     }
 
     async function loadData(){
       const res = await fetch("./data/despachos.json?v=" + Date.now(), { cache: "no-store" });
       if(!res.ok) throw new Error("No se pudo cargar data/despachos.json");
-      const data = await res.json();
-      allRows = data;
+      allRows = await res.json();
     }
 
     searchInput.addEventListener("input", () => {
       currentSearch = searchInput.value.trim().toLowerCase();
       selectedId = null;
+      selectedRowIds.clear();
+      selectedStatusIds.clear();
       renderTable();
+      if (sidebarOpen) renderDetail();
+    });
+
+    sidebarToggle.addEventListener("click", () => {
+      setSidebarOpen(false);
+    });
+
+    sidebarOpenHandle.addEventListener("click", () => {
+      setSidebarOpen(true);
       renderDetail();
     });
 
-
-
     loadData()
-      .then(() => renderAll())
+      .then(() => {
+        setSidebarOpen(false);
+        renderAll();
+      })
       .catch(err => {
         console.error(err);
         document.body.innerHTML = `
