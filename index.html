@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <title>Pirazzoli | Seguimiento de Importaciones</title>
   <style>
     :root{
@@ -804,18 +804,226 @@
     }
 
     @media (max-width:980px){
-      body{overflow:auto}
-      .app{height:auto; min-height:100vh}
+      html,body{
+        height:auto;
+        min-height:100%;
+        overflow-x:hidden;
+        overflow-y:auto;
+      }
+
+      body{
+        -webkit-text-size-adjust:100%;
+      }
+
+      .app{
+        height:auto;
+        min-height:100vh;
+        display:grid;
+        grid-template-rows:auto auto auto auto;
+      }
+
+      .topbar{
+        position:static;
+        padding:10px 12px;
+        gap:10px;
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .brandWrap{
+        width:100%;
+      }
+
+      .brandText strong{
+        font-size:14px;
+      }
+
+      .brandText span{
+        font-size:11px;
+        white-space:normal;
+      }
+
+      .topStats{
+        width:100%;
+        justify-content:flex-start;
+        gap:8px;
+      }
+
+      .miniStat{
+        padding:6px 10px;
+        font-size:11px;
+      }
+
+      .toolbar{
+        padding:10px 12px;
+      }
+
+      .searchWrap{
+        min-width:0;
+        width:100%;
+      }
+
+      .searchWrap input{
+        height:40px;
+        font-size:14px;
+      }
+
       .content,
       .content.sidebar-open{
+        height:auto;
+        min-height:0;
+        display:grid;
         grid-template-columns:1fr;
+        grid-template-rows:auto auto;
+        overflow:visible;
       }
+
+      .main{
+        min-height:0;
+        overflow:hidden;
+      }
+
+      .columnTabsWrap{
+        padding:8px 10px 0;
+      }
+
+      .columnTabs{
+        gap:6px;
+        padding-bottom:8px;
+      }
+
+      .columnTab{
+        padding:8px 10px;
+        font-size:11px;
+        border-radius:10px 10px 0 0;
+      }
+
+      .tableWrap{
+        overflow:auto;
+        -webkit-overflow-scrolling:touch;
+      }
+
       .sidebar{
+        display:grid;
+        grid-template-rows:auto minmax(0,1fr);
+        min-width:0;
+        width:100%;
         border-left:0;
         border-top:1px solid var(--line);
+        overflow:visible;
       }
+
+      .sidebarHead{
+        padding:12px 12px 10px;
+      }
+
+      .sidebarHead h3{
+        font-size:15px;
+      }
+
+      .sidebarHead p{
+        font-size:11px;
+      }
+
+      .sidebarInner{
+        height:auto;
+        max-height:none;
+        overflow:visible;
+        padding:12px;
+      }
+
+      .sidebarOpenHandle,
       .sidebarToggle{
-        display:none;
+        display:none !important;
+      }
+
+      .groupHeaderCell,
+      .groupCell,
+      .groupCellEmpty{
+        min-width:132px;
+        width:132px;
+        max-width:132px;
+      }
+
+      .cellWrap{
+        max-width:120px;
+      }
+
+      .cellWrap.long{
+        max-width:170px;
+      }
+
+      table{
+        font-size:10px;
+      }
+
+      thead th{
+        font-size:9px;
+        padding:6px 6px;
+      }
+
+      tbody td{
+        font-size:10px;
+        padding:5px 6px;
+      }
+
+      .groupRow td{
+        font-size:10px;
+        padding:6px 6px;
+      }
+
+      .groupName,
+      .groupCount{
+        font-size:10px;
+      }
+
+      .groupMeta{
+        font-size:9px;
+      }
+
+      .chip{
+        min-height:18px;
+        padding:2px 6px;
+        font-size:9px;
+      }
+
+      .detailGroup{
+        margin-bottom:10px;
+        border-radius:14px;
+      }
+
+      .detailGroupTitle{
+        padding:9px 10px;
+        font-size:10px;
+      }
+
+      .detailGrid{
+        padding:8px;
+        gap:7px;
+      }
+
+      .detailItem{
+        padding:9px;
+        border-radius:10px;
+      }
+
+      .detailItem label{
+        font-size:9px;
+      }
+
+      .detailItem div{
+        font-size:11px;
+      }
+
+      .docBtn{
+        padding:9px 10px;
+        font-size:11px;
+        border-radius:10px;
+      }
+
+      .viewerBlock{
+        padding:10px;
+        font-size:11px;
       }
     }
   </style>
@@ -1041,6 +1249,10 @@
     let selectedStatusIds = new Set();
     let sidebarOpen = false;
 
+    function isMobileLayout(){
+      return window.innerWidth <= 980;
+    }
+
     const content = document.getElementById("content");
     const columnTabs = document.getElementById("columnTabs");
     const tableHead = document.getElementById("tableHead");
@@ -1148,10 +1360,13 @@
     }
 
     function setSidebarOpen(open){
-      sidebarOpen = open;
+      sidebarOpen = isMobileLayout() ? true : open;
       content.classList.toggle("sidebar-open", sidebarOpen);
-      sidebarToggle.textContent = "▶";
-      sidebarToggle.title = "Ocultar panel";
+
+      if (sidebarToggle) {
+        sidebarToggle.textContent = "▶";
+        sidebarToggle.title = "Ocultar panel";
+      }
     }
 
     function renderColumnTabs(){
@@ -1385,8 +1600,10 @@
           selectedId = tr.dataset.id;
 
           renderTable();
-          if (sidebarOpen) renderDetail();
-          else {
+
+          if (sidebarOpen || isMobileLayout()) {
+            renderDetail();
+          } else {
             detailTitle.textContent = "Detalle cargado";
             detailSub.textContent = "Abre el panel con la flecha derecha para ver la información.";
           }
@@ -1422,7 +1639,9 @@
 
       if(!row){
         detailTitle.textContent = "Selecciona una operación";
-        detailSub.textContent = "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
+        detailSub.textContent = isMobileLayout()
+          ? "Haz clic en una fila para ver el detalle abajo."
+          : "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
         detailBody.innerHTML = `
           <div class="emptyState">
             <strong>Sin selección</strong>
@@ -1551,20 +1770,26 @@
     }
 
     function renderAll(){
+      setSidebarOpen(sidebarOpen);
       renderColumnTabs();
       renderTable();
-      if (sidebarOpen) renderDetail();
-      else {
+
+      if (sidebarOpen || isMobileLayout()) {
+        renderDetail();
+      } else {
         detailTitle.textContent = "Selecciona una operación";
-        detailSub.textContent = "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
+        detailSub.textContent = isMobileLayout()
+          ? "Haz clic en una fila para ver el detalle abajo."
+          : "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
         detailBody.innerHTML = `
           <div class="emptyState">
-            <strong>Panel oculto</strong>
-            Usa la flecha del costado para abrir el detalle.
+            <strong>${isMobileLayout() ? "Sin selección" : "Panel oculto"}</strong>
+            ${isMobileLayout()
+              ? "El detalle de la operación aparecerá aquí."
+              : "Usa la flecha del costado para abrir el detalle."}
           </div>
-        `;
+`;
       }
-      setSidebarOpen(sidebarOpen);
     }
 
     async function loadData(){
@@ -1579,21 +1804,32 @@
       selectedRowIds.clear();
       selectedStatusIds.clear();
       renderTable();
-      if (sidebarOpen) renderDetail();
+
+      if (sidebarOpen || isMobileLayout()) {
+        renderDetail();
+      }
     });
 
     sidebarToggle.addEventListener("click", () => {
+      if (isMobileLayout()) return;
       setSidebarOpen(false);
     });
 
     sidebarOpenHandle.addEventListener("click", () => {
+      if (isMobileLayout()) return;
       setSidebarOpen(true);
       renderDetail();
     });
 
+    window.addEventListener("resize", () => {
+      const shouldBeOpen = isMobileLayout() ? true : sidebarOpen;
+      setSidebarOpen(shouldBeOpen);
+      renderAll();
+    });
+
     loadData()
       .then(() => {
-        setSidebarOpen(false);
+        setSidebarOpen(isMobileLayout());
         renderAll();
       })
       .catch(err => {
