@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <title>Pirazzoli | Seguimiento de Importaciones</title>
+
+  <script type="text/javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
   <style>
     :root{
       --bg:#f4f7fb;
@@ -35,6 +38,12 @@
 
       --danger-bg:#fde7e9;
       --danger-text:#b42318;
+
+      --check-w:32px;
+      --sticky-1-w:200px;
+      --sticky-2-w:170px;
+      --sticky-1-left:var(--check-w);
+      --sticky-2-left:calc(var(--check-w) + var(--sticky-1-w));
     }
 
     *{box-sizing:border-box}
@@ -47,10 +56,137 @@
       overflow:hidden;
     }
 
+    .hidden{display:none !important;}
+
+    /* LOGIN */
+    .loginScreen{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background:
+        radial-gradient(circle at top right, rgba(17,119,191,.09), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(17,119,191,.07), transparent 28%),
+        var(--bg);
+    }
+
+    .loginCard{
+      width:min(100%, 420px);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:0 18px 38px rgba(17,119,191,.10);
+      padding:28px;
+    }
+
+    .loginBrand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:22px;
+    }
+
+    .loginLogo{
+      width:44px;
+      height:44px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--brand),var(--brand-3));
+      color:#fff;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      font-size:22px;
+      box-shadow:0 10px 22px rgba(17,119,191,.22);
+      flex-shrink:0;
+    }
+
+    .loginBrandText strong{
+      display:block;
+      font-size:18px;
+      line-height:1.1;
+    }
+
+    .loginBrandText span{
+      display:block;
+      margin-top:4px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .loginTitle{
+      margin:0 0 8px;
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .loginSub{
+      margin:0 0 18px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .field{
+      margin-bottom:14px;
+    }
+
+    .field label{
+      display:block;
+      font-size:12px;
+      font-weight:800;
+      color:#597189;
+      margin-bottom:6px;
+    }
+
+    .field input{
+      width:100%;
+      height:44px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      padding:0 12px;
+      font-size:14px;
+      outline:none;
+      color:var(--text);
+    }
+
+    .field input:focus{
+      border-color:#93c4e6;
+      box-shadow:0 0 0 4px rgba(17,119,191,.10);
+    }
+
+    .loginBtn{
+      width:100%;
+      height:46px;
+      border:0;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--brand),var(--brand-3));
+      color:#fff;
+      font-size:14px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 12px 24px rgba(17,119,191,.18);
+      transition:transform .16s ease, box-shadow .16s ease;
+    }
+
+    .loginBtn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 16px 28px rgba(17,119,191,.22);
+    }
+
+    .loginError{
+      min-height:18px;
+      margin-top:12px;
+      font-size:12px;
+      color:var(--danger-text);
+      font-weight:700;
+    }
+
+    /* APP */
     .app{
       height:100vh;
       display:grid;
-      grid-template-rows:auto auto 1fr;
+      grid-template-rows:auto auto auto 1fr;
     }
 
     .topbar{
@@ -64,7 +200,7 @@
       padding:10px 18px;
       position:sticky;
       top:0;
-      z-index:50;
+      z-index:80;
     }
 
     .brandWrap{
@@ -131,6 +267,50 @@
       margin-left:6px;
     }
 
+    .navBar{
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      padding:10px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .navLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .backBtn{
+      height:38px;
+      border:1px solid #cfe0ee;
+      border-radius:10px;
+      background:#fff;
+      color:#23415d;
+      padding:0 12px;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+
+    .backBtn:hover{
+      background:#eef7fd;
+      border-color:#9fc5e2;
+      color:#0d67a7;
+    }
+
+    .viewLabel{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      white-space:nowrap;
+    }
+
     .toolbar{
       background:#fff;
       border-bottom:1px solid var(--line);
@@ -161,6 +341,13 @@
     .searchWrap input:focus{
       border-color:#93c4e6;
       box-shadow:0 0 0 4px rgba(17,119,191,.10);
+    }
+
+    .toolbarInfo{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
     }
 
     .content{
@@ -241,10 +428,6 @@
       box-shadow:0 8px 18px rgba(17,119,191,.10);
     }
 
-    .columnTab:not(.active):hover{
-      border-bottom-color:transparent;
-    }
-
     .columnTab:focus-visible{
       outline:none;
       box-shadow:
@@ -269,7 +452,7 @@
     thead th{
       position:sticky;
       top:0;
-      z-index:5;
+      z-index:20;
       background:#f5f9fd;
       color:#29445d;
       border-bottom:1px solid var(--line);
@@ -279,6 +462,7 @@
       font-size:10px;
       font-weight:900;
       white-space:nowrap;
+      box-shadow:0 1px 0 #e8eef4;
     }
 
     .thInner{
@@ -343,117 +527,64 @@
       background:#ebf5fd !important;
     }
 
-    tbody tr.multiSelected td{
-      background:#f1f8fe !important;
-    }
-
     .rowClickable{cursor:pointer}
 
     .rowCheckCell,.headCheckCell{
-      width:28px;
-      min-width:28px;
-      max-width:28px;
+      width:var(--check-w);
+      min-width:var(--check-w);
+      max-width:var(--check-w);
       text-align:center;
       padding:0 4px !important;
       position:sticky;
       left:0;
-      z-index:4;
+      z-index:35;
       background:#fff;
       border-right:1px solid #e8eef4;
     }
 
-    .groupIndentCell{
-      width:28px;
-      min-width:28px;
-      max-width:28px;
-      text-align:center;
-      padding:0 4px !important;
-      position:sticky;
-      left:28px;
-      z-index:4;
+    .stickyCol1,
+    .stickyHead1{
+      position:sticky !important;
+      left:var(--sticky-1-left) !important;
+      min-width:var(--sticky-1-w);
+      width:var(--sticky-1-w);
+      max-width:var(--sticky-1-w);
+      z-index:27;
       background:#fff;
       border-right:1px solid #e8eef4;
+      box-shadow:2px 0 0 rgba(213,222,232,.45);
     }
 
-    .groupHeaderCell{
-      min-width:220px;
-      width:220px;
-      max-width:220px;
-      position:sticky;
-      left:28px;
-      z-index:6;
-      background:#f5f9fd;
-      border-right:1px solid #e8eef4;
-      text-align:left;
-    }
-
-    .groupCell{
-      min-width:220px;
-      width:220px;
-      max-width:220px;
-      position:sticky;
-      left:28px;
-      z-index:3;
+    .stickyCol2,
+    .stickyHead2{
+      position:sticky !important;
+      left:var(--sticky-2-left) !important;
+      min-width:var(--sticky-2-w);
+      width:var(--sticky-2-w);
+      max-width:var(--sticky-2-w);
+      z-index:26;
       background:#fff;
       border-right:1px solid #e8eef4;
-      padding:0 8px !important;
-      vertical-align:middle;
+      box-shadow:2px 0 0 rgba(213,222,232,.45);
     }
 
-    .groupRow{
-      cursor:pointer;
-    }
-
-    .groupCell{
-      cursor:pointer;
-    }
-
-    .groupCellEmpty{
-      min-width:220px;
-      width:220px;
-      max-width:220px;
-      position:sticky;
-      left:28px;
-      z-index:3;
-      background:#fff;
-      border-right:1px solid #e8eef4;
-      padding:0 !important;
-    }
-
-    thead .headCheckCell{
-      z-index:7;
-      background:#f5f9fd;
-    }
-
-    thead .groupIndentCell{
-      z-index:6;
-      background:#f5f9fd;
-    }
-
-    thead .groupHeaderCell{
-      z-index:6;
-      background:#f5f9fd;
-    }
+    thead .headCheckCell{z-index:45;background:#f5f9fd}
+    thead .stickyHead1{z-index:43;background:#f5f9fd}
+    thead .stickyHead2{z-index:42;background:#f5f9fd}
 
     tbody tr:hover .rowCheckCell,
-    tbody tr:hover .groupIndentCell,
-    tbody tr:hover .groupCell,
-    tbody tr:hover .groupCellEmpty{
+    tbody tr:hover .stickyCol1,
+    tbody tr:hover .stickyCol2{
       background:#f9fcff;
     }
 
     tbody tr.selected .rowCheckCell,
-      tbody tr.selected .groupIndentCell,
-      tbody tr.selected .groupCell,
-      tbody tr.selected .groupCellEmpty,
-      tbody tr.multiSelected .rowCheckCell,
-      tbody tr.multiSelected .groupIndentCell,
-      tbody tr.multiSelected .groupCell,
-      tbody tr.multiSelected .groupCellEmpty{
-        background:#ebf5fd !important;
-      }
+    tbody tr.selected .stickyCol1,
+    tbody tr.selected .stickyCol2{
+      background:#ebf5fd !important;
+    }
 
-    .rowCheck,.masterCheck,.statusCheck{
+    .rowCheck,.masterCheck{
       width:14px;
       height:14px;
       border:1px solid #bad2e5;
@@ -466,12 +597,12 @@
       margin:0;
     }
 
-    .rowCheck:checked,.masterCheck:checked,.statusCheck:checked{
+    .rowCheck:checked,.masterCheck:checked{
       background:var(--brand-soft-2);
       border-color:#7fb7dc;
     }
 
-    .rowCheck:checked::after,.masterCheck:checked::after,.statusCheck:checked::after{
+    .rowCheck:checked::after,.masterCheck:checked::after{
       content:"";
       position:absolute;
       left:3px;
@@ -482,97 +613,20 @@
       border-width:0 2px 2px 0;
       transform:rotate(45deg);
     }
-    .groupRowMetaCell{
-      background:#f8fbff !important;
-    }
-
-    .groupRow.selectedGroup .groupCell,
-    .groupRow.selectedGroup .groupRowMetaCell{
-      background:#eaf5fd !important;
-    }
-
-    .groupRow td{
-      background:#f8fbff !important;
-      border-bottom:1px solid #d9e7f2;
-      font-size:11px;
-      padding:6px 7px;
-    }
-
-    .groupRow.selectedGroup td{
-      background:#eaf5fd !important;
-    }
-
-    
-
-    .groupRow .rowCheckCell,
-    .groupRow .groupIndentCell{
-      background:#f8fbff !important;
-    }
-
-    .groupRow.selectedGroup .rowCheckCell,
-    .groupRow.selectedGroup .groupIndentCell{
-      background:#eaf5fd !important;
-    }
-
-    .groupRowMain{
-      display:flex;
-      align-items:center;
-      gap:7px;
-      min-height:22px;
-      cursor:pointer;
-      white-space:nowrap;
-    }
-
-    .groupCaretBtn{
-      width:16px;
-      border:0;
-      background:transparent;
-      color:#50708d;
-      font-size:11px;
-      cursor:pointer;
-      padding:0;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      flex-shrink:0;
-    }
-
-    .groupDot{
-      width:8px;
-      height:8px;
-      border-radius:999px;
-      background:var(--brand);
-      flex-shrink:0;
-    }
-
-    .groupName{
-      font-weight:800;
-      color:var(--text);
-      font-size:11px;
-    }
-
-    .groupCount{
-      color:var(--muted);
-      font-weight:800;
-      margin-left:3px;
-      font-size:11px;
-    }
-
-    .groupMeta{
-      margin-left:auto;
-      color:#6a8399;
-      font-size:10px;
-      font-weight:700;
-    }
 
     .cellWrap{
-      max-width:150px;
+      max-width:190px;
       overflow:hidden;
       text-overflow:ellipsis;
     }
 
     .cellWrap.long{
-      max-width:220px;
+      max-width:260px;
+    }
+
+    .stickyCol1 .cellWrap,
+    .stickyCol2 .cellWrap{
+      max-width:none;
     }
 
     .chip{
@@ -630,43 +684,35 @@
       cursor:pointer;
       box-shadow:0 8px 18px rgba(17,119,191,.10);
       z-index:40;
-      transition:
-        background .18s ease,
-        opacity .18s ease,
-        transform .18s ease,
-        box-shadow .18s ease;
+      transition:background .18s ease, opacity .18s ease, transform .18s ease, box-shadow .18s ease;
     }
 
-.sidebarOpenHandle:hover{
-  background:#eef7fd;
-}
+    .sidebarOpenHandle:hover{ background:#eef7fd; }
 
-.content.sidebar-open .sidebarOpenHandle{
-  opacity:0;
-  pointer-events:none;
-}
-
-  .sidebarToggle{
-    position:absolute;
-    left:-34px;
-    top:14px;
-    width:34px;
-    height:34px;
-    border:1px solid var(--line);
-    border-right:0;
-    border-radius:10px 0 0 10px;
-    background:#fff;
-    color:var(--brand-3);
-    display:grid;
-    place-items:center;
-    cursor:pointer;
-    box-shadow:0 8px 18px rgba(17,119,191,.10);
-    z-index:40;
-  }
-
-    .sidebarToggle:hover{
-      background:#eef7fd;
+    .content.sidebar-open .sidebarOpenHandle{
+      opacity:0;
+      pointer-events:none;
     }
+
+    .sidebarToggle{
+      position:absolute;
+      left:-34px;
+      top:14px;
+      width:34px;
+      height:34px;
+      border:1px solid var(--line);
+      border-right:0;
+      border-radius:10px 0 0 10px;
+      background:#fff;
+      color:var(--brand-3);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow:0 8px 18px rgba(17,119,191,.10);
+      z-index:40;
+    }
+
+    .sidebarToggle:hover{ background:#eef7fd; }
 
     .sidebarHead{
       padding:16px 18px 12px;
@@ -797,6 +843,109 @@
       font-size:15px;
     }
 
+    /* HOME DASHBOARD */
+    .homeView{
+      min-height:0;
+      overflow:auto;
+      padding:22px;
+      background:var(--bg);
+    }
+
+    .homeHero{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:22px;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+
+    .homeHero h2{
+      margin:0 0 8px;
+      font-size:22px;
+      line-height:1.1;
+    }
+
+    .homeHero p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .dashboardGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .dashboardCard{
+      border:1px solid #cfe0ee;
+      background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
+      border-radius:18px;
+      padding:18px;
+      cursor:pointer;
+      transition:.18s ease;
+      box-shadow:0 8px 18px rgba(17,119,191,.05);
+      min-height:150px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .dashboardCard:hover{
+      transform:translateY(-1px);
+      border-color:#aecde5;
+      box-shadow:0 12px 24px rgba(17,119,191,.10);
+    }
+
+    .dashboardCard.disabled{
+      opacity:.6;
+      cursor:not-allowed;
+      background:#f6f8fb;
+      box-shadow:none;
+    }
+
+    .dashboardTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .dashboardTitle{
+      font-size:16px;
+      font-weight:900;
+      color:#23415d;
+    }
+
+    .dashboardNumber{
+      width:48px;
+      height:48px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:#eef7fd;
+      color:var(--brand-3);
+      font-size:20px;
+      font-weight:900;
+      flex-shrink:0;
+    }
+
+    .dashboardMeta{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .dashboardFooter{
+      margin-top:14px;
+      font-size:12px;
+      font-weight:800;
+      color:var(--brand-3);
+    }
+
     @media (max-width:1200px){
       .content.sidebar-open{
         grid-template-columns:minmax(0,1fr) 340px;
@@ -804,6 +953,11 @@
     }
 
     @media (max-width:980px){
+      :root{
+        --sticky-1-w:150px;
+        --sticky-2-w:135px;
+      }
+
       html,body{
         height:auto;
         min-height:100%;
@@ -815,11 +969,20 @@
         -webkit-text-size-adjust:100%;
       }
 
+      .loginScreen{
+        padding:16px;
+      }
+
+      .loginCard{
+        padding:22px 18px;
+        border-radius:20px;
+      }
+
       .app{
         height:auto;
         min-height:100vh;
         display:grid;
-        grid-template-rows:auto auto auto auto;
+        grid-template-rows:auto auto auto auto auto;
       }
 
       .topbar{
@@ -830,13 +993,9 @@
         flex-direction:column;
       }
 
-      .brandWrap{
-        width:100%;
-      }
+      .brandWrap{ width:100%; }
 
-      .brandText strong{
-        font-size:14px;
-      }
+      .brandText strong{ font-size:14px; }
 
       .brandText span{
         font-size:11px;
@@ -852,6 +1011,10 @@
       .miniStat{
         padding:6px 10px;
         font-size:11px;
+      }
+
+      .navBar{
+        padding:10px 12px;
       }
 
       .toolbar{
@@ -917,13 +1080,9 @@
         padding:12px 12px 10px;
       }
 
-      .sidebarHead h3{
-        font-size:15px;
-      }
+      .sidebarHead h3{ font-size:15px; }
 
-      .sidebarHead p{
-        font-size:11px;
-      }
+      .sidebarHead p{ font-size:11px; }
 
       .sidebarInner{
         height:auto;
@@ -937,25 +1096,7 @@
         display:none !important;
       }
 
-      .groupHeaderCell,
-      .groupCell,
-      .groupCellEmpty{
-        min-width:132px;
-        width:132px;
-        max-width:132px;
-      }
-
-      .cellWrap{
-        max-width:120px;
-      }
-
-      .cellWrap.long{
-        max-width:170px;
-      }
-
-      table{
-        font-size:10px;
-      }
+      table{ font-size:10px; }
 
       thead th{
         font-size:9px;
@@ -967,19 +1108,8 @@
         padding:5px 6px;
       }
 
-      .groupRow td{
-        font-size:10px;
-        padding:6px 6px;
-      }
-
-      .groupName,
-      .groupCount{
-        font-size:10px;
-      }
-
-      .groupMeta{
-        font-size:9px;
-      }
+      .cellWrap{ max-width:120px; }
+      .cellWrap.long{ max-width:160px; }
 
       .chip{
         min-height:18px;
@@ -1007,13 +1137,8 @@
         border-radius:10px;
       }
 
-      .detailItem label{
-        font-size:9px;
-      }
-
-      .detailItem div{
-        font-size:11px;
-      }
+      .detailItem label{ font-size:9px; }
+      .detailItem div{ font-size:11px; }
 
       .docBtn{
         padding:9px 10px;
@@ -1025,11 +1150,63 @@
         padding:10px;
         font-size:11px;
       }
+
+      .homeView{
+        padding:14px;
+      }
+
+      .homeHero{
+        padding:18px;
+      }
+
+      .homeHero h2{
+        font-size:20px;
+      }
+
+      .dashboardGrid{
+        grid-template-columns:1fr;
+      }
+
+      .dashboardCard{
+        min-height:126px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="app">
+  <!-- LOGIN -->
+  <section class="loginScreen" id="loginScreen">
+    <div class="loginCard">
+      <div class="loginBrand">
+        <div class="loginLogo">P</div>
+        <div class="loginBrandText">
+          <strong>Pirazzoli</strong>
+          <span>Seguimiento de Importaciones</span>
+        </div>
+      </div>
+
+      <h1 class="loginTitle">Ingreso a plataforma</h1>
+      <p class="loginSub">Ingresa tus credenciales para acceder al resumen y visualización de archivos.</p>
+
+      <form id="loginForm" autocomplete="off">
+        <div class="field">
+          <label for="loginUser">Usuario</label>
+          <input id="loginUser" type="text" placeholder="Ingresa usuario" />
+        </div>
+
+        <div class="field">
+          <label for="loginPass">Contraseña</label>
+          <input id="loginPass" type="password" placeholder="Ingresa contraseña" />
+        </div>
+
+        <button class="loginBtn" type="submit">Entrar</button>
+        <div class="loginError" id="loginError"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <div class="app hidden" id="app">
     <header class="topbar">
       <div class="brandWrap">
         <div class="logoBox">P</div>
@@ -1040,20 +1217,41 @@
       </div>
 
       <div class="topStats">
+        <div class="miniStat">Tipo activo <strong id="statTransport">—</strong></div>
         <div class="miniStat">Registros <strong id="statTotal">0</strong></div>
         <div class="miniStat">Visibles <strong id="statVisible">0</strong></div>
         <div class="miniStat">Con documentos <strong id="statDocs">0</strong></div>
       </div>
     </header>
 
-    <section class="toolbar">
-      <div class="searchWrap">
-        <input id="searchInput" type="text" placeholder="Buscar por despacho, referencia, cliente final, origen, chofer, MIC/CRT, observaciones..." />
+    <section class="navBar">
+      <div class="navLeft">
+        <button class="backBtn hidden" id="backHomeBtn" type="button">← Volver</button>
+        <div class="viewLabel" id="viewLabel">Inicio</div>
       </div>
     </section>
 
-    <section class="content" id="content">
+    <section class="toolbar hidden" id="toolbar">
+      <div class="searchWrap">
+        <input id="searchInput" type="text" placeholder="Buscar por cualquier columna de la hoja activa..." />
+      </div>
+      <div class="toolbarInfo" id="sheetInfo">Sin archivo cargado</div>
+    </section>
+
+    <!-- HOME -->
+    <section class="homeView" id="homeView">
+      <div class="homeHero">
+        <h2>Resumen de archivos disponibles</h2>
+        <p>Selecciona un tipo de carga para visualizar la información de sus archivos Excel.</p>
+      </div>
+
+      <div class="dashboardGrid" id="dashboardGrid"></div>
+    </section>
+
+    <!-- DATA -->
+    <section class="content hidden" id="content">
       <button class="sidebarOpenHandle" id="sidebarOpenHandle" type="button" title="Mostrar panel">◀</button>
+
       <main class="main">
         <div class="columnTabsWrap">
           <div class="columnTabs" id="columnTabs"></div>
@@ -1088,172 +1286,53 @@
   </div>
 
   <script>
-    const STATUS_ORDER = [
-      "EN TRANSITO",
-      "ARRIBADA EN PUERTO",
-      "EN ALMACEN",
-      "DESPACHADO",
-      "LIBERADO"
+    /*
+      Carga automática:
+      1) Si existe ./excels/manifest.json lo usa.
+      2) Si no existe, intenta con:
+         ./excels/terrestre.xlsx
+         ./excels/aereo.xlsx
+         ./excels/maritimo.xlsx
+
+      Credenciales demo:
+      Usuario: CIVI
+      Contraseña: 123456
+    */
+
+    const DEMO_USER = "CIVI";
+    const DEMO_PASS = "123456";
+
+    const CATEGORY_DEFS = [
+      { key: "terrestre", label: "Terrestre", defaultFiles: ["terrestre.xlsx"] },
+      { key: "aereo", label: "Aéreo", defaultFiles: ["aereo.xlsx"] },
+      { key: "maritimo", label: "Marítimo", defaultFiles: ["maritimo.xlsx"] }
     ];
 
-    const COLUMN_GROUPS = {
-      "Resumen": [
-        "numeroDespacho",
-        "referenciaCliente",
-        "estadoCarga",
-        "tipoCarga",
-        "origenCarga",
-        "tipoOperacion"
-      ],
-      "Operativa": [
-        "pasoAduanero",
-        "micCrt",
-        "patenteTracto",
-        "patenteRemolque",
-        "numeroContenedor",
-        "clienteFinal",
-        "direccionDescarga",
-        "chofer",
-        "estadoInstruccionDescarga"
-      ],
-      "Regulatorio": [
-        "cdaSeremiEstado",
-        "resolucionSanitariaEstado",
-        "sagEstado",
-        "iipaEstado",
-        "fechaAceptacionDin",
-        "dinEstado"
-      ],
-      "Historial documental": [
-        "confirmacionRecepcionDoc",
-        "estadoDocumentos",
-        "fechaSolicitudModificacion",
-        "fechaNotificacion",
-        "fechaCorrecciones",
-        "fechaNuevaPresentacion",
-        "observaciones"
-      ],
-      "Financiero y cierre": [
-        "fechaIngresoAlmacenista",
-        "fechaPapeletaIngreso",
-        "fechaPresentacionDespacho",
-        "fechaLiberacion",
-        "tcdolarLegalizacion",
-        "tcLiberacionCarga",
-        "remesa",
-        "pagoFactura",
-        "estadoOperacion"
-      ],
-      "Documentos": [
-        "docCdaSeremi",
-        "docResolucionSanitaria",
-        "docSag",
-        "docIipa",
-        "docDin",
-        "docComprobanteTgr",
-        "facturaComercial",
-        "facturaAgencia",
-        "fechaFacturaAgencia",
-        "selloAga",
-        "selloPuerto"
-      ]
-    };
+    let categoryStore = {};
+    let activeCategoryKey = null;
+    let activeSheetName = null;
+    let currentView = "home"; // home | data
 
-    const LABELS = {
-      numeroDespacho: "N° despacho",
-      referenciaCliente: "Referencia cliente",
-      estadoCarga: "Estado carga",
-      tipoCarga: "Tipo carga",
-      origenCarga: "Origen",
-      tipoOperacion: "Tipo operación",
-
-      pasoAduanero: "Paso aduanero",
-      micCrt: "MIC / CRT",
-      patenteTracto: "Patente tracto",
-      patenteRemolque: "Patente remolque",
-      numeroContenedor: "N° contenedor",
-      clienteFinal: "Cliente final",
-      direccionDescarga: "Destino / descarga",
-      chofer: "Chofer",
-      estadoInstruccionDescarga: "Instr. descarga",
-
-      cdaSeremiEstado: "CDA / SEREMI",
-      resolucionSanitariaEstado: "Resol. sanitaria",
-      sagEstado: "SAG",
-      iipaEstado: "IIPA",
-      fechaAceptacionDin: "Fecha aceptación DIN",
-      dinEstado: "DIN",
-
-      confirmacionRecepcionDoc: "Recepción docs",
-      estadoDocumentos: "Estado docs",
-      fechaSolicitudModificacion: "Solicitud modif.",
-      fechaNotificacion: "Notificación",
-      fechaCorrecciones: "Correcciones",
-      fechaNuevaPresentacion: "Nueva presentación",
-      observaciones: "Observaciones",
-
-      fechaIngresoAlmacenista: "Ingreso almacenista",
-      fechaPapeletaIngreso: "Papeleta ingreso",
-      fechaPresentacionDespacho: "Presentación despacho",
-      fechaLiberacion: "Liberación",
-      tcdolarLegalizacion: "TC legalización",
-      tcLiberacionCarga: "TC liberación",
-      remesa: "Remesa",
-      pagoFactura: "Pago factura",
-      estadoOperacion: "Estado operación",
-
-      docCdaSeremi: "Doc CDA/SEREMI",
-      docResolucionSanitaria: "Doc Resol. sanitaria",
-      docSag: "Doc SAG",
-      docIipa: "Doc IIPA",
-      docDin: "Doc DIN",
-      docComprobanteTgr: "Comp. pago TGR",
-      facturaComercial: "Factura comercial",
-      facturaAgencia: "Factura agencia",
-      fechaFacturaAgencia: "Fecha factura agencia",
-      selloAga: "Sello AGA",
-      selloPuerto: "Sello puerto"
-    };
-
-    const detailSections = [
-      {
-        title: "Resumen",
-        fields: ["numeroDespacho","referenciaCliente","estadoCarga","tipoCarga","origenCarga","tipoOperacion"]
-      },
-      {
-        title: "Operativa",
-        fields: ["pasoAduanero","micCrt","patenteTracto","patenteRemolque","numeroContenedor","clienteFinal","direccionDescarga","chofer","estadoInstruccionDescarga"]
-      },
-      {
-        title: "Regulatorio",
-        fields: ["cdaSeremiEstado","resolucionSanitariaEstado","sagEstado","iipaEstado","fechaAceptacionDin","dinEstado"]
-      },
-      {
-        title: "Historial documental",
-        fields: ["confirmacionRecepcionDoc","estadoDocumentos","fechaSolicitudModificacion","fechaNotificacion","fechaCorrecciones","fechaNuevaPresentacion","observaciones"]
-      },
-      {
-        title: "Financiero y cierre",
-        fields: ["fechaIngresoAlmacenista","fechaPapeletaIngreso","fechaPresentacionDespacho","fechaLiberacion","tcdolarLegalizacion","tcLiberacionCarga","remesa","pagoFactura","estadoOperacion"]
-      }
-    ];
-
-    let allRows = [];
-    let currentGroup = "Resumen";
     let currentSearch = "";
-    let selectedId = null;
-
-    let expandedStatuses = new Set();
     let currentSort = { key: null, direction: 0 };
     let selectedRowIds = new Set();
-    let selectedStatusIds = new Set();
+    let selectedId = null;
     let sidebarOpen = false;
 
-    function isMobileLayout(){
-      return window.innerWidth <= 980;
-    }
+    const loginScreen = document.getElementById("loginScreen");
+    const app = document.getElementById("app");
+    const loginForm = document.getElementById("loginForm");
+    const loginUser = document.getElementById("loginUser");
+    const loginPass = document.getElementById("loginPass");
+    const loginError = document.getElementById("loginError");
 
+    const homeView = document.getElementById("homeView");
+    const dashboardGrid = document.getElementById("dashboardGrid");
+    const toolbar = document.getElementById("toolbar");
     const content = document.getElementById("content");
+    const backHomeBtn = document.getElementById("backHomeBtn");
+    const viewLabel = document.getElementById("viewLabel");
+
     const columnTabs = document.getElementById("columnTabs");
     const tableHead = document.getElementById("tableHead");
     const tableBody = document.getElementById("tableBody");
@@ -1261,73 +1340,114 @@
     const detailSub = document.getElementById("detailSub");
     const detailBody = document.getElementById("detailBody");
     const searchInput = document.getElementById("searchInput");
+    const statTransport = document.getElementById("statTransport");
     const statTotal = document.getElementById("statTotal");
     const statVisible = document.getElementById("statVisible");
     const statDocs = document.getElementById("statDocs");
+    const sheetInfo = document.getElementById("sheetInfo");
     const sidebarToggle = document.getElementById("sidebarToggle");
     const sidebarOpenHandle = document.getElementById("sidebarOpenHandle");
 
     function safe(v){
-      if(v === null || v === undefined) return "—";
+      if (v === null || v === undefined) return "—";
       const s = String(v).trim();
       return s === "" ? "—" : s;
     }
 
     function normalize(v){
-      return safe(v).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
+      return safe(v)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toUpperCase();
+    }
+
+    function isMobileLayout(){
+      return window.innerWidth <= 980;
+    }
+
+    function looksLikeUrl(value){
+      const s = String(value || "").trim();
+      return /^https?:\/\//i.test(s) || /^www\./i.test(s);
+    }
+
+    function toUrl(value){
+      const s = String(value || "").trim();
+      if (!s) return "";
+      if (/^https?:\/\//i.test(s)) return s;
+      if (/^www\./i.test(s)) return "https://" + s;
+      return s;
+    }
+
+    function formatCellValue(cell){
+      if (!cell) return "";
+      try {
+        const formatted = XLSX.utils.format_cell(cell);
+        if (formatted !== undefined && formatted !== null) return String(formatted).trim();
+      } catch(_) {}
+      if (cell.w !== undefined && cell.w !== null) return String(cell.w).trim();
+      if (cell.v === undefined || cell.v === null) return "";
+      if (cell.t === "d" && cell.v instanceof Date) return formatDate(cell.v);
+      return String(cell.v).trim();
+    }
+
+    function formatDate(date){
+      if (!(date instanceof Date) || isNaN(date)) return "";
+      const dd = String(date.getDate()).padStart(2, "0");
+      const mm = String(date.getMonth() + 1).padStart(2, "0");
+      const yy = date.getFullYear();
+      return `${dd}/${mm}/${yy}`;
+    }
+
+    function cleanText(value){
+      if (value === null || value === undefined) return "";
+      return String(value).replace(/\s+/g, " ").trim();
     }
 
     function chipClassFromValue(value){
       const v = normalize(value);
-      if (["LIBERADO","COMPLETADO","APROBADO","OK","EMITIDA","PAGADO","CERRADO"].some(x => v.includes(x))) return "chip-ok";
-      if (["PRESENTADO","EN TRANSITO","ARRIBADA EN PUERTO","EN ALMACEN","DESPACHADO"].some(x => v.includes(x))) return "chip-pending";
+      if (["LIBERADO","COMPLETADO","APROBADO","OK","EMITIDA","PAGADO","CERRADO","ENTREGADO"].some(x => v.includes(x))) return "chip-ok";
+      if (["PRESENTADO","EN TRANSITO","ARRIBADA EN PUERTO","EN ALMACEN","DESPACHADO","EN CURSO","TRAMITE"].some(x => v.includes(x))) return "chip-pending";
       if (["PENDIENTE","OBSERVADO","OBSERVACION","EN ESPERA"].some(x => v.includes(x))) return "chip-warn";
-      if (["ERROR","RECHAZADO","NO CONFORME"].some(x => v.includes(x))) return "chip-danger";
+      if (["ERROR","RECHAZADO","NO CONFORME","VENCIDO"].some(x => v.includes(x))) return "chip-danger";
       return "chip-neutral";
     }
 
-    function isDocField(key){
-      return ["docCdaSeremi","docResolucionSanitaria","docSag","docIipa","docDin","docComprobanteTgr"].includes(key);
+    function isStatusLikeHeader(header){
+      const h = normalize(header);
+      return h.includes("ESTADO") || h.includes("CONDICION") || h.includes("INSTRUCCION");
     }
 
-    function countDocs(row){
-      return [row.docCdaSeremi,row.docResolucionSanitaria,row.docSag,row.docIipa,row.docDin,row.docComprobanteTgr].filter(d => d && d.url).length;
-    }
-
-    function rowMatchesSearch(row){
-      if(!currentSearch) return true;
-      const haystack = [
-        row.numeroDespacho,row.referenciaCliente,row.estadoCarga,row.tipoCarga,row.origenCarga,row.tipoOperacion,
-        row.pasoAduanero,row.micCrt,row.patenteTracto,row.patenteRemolque,row.numeroContenedor,row.clienteFinal,
-        row.direccionDescarga,row.chofer,row.estadoInstruccionDescarga,row.cdaSeremiEstado,row.resolucionSanitariaEstado,
-        row.sagEstado,row.iipaEstado,row.dinEstado,row.observaciones,row.estadoOperacion,row.remesa
-      ].map(v => safe(v).toLowerCase()).join(" ");
-      return haystack.includes(currentSearch);
-    }
-
-    function getFilteredRows(){
-      return allRows.filter(row => rowMatchesSearch(row));
+    function isLikelyLongText(header){
+      const h = normalize(header);
+      return h.includes("OBSERV") || h.includes("DIRECCION") || h.includes("DESTINO") || h.includes("DESCRIP") || h.includes("DETALLE");
     }
 
     function parseSortableValue(value){
       if (value === null || value === undefined) return { type:"empty", value:"" };
-      if (typeof value === "object" && value !== null) return { type:"text", value:safe(value.text || value.label || value.filename || "") };
+      if (typeof value === "object" && value !== null) {
+        return { type:"text", value: normalize(value.text || value.display || value.url || "") };
+      }
 
       const raw = safe(value);
       if (raw === "—") return { type:"empty", value:"" };
 
-      const normalized = raw.replace(/\./g, "").replace(",", ".").trim();
-
-      if (/^-?\d+(\.\d+)?$/.test(normalized)) return { type:"number", value:parseFloat(normalized) };
+      const normalizedNum = raw.replace(/\./g, "").replace(",", ".").trim();
+      if (/^-?\d+(\.\d+)?$/.test(normalizedNum)) {
+        return { type:"number", value: parseFloat(normalizedNum) };
+      }
 
       if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(raw)) {
         const [d,m,y] = raw.split("/").map(Number);
-        return { type:"date", value:new Date(y, m - 1, d).getTime() };
+        return { type:"date", value: new Date(y, m - 1, d).getTime() };
       }
 
-      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return { type:"date", value:new Date(raw + "T00:00:00").getTime() };
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        return { type:"date", value: new Date(raw + "T00:00:00").getTime() };
+      }
 
-      return { type:"text", value:normalize(raw) };
+      return { type:"text", value: normalize(raw) };
     }
 
     function compareValues(a, b){
@@ -1348,48 +1468,71 @@
 
     function sortRows(rows){
       if (!currentSort.key || currentSort.direction === 0) return [...rows];
-      return [...rows].sort((a,b) => {
-        const cmp = compareValues(a[currentSort.key], b[currentSort.key]);
+      return [...rows].sort((a, b) => {
+        const cmp = compareValues(a.values[currentSort.key], b.values[currentSort.key]);
         return currentSort.direction === 1 ? cmp : -cmp;
       });
     }
 
-    function getRowsByStatus(status){
-      const filtered = getFilteredRows().filter(row => normalize(row.estadoCarga) === normalize(status));
-      return sortRows(filtered);
+    function getActiveCategory(){
+      return categoryStore[activeCategoryKey] || null;
     }
 
-    function setSidebarOpen(open){
-      sidebarOpen = isMobileLayout() ? true : open;
-      content.classList.toggle("sidebar-open", sidebarOpen);
-
-      if (sidebarToggle) {
-        sidebarToggle.textContent = "▶";
-        sidebarToggle.title = "Ocultar panel";
-      }
+    function getActiveSheet(){
+      const category = getActiveCategory();
+      if (!category) return null;
+      return category.sheets.find(s => s.name === activeSheetName) || null;
     }
 
-    function renderColumnTabs(){
-      const groupNames = Object.keys(COLUMN_GROUPS);
-      columnTabs.innerHTML = groupNames.map(group => `
-        <button class="columnTab ${group === currentGroup ? 'active' : ''}" data-group="${group}">
-          ${group}
-        </button>
-      `).join("");
-
-      columnTabs.querySelectorAll(".columnTab").forEach(btn => {
-        btn.addEventListener("click", () => {
-          currentGroup = btn.dataset.group;
-          currentSort = { key:null, direction:0 };
-          renderTable();
-        });
-      });
+    function getHeaders(sheet){
+      return sheet?.headers || [];
     }
 
-    function getSortSymbol(key){
-      if (currentSort.key !== key || currentSort.direction === 0) return "↕";
-      if (currentSort.direction === 1) return "↑";
-      return "↓";
+    function getReferenceHeader(sheet){
+      const headers = getHeaders(sheet);
+      return headers.find(h => normalize(h).includes("REFERENCIA CLIENTE")) || null;
+    }
+
+    function getDispatchHeader(sheet){
+      const headers = getHeaders(sheet);
+      return headers.find(h => normalize(h).includes("NUMERO DE DESPACHO")) || headers.find(h => normalize(h) === "DESPACHO") || null;
+    }
+
+    function isDocRowValue(val){
+      return val && typeof val === "object" && !!val.url;
+    }
+
+    function getDocumentValues(row){
+      return Object.entries(row.values)
+        .filter(([, value]) => isDocRowValue(value))
+        .map(([header, value]) => ({
+          header,
+          value
+        }));
+    }
+
+    function countDocs(row){
+      return getDocumentValues(row).length;
+    }
+
+    function getAllRows(){
+      const sheet = getActiveSheet();
+      return sheet ? sheet.rows : [];
+    }
+
+    function rowMatchesSearch(row){
+      if (!currentSearch) return true;
+      const haystack = Object.values(row.values)
+        .map(value => {
+          if (isDocRowValue(value)) return `${safe(value.text)} ${safe(value.url)}`.toLowerCase();
+          return safe(value).toLowerCase();
+        })
+        .join(" ");
+      return haystack.includes(currentSearch);
+    }
+
+    function getFilteredRows(){
+      return getAllRows().filter(row => rowMatchesSearch(row));
     }
 
     function toggleSort(key){
@@ -1400,50 +1543,286 @@
       renderTable();
     }
 
-    function syncSelectedStatuses(){
-      selectedStatusIds.clear();
-      STATUS_ORDER.forEach(status => {
-        const rows = getRowsByStatus(status);
-        if (rows.length && rows.every(r => selectedRowIds.has(r._id))) {
-          selectedStatusIds.add(status);
+    function getSortSymbol(key){
+      if (currentSort.key !== key || currentSort.direction === 0) return "↕";
+      return currentSort.direction === 1 ? "↑" : "↓";
+    }
+
+    function setSidebarOpen(open){
+      sidebarOpen = isMobileLayout() ? true : open;
+      content.classList.toggle("sidebar-open", sidebarOpen);
+      if (sidebarToggle) {
+        sidebarToggle.textContent = "▶";
+        sidebarToggle.title = "Ocultar panel";
+      }
+    }
+
+    async function fetchArrayBuffer(url){
+      const res = await fetch(url + `?v=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
+      return await res.arrayBuffer();
+    }
+
+    async function getManifestConfig(){
+      try{
+        const res = await fetch("./excels/manifest.json?v=" + Date.now(), { cache: "no-store" });
+        if (!res.ok) throw new Error("manifest no encontrado");
+        return await res.json();
+      }catch(_){
+        return null;
+      }
+    }
+
+    function normalizeManifest(manifest){
+      const out = {};
+      CATEGORY_DEFS.forEach(cat => {
+        const val = manifest?.[cat.key];
+        if (Array.isArray(val)) out[cat.key] = val;
+        else if (typeof val === "string" && val.trim()) out[cat.key] = [val.trim()];
+        else out[cat.key] = cat.defaultFiles;
+      });
+      return out;
+    }
+
+    function parseSheet(workbook, sheetName, fileLabel){
+      const ws = workbook.Sheets[sheetName];
+      const ref = ws["!ref"];
+      if (!ref) return { name: sheetName, headers: [], rows: [] };
+
+      const range = XLSX.utils.decode_range(ref);
+      const headerRowIndex = range.s.r;
+      const headers = [];
+
+      for (let c = range.s.c; c <= range.e.c; c++) {
+        const addr = XLSX.utils.encode_cell({ r: headerRowIndex, c });
+        const cell = ws[addr];
+        let header = cleanText(formatCellValue(cell));
+        if (!header) header = `Columna ${c + 1}`;
+        headers.push(header);
+      }
+
+      const rows = [];
+      for (let r = headerRowIndex + 1; r <= range.e.r; r++) {
+        const values = {};
+        let hasAnyContent = false;
+
+        headers.forEach((header, index) => {
+          const c = range.s.c + index;
+          const addr = XLSX.utils.encode_cell({ r, c });
+          const cell = ws[addr];
+          const rawText = cleanText(formatCellValue(cell));
+          const hyperlink = cell?.l?.Target ? String(cell.l.Target).trim() : "";
+          const tooltip = cell?.l?.Tooltip ? String(cell.l.Tooltip).trim() : "";
+          const valueIsUrl = looksLikeUrl(rawText);
+
+          if (hyperlink || valueIsUrl) {
+            values[header] = {
+              text: rawText || header,
+              url: hyperlink || toUrl(rawText),
+              tooltip
+            };
+            hasAnyContent = true;
+          } else {
+            values[header] = rawText;
+            if (rawText !== "") hasAnyContent = true;
+          }
+        });
+
+        if (!hasAnyContent) continue;
+
+        const refHeader =
+          headers.find(h => normalize(h).includes("REFERENCIA CLIENTE")) ||
+          headers[0] ||
+          "";
+
+        const dispatchHeader =
+          headers.find(h => normalize(h).includes("NUMERO DE DESPACHO")) ||
+          headers.find(h => normalize(h) === "DESPACHO") ||
+          headers[1] ||
+          "";
+
+        const baseId = [
+          fileLabel,
+          sheetName,
+          safe(values[refHeader]),
+          safe(values[dispatchHeader]),
+          r + 1
+        ].join("|");
+
+        rows.push({
+          _id: baseId,
+          _sheet: sheetName,
+          _file: fileLabel,
+          values
+        });
+      }
+
+      return {
+        name: sheetName,
+        headers,
+        rows
+      };
+    }
+
+    async function loadWorkbookFromFile(path){
+      const data = await fetchArrayBuffer(path);
+      const workbook = XLSX.read(data, {
+        type: "array",
+        cellDates: true,
+        cellStyles: false
+      });
+
+      return {
+        file: path.split("/").pop(),
+        sheets: workbook.SheetNames.map(name => parseSheet(workbook, name, path.split("/").pop()))
+      };
+    }
+
+    async function loadData(){
+      const manifestRaw = await getManifestConfig();
+      const manifest = normalizeManifest(manifestRaw || {});
+
+      categoryStore = {};
+
+      for (const cat of CATEGORY_DEFS) {
+        const files = manifest[cat.key] || [];
+        const loadedFiles = [];
+        const allSheets = [];
+
+        for (const fileName of files) {
+          try{
+            const wb = await loadWorkbookFromFile(`./excels/${fileName}`);
+            loadedFiles.push(fileName);
+            wb.sheets.forEach(sheet => allSheets.push(sheet));
+          }catch(_){}
         }
+
+        categoryStore[cat.key] = {
+          key: cat.key,
+          label: cat.label,
+          files: loadedFiles,
+          sheets: allSheets
+        };
+      }
+
+      const firstAvailable = CATEGORY_DEFS.find(cat => (categoryStore[cat.key]?.files.length || 0) > 0);
+      activeCategoryKey = firstAvailable ? firstAvailable.key : CATEGORY_DEFS[0].key;
+
+      const activeCategory = getActiveCategory();
+      activeSheetName = activeCategory?.sheets?.[0]?.name || null;
+    }
+
+    function resetDataViewState(){
+      currentSort = { key:null, direction:0 };
+      currentSearch = "";
+      searchInput.value = "";
+      selectedRowIds.clear();
+      selectedId = null;
+    }
+
+    function goToHomeView(){
+      currentView = "home";
+      homeView.classList.remove("hidden");
+      content.classList.add("hidden");
+      toolbar.classList.add("hidden");
+      backHomeBtn.classList.add("hidden");
+      viewLabel.textContent = "Inicio";
+      statTransport.textContent = "—";
+      statTotal.textContent = "0";
+      statVisible.textContent = "0";
+      statDocs.textContent = "0";
+      sheetInfo.textContent = "Sin archivo cargado";
+      renderHomeDashboard();
+      renderEmptyDetail();
+    }
+
+    function goToDataView(categoryKey){
+      const category = categoryStore[categoryKey];
+      if (!category || !category.files.length) return;
+
+      currentView = "data";
+      activeCategoryKey = categoryKey;
+      activeSheetName = category.sheets[0]?.name || null;
+      resetDataViewState();
+
+      homeView.classList.add("hidden");
+      content.classList.remove("hidden");
+      toolbar.classList.remove("hidden");
+      backHomeBtn.classList.remove("hidden");
+      viewLabel.textContent = category.label;
+
+      renderAll();
+    }
+
+    function renderHomeDashboard(){
+      dashboardGrid.innerHTML = CATEGORY_DEFS.map(cat => {
+        const item = categoryStore[cat.key];
+        const count = item?.files?.length || 0;
+        const disabled = count === 0;
+
+        return `
+          <button
+            class="dashboardCard ${disabled ? "disabled" : ""}"
+            data-category="${cat.key}"
+            type="button"
+            ${disabled ? "disabled" : ""}
+          >
+            <div>
+              <div class="dashboardTop">
+                <div class="dashboardTitle">${cat.label}</div>
+                <div class="dashboardNumber">${count}</div>
+              </div>
+              <div class="dashboardMeta">
+                ${count === 0 ? "No hay archivos cargados." : count === 1 ? "1 archivo disponible." : `${count} archivos disponibles.`}
+              </div>
+            </div>
+            <div class="dashboardFooter">${disabled ? "Sin información" : "Ver información →"}</div>
+          </button>
+        `;
+      }).join("");
+
+      dashboardGrid.querySelectorAll("[data-category]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          goToDataView(btn.dataset.category);
+        });
+      });
+    }
+
+    function renderSheetTabs(){
+      const category = getActiveCategory();
+      const sheets = category?.sheets || [];
+
+      columnTabs.innerHTML = sheets.length
+        ? sheets.map(sheet => `
+            <button class="columnTab ${sheet.name === activeSheetName ? "active" : ""}" data-sheet="${sheet.name}">
+              ${sheet.name}
+            </button>
+          `).join("")
+        : `<div class="emptyState" style="padding:12px 0 16px;text-align:left;">No hay hojas disponibles.</div>`;
+
+      columnTabs.querySelectorAll("[data-sheet]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeSheetName = btn.dataset.sheet;
+          currentSort = { key:null, direction:0 };
+          selectedRowIds.clear();
+          selectedId = null;
+          renderAll();
+        });
       });
     }
 
     function renderTable(){
-      const cols = COLUMN_GROUPS[currentGroup];
+      const category = getActiveCategory();
+      const sheet = getActiveSheet();
 
-
-      tableHead.innerHTML = `
-        <th class="headCheckCell"><input class="masterCheck" id="masterCheck" type="checkbox"></th>
-        <th class="groupHeaderCell">
-          <div class="thInner">
-            <span class="thLabel">Grupos según estado</span>
-          </div>
-        </th>
-        ${cols.map(key => `
-          <th>
-            <div class="thInner">
-              <span class="thLabel">${LABELS[key] || key}</span>
-              <button class="sortBtn ${(currentSort.key === key && currentSort.direction !== 0) ? 'active' : ''}" type="button" data-sort="${key}" title="Ordenar">${getSortSymbol(key)}</button>
-            </div>
-          </th>
-        `).join("")}
-      `;
-
-
-      tableHead.querySelectorAll("[data-sort]").forEach(btn => {
-        btn.addEventListener("click", () => toggleSort(btn.dataset.sort));
-      });
-
-      const visibleRows = getFilteredRows();
-      if(!visibleRows.length){
+      if (!category || !category.files.length || !sheet) {
+        tableHead.innerHTML = "";
         tableBody.innerHTML = `
           <tr>
-            <td colspan="${cols.length + 2}">
+            <td>
               <div class="emptyState">
-                <strong>Sin resultados</strong>
-                No hay operaciones con el filtro actual.
+                <strong>Sin excels disponibles</strong>
+                No se encontró ningún archivo Excel en la carpeta <code>./excels</code>.
               </div>
             </td>
           </tr>
@@ -1452,152 +1831,136 @@
         return;
       }
 
-      let html = "";
+      const headers = [...sheet.headers];
+      const refHeader = getReferenceHeader(sheet);
+      const dispatchHeader = getDispatchHeader(sheet);
 
-      STATUS_ORDER.forEach(status => {
-        const rows = getRowsByStatus(status);
-        const isOpen = expandedStatuses.has(status);
-        const isSelectedGroup = selectedStatusIds.has(status);
-        const caret = isOpen ? "▾" : "▸";
+      const fixedHeaders = [];
+      if (refHeader) fixedHeaders.push(refHeader);
+      if (dispatchHeader && dispatchHeader !== refHeader) fixedHeaders.push(dispatchHeader);
 
-        html += `
-          <tr class="groupRow ${isSelectedGroup ? 'selectedGroup' : ''}" data-group-row="${status}">
-            <td class="rowCheckCell">
-              <input class="statusCheck" type="checkbox" data-status-check="${status}" ${isSelectedGroup ? "checked" : ""}>
-            </td>
-            <td class="groupCell">
-              <div class="groupRowMain">
-                <button class="groupCaretBtn" type="button" data-group-status="${status}">${caret}</button>
-                <span class="groupDot"></span>
-                <span class="groupName">${status}</span>
-                <span class="groupCount">(${rows.length})</span>
+      const otherHeaders = headers.filter(h => !fixedHeaders.includes(h));
+      const orderedHeaders = [...fixedHeaders, ...otherHeaders];
+
+      tableHead.innerHTML = `
+        <th class="headCheckCell">
+          <input class="masterCheck" id="masterCheck" type="checkbox">
+        </th>
+        ${orderedHeaders.map((header, index) => `
+          <th class="${index === 0 ? "stickyHead1" : ""} ${index === 1 ? "stickyHead2" : ""}">
+            <div class="thInner">
+              <span class="thLabel">${header}</span>
+              <button
+                class="sortBtn ${(currentSort.key === header && currentSort.direction !== 0) ? "active" : ""}"
+                type="button"
+                data-sort="${encodeURIComponent(header)}"
+                title="Ordenar"
+              >${getSortSymbol(header)}</button>
+            </div>
+          </th>
+        `).join("")}
+      `;
+
+      tableHead.querySelectorAll("[data-sort]").forEach(btn => {
+        btn.addEventListener("click", () => toggleSort(decodeURIComponent(btn.dataset.sort)));
+      });
+
+      const visibleRows = sortRows(getFilteredRows());
+
+      if (!visibleRows.length) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="${orderedHeaders.length + 1}">
+              <div class="emptyState">
+                <strong>Sin resultados</strong>
+                No hay registros con el filtro actual.
               </div>
             </td>
-            ${cols.map((_, index) => `
-              <td class="${index === 0 ? 'groupRowMetaCell' : ''}">
-                ${index === cols.length - 1 ? `<span class="groupMeta">${isOpen ? "Contraer" : "Expandir"}</span>` : ``}
-              </td>
-            `).join("")}
           </tr>
         `;
+        updateStats([]);
+        return;
+      }
 
-        if (isOpen) {
-          html += rows.map(row => {
-            const selectedClass = row._id === selectedId ? "selected" : "";
-            const multiSelectedClass = selectedRowIds.has(row._id) ? "multiSelected" : "";
+      let html = visibleRows.map(row => {
+        const selectedClass = row._id === selectedId ? "selected" : "";
 
-            const cells = cols.map(key => {
-              const value = row[key];
+        const cells = orderedHeaders.map((header, index) => {
+          const value = row.values[header];
+          const stickyClass = index === 0 ? "stickyCol1" : index === 1 ? "stickyCol2" : "";
 
-              if (isDocField(key)) {
-                if (value && value.url) {
-                  const encoded = encodeURIComponent(JSON.stringify(value));
-                  const text = safe(value.text || value.label || "Abrir");
-                  return `<td><div class="cellWrap"><span class="docLink" data-doc="${encoded}">${text}</span></div></td>`;
-                }
-                return `<td><div class="cellWrap">—</div></td>`;
-              }
-
-              if (["estadoCarga","estadoInstruccionDescarga","cdaSeremiEstado","resolucionSanitariaEstado","sagEstado","iipaEstado","dinEstado","estadoDocumentos","estadoOperacion"].includes(key)) {
-                return `<td><span class="chip ${chipClassFromValue(value)}">${safe(value)}</span></td>`;
-              }
-
-              const cls = ["observaciones","direccionDescarga","chofer"].includes(key) ? "cellWrap long" : "cellWrap";
-              return `<td><div class="${cls}">${safe(value)}</div></td>`;
-            }).join("");
-
+          if (isDocRowValue(value)) {
+            const encoded = encodeURIComponent(JSON.stringify(value));
+            const text = safe(value.text || value.display || "Abrir");
             return `
-              <tr class="rowClickable ${selectedClass} ${multiSelectedClass}" data-id="${row._id}">
-                <td class="rowCheckCell">
-                  <input class="rowCheck" type="checkbox" data-row-check="${row._id}" ${selectedRowIds.has(row._id) ? "checked" : ""}>
-                </td>
-                <td class="groupCellEmpty"></td>
-                ${cells}
-              </tr>
+              <td class="${stickyClass}">
+                <div class="cellWrap">
+                  <span class="docLink" data-doc="${encoded}">${text}</span>
+                </div>
+              </td>
             `;
-          }).join("");
-        }
-      });
+          }
+
+          if (isStatusLikeHeader(header)) {
+            return `
+              <td class="${stickyClass}">
+                <span class="chip ${chipClassFromValue(value)}">${safe(value)}</span>
+              </td>
+            `;
+          }
+
+          const cls = isLikelyLongText(header) ? "cellWrap long" : "cellWrap";
+          return `
+            <td class="${stickyClass}">
+              <div class="${cls}">${safe(value)}</div>
+            </td>
+          `;
+        }).join("");
+
+        return `
+          <tr class="rowClickable ${selectedClass}" data-id="${encodeURIComponent(row._id)}">
+            <td class="rowCheckCell">
+              <input class="rowCheck" type="checkbox" data-row-check="${encodeURIComponent(row._id)}" ${selectedRowIds.has(row._id) ? "checked" : ""}>
+            </td>
+            ${cells}
+          </tr>
+        `;
+      }).join("");
 
       tableBody.innerHTML = html;
 
-      const expandedRows = STATUS_ORDER.flatMap(status => expandedStatuses.has(status) ? getRowsByStatus(status) : []);
-      const allExpandedSelected = expandedRows.length > 0 && expandedRows.every(r => selectedRowIds.has(r._id));
       const masterCheck = document.getElementById("masterCheck");
-      if (masterCheck) masterCheck.checked = allExpandedSelected;
+      const allSelected = visibleRows.length > 0 && visibleRows.every(r => selectedRowIds.has(r._id));
+      if (masterCheck) masterCheck.checked = allSelected;
 
       if (masterCheck) {
         masterCheck.addEventListener("click", (e) => {
           const checked = e.target.checked;
-          expandedRows.forEach(r => {
+          visibleRows.forEach(r => {
             if (checked) selectedRowIds.add(r._id);
             else selectedRowIds.delete(r._id);
           });
-          syncSelectedStatuses();
           renderTable();
         });
       }
 
-      tableBody.querySelectorAll("[data-group-status]").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const status = btn.dataset.groupStatus;
-          if (expandedStatuses.has(status)) expandedStatuses.delete(status);
-          else expandedStatuses.add(status);
-          renderTable();
-        });
-      });
-
-      tableBody.querySelectorAll("[data-group-row]").forEach(row => {
-        row.addEventListener("click", (e) => {
-          if (e.target.matches("[data-status-check]")) return;
-          if (e.target.closest("[data-status-check]")) return;
-          if (e.target.matches("[data-group-status]")) return;
-          if (e.target.closest("[data-group-status]")) return;
-
-          const status = row.dataset.groupRow;
-          if (expandedStatuses.has(status)) expandedStatuses.delete(status);
-          else expandedStatuses.add(status);
-          renderTable();
-        });
-      });
-
-      tableBody.querySelectorAll("[data-status-check]").forEach(chk => {
-        chk.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const status = chk.dataset.statusCheck;
-          const rows = getRowsByStatus(status);
-
-          if (chk.checked) {
-            selectedStatusIds.add(status);
-            rows.forEach(r => selectedRowIds.add(r._id));
-          } else {
-            selectedStatusIds.delete(status);
-            rows.forEach(r => selectedRowIds.delete(r._id));
-          }
-
-          renderTable();
-        });
-      });
-
       tableBody.querySelectorAll("[data-row-check]").forEach(chk => {
         chk.addEventListener("click", (e) => {
           e.stopPropagation();
-          const id = chk.dataset.rowCheck;
+          const id = decodeURIComponent(chk.dataset.rowCheck);
           if (chk.checked) selectedRowIds.add(id);
           else selectedRowIds.delete(id);
-          syncSelectedStatuses();
           renderTable();
         });
       });
 
       tableBody.querySelectorAll("tr.rowClickable").forEach(tr => {
         tr.addEventListener("click", (e) => {
-          if (e.target.matches("[data-row-check]") || e.target.matches(".docLink")) return;
+          if (e.target.matches("[data-row-check]") || e.target.closest("[data-row-check]")) return;
+          if (e.target.matches(".docLink") || e.target.closest(".docLink")) return;
 
           selectedRowIds.clear();
-          selectedStatusIds.clear();
-          selectedId = tr.dataset.id;
+          selectedId = decodeURIComponent(tr.dataset.id);
 
           renderTable();
 
@@ -1614,54 +1977,60 @@
         el.addEventListener("click", (e) => {
           e.stopPropagation();
           const doc = JSON.parse(decodeURIComponent(el.dataset.doc));
-          if (sidebarOpen) openDocument(doc);
+          if (sidebarOpen || isMobileLayout()) openDocument(doc);
+          else window.open(doc.url, "_blank", "noopener,noreferrer");
         });
       });
 
       updateStats(visibleRows);
     }
 
-    function renderDetailValue(field, value){
-      if (isDocField(field) && value && value.url) {
+    function renderDetailValue(header, value){
+      if (isDocRowValue(value) && value.url) {
         const encoded = encodeURIComponent(JSON.stringify(value));
-        return `<span class="docLink" data-doc="${encoded}">${safe(value.text || value.label || "Abrir")}</span>`;
+        return `<span class="docLink" data-doc="${encoded}">${safe(value.text || value.display || "Abrir")}</span>`;
       }
 
-      if (["estadoCarga","estadoInstruccionDescarga","cdaSeremiEstado","resolucionSanitariaEstado","sagEstado","iipaEstado","dinEstado","estadoDocumentos","estadoOperacion"].includes(field)) {
+      if (isStatusLikeHeader(header)) {
         return `<span class="chip ${chipClassFromValue(value)}">${safe(value)}</span>`;
       }
 
       return safe(value);
     }
 
-    function renderDetail(){
-      const row = allRows.find(r => r._id === selectedId);
+    function renderEmptyDetail(){
+      detailTitle.textContent = "Selecciona una operación";
+      detailSub.textContent = isMobileLayout()
+        ? "Haz clic en una fila para ver el detalle abajo."
+        : "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
+      detailBody.innerHTML = `
+        <div class="emptyState">
+          <strong>Sin selección</strong>
+          El detalle de la operación aparecerá aquí.
+        </div>
+      `;
+    }
 
-      if(!row){
-        detailTitle.textContent = "Selecciona una operación";
-        detailSub.textContent = isMobileLayout()
-          ? "Haz clic en una fila para ver el detalle abajo."
-          : "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
-        detailBody.innerHTML = `
-          <div class="emptyState">
-            <strong>Sin selección</strong>
-            El detalle de la operación aparecerá aquí.
-          </div>
-        `;
+    function renderDetail(){
+      const row = getAllRows().find(r => r._id === selectedId);
+      const sheet = getActiveSheet();
+
+      if (!row || !sheet) {
+        renderEmptyDetail();
         return;
       }
 
-      detailTitle.textContent = safe(row.referenciaCliente) !== "—" ? safe(row.referenciaCliente) : `Despacho ${safe(row.numeroDespacho)}`;
-      detailSub.textContent = `N° despacho: ${safe(row.numeroDespacho)} · Estado carga: ${safe(row.estadoCarga)} · Documentos: ${countDocs(row)}`;
+      const refHeader = getReferenceHeader(sheet);
+      const dispatchHeader = getDispatchHeader(sheet);
+      const statusHeader = sheet.headers.find(h => normalize(h).includes("ESTADO")) || null;
 
-      const docs = [
-        { label:"CDA / SEREMI", value: row.docCdaSeremi },
-        { label:"Resolución Sanitaria", value: row.docResolucionSanitaria },
-        { label:"SAG", value: row.docSag },
-        { label:"IIPA", value: row.docIipa },
-        { label:"DIN", value: row.docDin },
-        { label:"Comprobante pago TGR", value: row.docComprobanteTgr }
-      ].filter(d => d.value && d.value.url);
+      detailTitle.textContent = safe(row.values[refHeader]) !== "—"
+        ? safe(row.values[refHeader])
+        : `Despacho ${safe(row.values[dispatchHeader])}`;
+
+      detailSub.textContent = `${dispatchHeader || "Despacho"}: ${safe(row.values[dispatchHeader])} · ${statusHeader || "Estado"}: ${safe(row.values[statusHeader])} · Documentos: ${countDocs(row)}`;
+
+      const docs = getDocumentValues(row);
 
       const viewerHtml = `
         <div class="viewerBlock" id="docViewer">
@@ -1671,48 +2040,38 @@
 
       const docsHtml = `
         <section class="detailGroup">
-          <div class="detailGroupTitle">Documentos</div>
+          <div class="detailGroupTitle">Documentos detectados en la fila</div>
           <div class="detailGrid">
             ${
               docs.length
-              ? `<div class="docsList">
-                  ${docs.map(d => `<button class="docBtn" data-doc="${encodeURIComponent(JSON.stringify(d.value))}">${d.label} · ${safe(d.value.text || "Abrir documento")}</button>`).join("")}
-                </div>`
-              : `<div class="detailItem"><label>Documentos</label><div>No hay documentos asociados en esta fila.</div></div>`
+                ? `<div class="docsList">
+                    ${docs.map(d => `
+                      <button class="docBtn" data-doc="${encodeURIComponent(JSON.stringify(d.value))}">
+                        ${d.header} · ${safe(d.value.text || "Abrir documento")}
+                      </button>
+                    `).join("")}
+                  </div>`
+                : `<div class="detailItem"><label>Documentos</label><div>No hay documentos asociados en esta fila.</div></div>`
             }
           </div>
         </section>
       `;
 
-      const summarySection = `
+      const allFieldsHtml = `
         <section class="detailGroup">
-          <div class="detailGroupTitle">Resumen</div>
+          <div class="detailGroupTitle">Detalle completo · ${sheet.name}</div>
           <div class="detailGrid">
-            ${detailSections[0].fields.map(field => `
+            ${sheet.headers.map(header => `
               <div class="detailItem">
-                <label>${LABELS[field] || field}</label>
-                <div>${renderDetailValue(field, row[field])}</div>
+                <label>${header}</label>
+                <div>${renderDetailValue(header, row.values[header])}</div>
               </div>
             `).join("")}
           </div>
         </section>
       `;
 
-      const restSections = detailSections.slice(1).map(section => `
-        <section class="detailGroup">
-          <div class="detailGroupTitle">${section.title}</div>
-          <div class="detailGrid">
-            ${section.fields.map(field => `
-              <div class="detailItem">
-                <label>${LABELS[field] || field}</label>
-                <div>${renderDetailValue(field, row[field])}</div>
-              </div>
-            `).join("")}
-          </div>
-        </section>
-      `).join("");
-
-      detailBody.innerHTML = viewerHtml + docsHtml + summarySection + restSections;
+      detailBody.innerHTML = viewerHtml + docsHtml + allFieldsHtml;
 
       detailBody.querySelectorAll(".docBtn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1731,83 +2090,89 @@
 
     function openDocument(doc){
       const viewer = document.getElementById("docViewer");
-      if(!viewer) return;
-
-      if(!doc || !doc.url){
-        viewer.innerHTML = "Este documento no tiene URL disponible.";
+      if (!doc || !doc.url) {
+        if (viewer) viewer.innerHTML = "Este documento no tiene URL disponible.";
         return;
       }
 
-      const url = doc.localUrl || doc.url;
-      const text = safe(doc.text || doc.label || doc.filename || "Documento");
-
+      const url = doc.url;
+      const text = safe(doc.text || doc.display || "Documento");
       const isSharepoint =
         String(url).includes("sharepoint.com") ||
         String(url).includes("onedrive.com") ||
         String(url).includes("-my.sharepoint.com");
 
-      if(isSharepoint){
+      if (viewer) {
         viewer.innerHTML = `
           <div><strong>${text}</strong></div>
-          <div style="margin-top:8px;">Este documento se abre en nueva pestaña.</div>
+          <div style="margin-top:8px;">${isSharepoint ? "Este documento se abre en nueva pestaña." : "Archivo listo para abrir."}</div>
           <div style="margin-top:10px;"><a href="${url}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>
         `;
-        window.open(url, "_blank", "noopener,noreferrer");
-        return;
       }
 
-      viewer.innerHTML = `
-        <div><strong>${text}</strong></div>
-        <div style="margin-top:8px;">Archivo listo para abrir.</div>
-        <div style="margin-top:10px;"><a href="${url}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>
-      `;
+      window.open(url, "_blank", "noopener,noreferrer");
     }
 
     function updateStats(visibleRows){
-      statTotal.textContent = allRows.length;
+      const category = getActiveCategory();
+      const sheet = getActiveSheet();
+
+      statTransport.textContent = category?.label || "—";
+      statTotal.textContent = getAllRows().length;
       statVisible.textContent = visibleRows.length;
       statDocs.textContent = visibleRows.filter(r => countDocs(r) > 0).length;
+
+      if (category && sheet) {
+        sheetInfo.textContent = `${category.label} · Hoja: ${sheet.name} · ${category.files.length === 1 ? category.files[0] : `${category.files.length} excels cargados`}`;
+      } else {
+        sheetInfo.textContent = "Sin archivo cargado";
+      }
     }
 
     function renderAll(){
+      if (currentView === "home") {
+        goToHomeView();
+        return;
+      }
+
       setSidebarOpen(sidebarOpen);
-      renderColumnTabs();
+      renderSheetTabs();
       renderTable();
 
       if (sidebarOpen || isMobileLayout()) {
         renderDetail();
       } else {
-        detailTitle.textContent = "Selecciona una operación";
-        detailSub.textContent = isMobileLayout()
-          ? "Haz clic en una fila para ver el detalle abajo."
-          : "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
-        detailBody.innerHTML = `
-          <div class="emptyState">
-            <strong>${isMobileLayout() ? "Sin selección" : "Panel oculto"}</strong>
-            ${isMobileLayout()
-              ? "El detalle de la operación aparecerá aquí."
-              : "Usa la flecha del costado para abrir el detalle."}
-          </div>
-`;
+        renderEmptyDetail();
       }
     }
 
-    async function loadData(){
-      const res = await fetch("./data/despachos.json?v=" + Date.now(), { cache: "no-store" });
-      if(!res.ok) throw new Error("No se pudo cargar data/despachos.json");
-      allRows = await res.json();
-    }
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const user = loginUser.value.trim().toUpperCase();
+      const pass = loginPass.value.trim();
+
+      if (user === DEMO_USER && pass === DEMO_PASS) {
+        loginError.textContent = "";
+        loginScreen.classList.add("hidden");
+        app.classList.remove("hidden");
+        goToHomeView();
+      } else {
+        loginError.textContent = "Usuario o contraseña incorrectos.";
+      }
+    });
 
     searchInput.addEventListener("input", () => {
       currentSearch = searchInput.value.trim().toLowerCase();
       selectedId = null;
       selectedRowIds.clear();
-      selectedStatusIds.clear();
       renderTable();
 
-      if (sidebarOpen || isMobileLayout()) {
-        renderDetail();
-      }
+      if (sidebarOpen || isMobileLayout()) renderDetail();
+    });
+
+    backHomeBtn.addEventListener("click", () => {
+      goToHomeView();
     });
 
     sidebarToggle.addEventListener("click", () => {
@@ -1822,6 +2187,7 @@
     });
 
     window.addEventListener("resize", () => {
+      if (currentView !== "data") return;
       const shouldBeOpen = isMobileLayout() ? true : sidebarOpen;
       setSidebarOpen(shouldBeOpen);
       renderAll();
@@ -1830,7 +2196,6 @@
     loadData()
       .then(() => {
         setSidebarOpen(isMobileLayout());
-        renderAll();
       })
       .catch(err => {
         console.error(err);
