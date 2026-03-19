@@ -2222,7 +2222,11 @@
 
       const docs = getDocumentValues(row);
 
-      const viewerHtml = ``;
+      const viewerHtml = `
+        <div class="viewerBlock" id="docViewer">
+          --
+        </div>
+      `;
 
       const docsHtml = `
         <section class="detailGroup">
@@ -2281,9 +2285,11 @@
     }
 
     function openDocument(doc){
-      if (!doc || !doc.url) return;
-      window.open(doc.url, "_blank", "noopener,noreferrer");
-    }
+      const viewer = document.getElementById("docViewer");
+      if (!doc || !doc.url) {
+        if (viewer) viewer.innerHTML = "Este documento no tiene URL disponible.";
+        return;
+      }
 
       const url = doc.url;
       const text = safe(doc.text || doc.display || "Documento");
