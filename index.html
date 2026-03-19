@@ -884,26 +884,12 @@
       background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
       border-radius:18px;
       padding:18px;
-      cursor:pointer;
       transition:.18s ease;
       box-shadow:0 8px 18px rgba(17,119,191,.05);
-      min-height:150px;
+      min-height:180px;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
-    }
-
-    .dashboardCard:hover{
-      transform:translateY(-1px);
-      border-color:#aecde5;
-      box-shadow:0 12px 24px rgba(17,119,191,.10);
-    }
-
-    .dashboardCard.disabled{
-      opacity:.6;
-      cursor:not-allowed;
-      background:#f6f8fb;
-      box-shadow:none;
     }
 
     .dashboardTop{
@@ -937,6 +923,38 @@
       color:var(--muted);
       font-size:13px;
       line-height:1.5;
+      margin-bottom:12px;
+    }
+
+    .dashboardFileList{
+      display:grid;
+      gap:8px;
+      margin-top:6px;
+    }
+
+    .dashboardFileLink{
+      appearance:none;
+      -webkit-appearance:none;
+      border:0;
+      background:transparent;
+      padding:0;
+      margin:0;
+      text-align:left;
+      color:#0d67a7;
+      text-decoration:underline;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .dashboardFileLink:hover{
+      color:#0a5488;
+    }
+
+    .dashboardEmptyText{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
     }
 
     .dashboardFooter{
@@ -1242,7 +1260,7 @@
     <section class="homeView" id="homeView">
       <div class="homeHero">
         <h2>Resumen de archivos disponibles</h2>
-        <p>Selecciona un tipo de carga para visualizar la información de sus archivos Excel.</p>
+        <p>Selecciona un archivo específico para visualizar su información.</p>
       </div>
 
       <div class="dashboardGrid" id="dashboardGrid"></div>
@@ -1287,31 +1305,43 @@
 
   <script>
     /*
-      Carga automática:
-      1) Si existe ./excels/manifest.json lo usa.
-      2) Si no existe, intenta con:
-         ./excels/terrestre.xlsx
-         ./excels/aereo.xlsx
-         ./excels/maritimo.xlsx
-
       Credenciales demo:
       Usuario: CIVI
       Contraseña: 123456
+
+      Nota técnica:
+      Un HTML estático no puede listar automáticamente todos los archivos de una carpeta.
+      Este script usa:
+      1) ./excels/manifest.json si existe
+      2) si no existe, intenta con archivos por defecto conocidos
     */
 
     const DEMO_USER = "CIVI";
     const DEMO_PASS = "123456";
 
     const CATEGORY_DEFS = [
-      { key: "terrestre", label: "Terrestre", defaultFiles: ["terrestre.xlsx"] },
-      { key: "aereo", label: "Aéreo", defaultFiles: ["aereo.xlsx"] },
-      { key: "maritimo", label: "Marítimo", defaultFiles: ["maritimo.xlsx"] }
+      {
+        key: "terrestre",
+        label: "Terrestre",
+        defaultFiles: ["terrestre.xlsx", "minerva_terrestre_importaciones.xlsx"]
+      },
+      {
+        key: "aereo",
+        label: "Aéreo",
+        defaultFiles: ["aereo.xlsx"]
+      },
+      {
+        key: "maritimo",
+        label: "Marítimo",
+        defaultFiles: ["maritimo.xlsx"]
+      }
     ];
 
     let categoryStore = {};
     let activeCategoryKey = null;
+    let activeFileKey = null;
     let activeSheetName = null;
-    let currentView = "home"; // home | data
+    let currentView = "home";
 
     let currentSearch = "";
     let currentSort = { key: null, direction: 0 };
@@ -1354,6 +1384,12 @@
       return s === "" ? "—" : s;
     }
 
+    function isMissingValue(v){
+      if (v === null || v === undefined) return true;
+      const s = String(v).trim();
+      return s === "" || s === "-" || s === "—";
+    }
+
     function normalize(v){
       return safe(v)
         .normalize("NFD")
@@ -1380,16 +1416,8 @@
       return s;
     }
 
-    function formatCellValue(cell){
-      if (!cell) return "";
-      try {
-        const formatted = XLSX.utils.format_cell(cell);
-        if (formatted !== undefined && formatted !== null) return String(formatted).trim();
-      } catch(_) {}
-      if (cell.w !== undefined && cell.w !== null) return String(cell.w).trim();
-      if (cell.v === undefined || cell.v === null) return "";
-      if (cell.t === "d" && cell.v instanceof Date) return formatDate(cell.v);
-      return String(cell.v).trim();
+    function getFileBaseName(fileName){
+      return String(fileName || "").replace(/\.(xlsx|xlxs)$/i, "");
     }
 
     function formatDate(date){
@@ -1398,6 +1426,52 @@
       const mm = String(date.getMonth() + 1).padStart(2, "0");
       const yy = date.getFullYear();
       return `${dd}/${mm}/${yy}`;
+    }
+
+    function parseExcelDateSerial(serial){
+      const parsed = XLSX.SSF.parse_date_code(serial);
+      if (!parsed) return null;
+      return new Date(parsed.y, parsed.m - 1, parsed.d);
+    }
+
+    function tryFormatDateCell(cell){
+      if (!cell) return "";
+
+      if (cell.t === "d" && cell.v instanceof Date) {
+        return formatDate(cell.v);
+      }
+
+      if (typeof cell.v === "number") {
+        const z = String(cell.z || "").toLowerCase();
+        const w = String(cell.w || "").trim();
+
+        const looksDateFormat =
+          /d|m|y/.test(z) ||
+          /^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(w);
+
+        if (looksDateFormat) {
+          const date = parseExcelDateSerial(cell.v);
+          if (date && !isNaN(date)) return formatDate(date);
+        }
+      }
+
+      const rawText = String(cell.w || cell.v || "").trim();
+      if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(rawText)) {
+        const parts = rawText.split(/[\/\-]/).map(Number);
+        if (parts.length === 3) {
+          let a = parts[0];
+          let b = parts[1];
+          let c = parts[2];
+          if (c < 100) c += 2000;
+
+          if (a > 12 && b <= 12) return `${String(a).padStart(2,"0")}/${String(b).padStart(2,"0")}/${c}`;
+          if (b > 12 && a <= 12) return `${String(b).padStart(2,"0")}/${String(a).padStart(2,"0")}/${c}`;
+
+          return `${String(a).padStart(2,"0")}/${String(b).padStart(2,"0")}/${c}`;
+        }
+      }
+
+      return "";
     }
 
     function cleanText(value){
@@ -1431,7 +1505,7 @@
       }
 
       const raw = safe(value);
-      if (raw === "—") return { type:"empty", value:"" };
+      if (raw === "—" || raw === "-") return { type:"empty", value:"" };
 
       const normalizedNum = raw.replace(/\./g, "").replace(",", ".").trim();
       if (/^-?\d+(\.\d+)?$/.test(normalizedNum)) {
@@ -1478,10 +1552,16 @@
       return categoryStore[activeCategoryKey] || null;
     }
 
-    function getActiveSheet(){
+    function getActiveFile(){
       const category = getActiveCategory();
       if (!category) return null;
-      return category.sheets.find(s => s.name === activeSheetName) || null;
+      return category.files.find(f => f.file === activeFileKey) || null;
+    }
+
+    function getActiveSheet(){
+      const activeFile = getActiveFile();
+      if (!activeFile) return null;
+      return activeFile.sheets.find(s => s.name === activeSheetName) || null;
     }
 
     function getHeaders(sheet){
@@ -1584,6 +1664,97 @@
       return out;
     }
 
+    function shouldHideSheet(sheetName){
+      return normalize(sheetName) === "MATRIZ DATOS";
+    }
+
+    function getReferencedCellValue(workbook, formula, seenRefs = new Set()){
+      if (!formula) return "";
+
+      const refs = [];
+      const regex = /(?:'([^']+)'|([A-Za-z0-9_ áéíóúÁÉÍÓÚñÑ.-]+))!([$]?[A-Z]+[$]?\d+)/g;
+      let match;
+
+      while ((match = regex.exec(formula)) !== null) {
+        const sheetName = (match[1] || match[2] || "").trim();
+        const addr = (match[3] || "").replace(/\$/g, "");
+        refs.push({ sheetName, addr });
+      }
+
+      for (const ref of refs) {
+        const key = `${ref.sheetName}!${ref.addr}`;
+        if (seenRefs.has(key)) continue;
+        seenRefs.add(key);
+
+        const ws = workbook.Sheets[ref.sheetName];
+        if (!ws) continue;
+
+        const cell = ws[ref.addr];
+        if (!cell) continue;
+
+        const val = formatCellValue(cell, workbook, ref.sheetName, ref.addr, seenRefs);
+        if (!isMissingValue(val) && val !== "#REF!") return val;
+      }
+
+      return "";
+    }
+
+    function formatCellValue(cell, workbook = null, currentSheetName = "", cellAddress = "", seenRefs = new Set()){
+      if (!cell) return "";
+
+      const forcedDate = tryFormatDateCell(cell);
+      if (forcedDate) return forcedDate;
+
+      if (cell.f && workbook) {
+        const rawFormulaShown =
+          typeof cell.w === "string" ? cell.w.trim() :
+          typeof cell.v === "string" ? cell.v.trim() : "";
+
+        if (rawFormulaShown === "#REF!" || rawFormulaShown === "#VALUE!" || rawFormulaShown === "#N/A" || rawFormulaShown === "") {
+          const resolved = getReferencedCellValue(workbook, cell.f, seenRefs);
+          if (resolved) return cleanText(resolved);
+        }
+      }
+
+      try {
+        const formatted = XLSX.utils.format_cell(cell);
+        if (formatted !== undefined && formatted !== null) {
+          const txt = String(formatted).trim();
+          if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(txt)) {
+            const parts = txt.split(/[\/\-]/).map(Number);
+            if (parts.length === 3) {
+              let a = parts[0];
+              let b = parts[1];
+              let c = parts[2];
+              if (c < 100) c += 2000;
+              if (a > 12 && b <= 12) return `${String(a).padStart(2,"0")}/${String(b).padStart(2,"0")}/${c}`;
+              if (b > 12 && a <= 12) return `${String(b).padStart(2,"0")}/${String(a).padStart(2,"0")}/${c}`;
+            }
+          }
+          return txt;
+        }
+      } catch(_) {}
+
+      if (cell.w !== undefined && cell.w !== null) {
+        const txt = String(cell.w).trim();
+        if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(txt)) {
+          const parts = txt.split(/[\/\-]/).map(Number);
+          if (parts.length === 3) {
+            let a = parts[0];
+            let b = parts[1];
+            let c = parts[2];
+            if (c < 100) c += 2000;
+            if (a > 12 && b <= 12) return `${String(a).padStart(2,"0")}/${String(b).padStart(2,"0")}/${c}`;
+            if (b > 12 && a <= 12) return `${String(b).padStart(2,"0")}/${String(a).padStart(2,"0")}/${c}`;
+          }
+        }
+        return txt;
+      }
+
+      if (cell.v === undefined || cell.v === null) return "";
+      return String(cell.v).trim();
+    }
+
     function parseSheet(workbook, sheetName, fileLabel){
       const ws = workbook.Sheets[sheetName];
       const ref = ws["!ref"];
@@ -1596,7 +1767,7 @@
       for (let c = range.s.c; c <= range.e.c; c++) {
         const addr = XLSX.utils.encode_cell({ r: headerRowIndex, c });
         const cell = ws[addr];
-        let header = cleanText(formatCellValue(cell));
+        let header = cleanText(formatCellValue(cell, workbook, sheetName, addr));
         if (!header) header = `Columna ${c + 1}`;
         headers.push(header);
       }
@@ -1610,7 +1781,7 @@
           const c = range.s.c + index;
           const addr = XLSX.utils.encode_cell({ r, c });
           const cell = ws[addr];
-          const rawText = cleanText(formatCellValue(cell));
+          const rawText = cleanText(formatCellValue(cell, workbook, sheetName, addr));
           const hyperlink = cell?.l?.Target ? String(cell.l.Target).trim() : "";
           const tooltip = cell?.l?.Tooltip ? String(cell.l.Tooltip).trim() : "";
           const valueIsUrl = looksLikeUrl(rawText);
@@ -1624,7 +1795,7 @@
             hasAnyContent = true;
           } else {
             values[header] = rawText;
-            if (rawText !== "") hasAnyContent = true;
+            if (!isMissingValue(rawText)) hasAnyContent = true;
           }
         });
 
@@ -1672,9 +1843,12 @@
         cellStyles: false
       });
 
+      const visibleSheetNames = workbook.SheetNames.filter(name => !shouldHideSheet(name));
+
       return {
         file: path.split("/").pop(),
-        sheets: workbook.SheetNames.map(name => parseSheet(workbook, name, path.split("/").pop()))
+        baseName: getFileBaseName(path.split("/").pop()),
+        sheets: visibleSheetNames.map(name => parseSheet(workbook, name, path.split("/").pop()))
       };
     }
 
@@ -1687,29 +1861,28 @@
       for (const cat of CATEGORY_DEFS) {
         const files = manifest[cat.key] || [];
         const loadedFiles = [];
-        const allSheets = [];
 
         for (const fileName of files) {
           try{
             const wb = await loadWorkbookFromFile(`./excels/${fileName}`);
-            loadedFiles.push(fileName);
-            wb.sheets.forEach(sheet => allSheets.push(sheet));
+            loadedFiles.push(wb);
           }catch(_){}
         }
 
         categoryStore[cat.key] = {
           key: cat.key,
           label: cat.label,
-          files: loadedFiles,
-          sheets: allSheets
+          files: loadedFiles
         };
       }
 
-      const firstAvailable = CATEGORY_DEFS.find(cat => (categoryStore[cat.key]?.files.length || 0) > 0);
-      activeCategoryKey = firstAvailable ? firstAvailable.key : CATEGORY_DEFS[0].key;
+      const firstAvailableCategory = CATEGORY_DEFS.find(cat => (categoryStore[cat.key]?.files.length || 0) > 0);
+      activeCategoryKey = firstAvailableCategory ? firstAvailableCategory.key : CATEGORY_DEFS[0].key;
 
-      const activeCategory = getActiveCategory();
-      activeSheetName = activeCategory?.sheets?.[0]?.name || null;
+      const firstActiveCategory = getActiveCategory();
+      const firstFile = firstActiveCategory?.files?.[0] || null;
+      activeFileKey = firstFile?.file || null;
+      activeSheetName = firstFile?.sheets?.[0]?.name || null;
     }
 
     function resetDataViewState(){
@@ -1736,13 +1909,17 @@
       renderEmptyDetail();
     }
 
-    function goToDataView(categoryKey){
+    function goToDataView(categoryKey, fileKey){
       const category = categoryStore[categoryKey];
       if (!category || !category.files.length) return;
 
+      const fileObj = category.files.find(f => f.file === fileKey);
+      if (!fileObj) return;
+
       currentView = "data";
       activeCategoryKey = categoryKey;
-      activeSheetName = category.sheets[0]?.name || null;
+      activeFileKey = fileObj.file;
+      activeSheetName = fileObj.sheets[0]?.name || null;
       resetDataViewState();
 
       homeView.classList.add("hidden");
@@ -1758,15 +1935,9 @@
       dashboardGrid.innerHTML = CATEGORY_DEFS.map(cat => {
         const item = categoryStore[cat.key];
         const count = item?.files?.length || 0;
-        const disabled = count === 0;
 
         return `
-          <button
-            class="dashboardCard ${disabled ? "disabled" : ""}"
-            data-category="${cat.key}"
-            type="button"
-            ${disabled ? "disabled" : ""}
-          >
+          <div class="dashboardCard">
             <div>
               <div class="dashboardTop">
                 <div class="dashboardTitle">${cat.label}</div>
@@ -1775,22 +1946,40 @@
               <div class="dashboardMeta">
                 ${count === 0 ? "No hay archivos cargados." : count === 1 ? "1 archivo disponible." : `${count} archivos disponibles.`}
               </div>
+
+              <div class="dashboardFileList">
+                ${
+                  count === 0
+                    ? `<div class="dashboardEmptyText">Sin archivos para mostrar.</div>`
+                    : item.files.map(fileObj => `
+                        <button
+                          class="dashboardFileLink"
+                          type="button"
+                          data-category="${cat.key}"
+                          data-file="${encodeURIComponent(fileObj.file)}"
+                        >
+                          ${fileObj.baseName}
+                        </button>
+                      `).join("")
+                }
+              </div>
             </div>
-            <div class="dashboardFooter">${disabled ? "Sin información" : "Ver información →"}</div>
-          </button>
+
+            <div class="dashboardFooter">${count === 0 ? "Sin información" : "Haz clic en el nombre del archivo"}</div>
+          </div>
         `;
       }).join("");
 
-      dashboardGrid.querySelectorAll("[data-category]").forEach(btn => {
+      dashboardGrid.querySelectorAll(".dashboardFileLink").forEach(btn => {
         btn.addEventListener("click", () => {
-          goToDataView(btn.dataset.category);
+          goToDataView(btn.dataset.category, decodeURIComponent(btn.dataset.file));
         });
       });
     }
 
     function renderSheetTabs(){
-      const category = getActiveCategory();
-      const sheets = category?.sheets || [];
+      const activeFile = getActiveFile();
+      const sheets = activeFile?.sheets || [];
 
       columnTabs.innerHTML = sheets.length
         ? sheets.map(sheet => `
@@ -1813,9 +2002,10 @@
 
     function renderTable(){
       const category = getActiveCategory();
+      const activeFile = getActiveFile();
       const sheet = getActiveSheet();
 
-      if (!category || !category.files.length || !sheet) {
+      if (!category || !activeFile || !sheet) {
         tableHead.innerHTML = "";
         tableBody.innerHTML = `
           <tr>
@@ -2057,11 +2247,17 @@
         </section>
       `;
 
+      const visibleFields = sheet.headers.filter(header => {
+        const value = row.values[header];
+        if (isDocRowValue(value)) return true;
+        return !isMissingValue(value);
+      });
+
       const allFieldsHtml = `
         <section class="detailGroup">
           <div class="detailGroupTitle">Detalle completo · ${sheet.name}</div>
           <div class="detailGrid">
-            ${sheet.headers.map(header => `
+            ${visibleFields.map(header => `
               <div class="detailItem">
                 <label>${header}</label>
                 <div>${renderDetailValue(header, row.values[header])}</div>
@@ -2115,6 +2311,7 @@
 
     function updateStats(visibleRows){
       const category = getActiveCategory();
+      const activeFile = getActiveFile();
       const sheet = getActiveSheet();
 
       statTransport.textContent = category?.label || "—";
@@ -2122,8 +2319,8 @@
       statVisible.textContent = visibleRows.length;
       statDocs.textContent = visibleRows.filter(r => countDocs(r) > 0).length;
 
-      if (category && sheet) {
-        sheetInfo.textContent = `${category.label} · Hoja: ${sheet.name} · ${category.files.length === 1 ? category.files[0] : `${category.files.length} excels cargados`}`;
+      if (category && sheet && activeFile) {
+        sheetInfo.textContent = `${category.label} · Archivo: ${activeFile.baseName} · Hoja: ${sheet.name}`;
       } else {
         sheetInfo.textContent = "Sin archivo cargado";
       }
