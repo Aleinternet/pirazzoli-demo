@@ -1201,7 +1201,7 @@
           <strong>Pirazzoli</strong>
           <span>Seguimiento de Importaciones</span>
         </div>
-      </div>
+      </div>async function loadWorkbookFromFile(path)
 
       <h1 class="loginTitle">Ingreso a plataforma</h1>
       <p class="loginSub">Ingresa tus credenciales para acceder al resumen y visualización de archivos.</p>
@@ -1674,6 +1674,44 @@
       return normalize(sheetName) === "MATRIZ DATOS";
     }
 
+    function getCellFillColor(cell){
+  if (!cell || !cell.s) return "";
+
+  const candidates = [
+    cell.s.fgColor?.rgb,
+    cell.s.bgColor?.rgb,
+    cell.s.fill?.fgColor?.rgb,
+    cell.s.fill?.bgColor?.rgb,
+    cell.s.patternFill?.fgColor?.rgb,
+    cell.s.patternFill?.bgColor?.rgb
+  ];
+
+  for (const color of candidates) {
+    if (color && typeof color === "string") {
+      return color.toUpperCase();
+    }
+  }
+
+  return "";
+}
+
+function isRedHeaderCell(cell){
+  const color = getCellFillColor(cell);
+  if (!color) return false;
+
+  const normalized = color.replace(/^FF/, "");
+
+  const redColors = [
+    "FF0000",
+    "C00000",
+    "E53935",
+    "D32F2F",
+    "F44336"
+  ];
+
+  return redColors.includes(normalized);
+}
+
     function getReferencedCellValue(workbook, formula, seenRefs = new Set()){
       if (!formula) return "";
 
@@ -1762,20 +1800,26 @@
     }
 
     function parseSheet(workbook, sheetName, fileLabel){
-      const ws = workbook.Sheets[sheetName];
-      const ref = ws["!ref"];
-      if (!ref) return { name: sheetName, headers: [], rows: [] };
-
       const range = XLSX.utils.decode_range(ref);
       const headerRowIndex = range.s.r;
       const headers = [];
+      const visibleColumns = [];
 
       for (let c = range.s.c; c <= range.e.c; c++) {
         const addr = XLSX.utils.encode_cell({ r: headerRowIndex, c });
         const cell = ws[addr];
+
+        // Si el encabezado está pintado de rojo, ocultamos esa columna
+        if (isRedHeaderCell(cell)) continue;
+
         let header = cleanText(formatCellValue(cell, workbook, sheetName, addr));
         if (!header) header = `Columna ${c + 1}`;
+
         headers.push(header);
+        visibleColumns.push({
+          colIndex: c,
+          header
+        });
       }
 
       const rows = [];
@@ -1783,9 +1827,8 @@
         const values = {};
         let hasAnyContent = false;
 
-        headers.forEach((header, index) => {
-          const c = range.s.c + index;
-          const addr = XLSX.utils.encode_cell({ r, c });
+        visibleColumns.forEach(({ header, colIndex }) => {
+          const addr = XLSX.utils.encode_cell({ r, c: colIndex });
           const cell = ws[addr];
           const rawText = cleanText(formatCellValue(cell, workbook, sheetName, addr));
           const hyperlink = cell?.l?.Target ? String(cell.l.Target).trim() : "";
@@ -1846,7 +1889,7 @@
       const workbook = XLSX.read(data, {
         type: "array",
         cellDates: true,
-        cellStyles: false
+        cellStyles: true
       });
 
       const visibleSheetNames = workbook.SheetNames.filter(name => !shouldHideSheet(name));
