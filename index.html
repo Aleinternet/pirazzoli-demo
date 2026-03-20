@@ -1613,15 +1613,29 @@
       return category.files.find(f => f.file === activeFileKey) || null;
     }
 
+
+
     function getActiveSheet(){
       const activeFile = getActiveFile();
       if (!activeFile) return null;
       return activeFile.sheets.find(s => s.name === activeSheetName) || null;
     }
 
+    function getHeaders(sheet){
+      return sheet?.headers || [];
+    }
+
     function getHeaderMeta(sheet){
       return sheet?.headerMeta || [];
     }
+
+    function getColumnLetter(sheet, header){
+      const meta = getHeaderMeta(sheet).find(h => h.header === header);
+      return meta?.excelColLetter || "";
+    }
+
+
+
 
     function getColumnLetter(sheet, header){
       const meta = getHeaderMeta(sheet).find(h => h.header === header);
@@ -2196,7 +2210,7 @@
                 <th class="${index === 0 ? "stickyHead1" : ""} ${index === 1 ? "stickyHead2" : ""}">
                   <div class="thInner">
                     <span class="thLabel">
-                      <span class="colLetter">${getColumnLetter(sheet, header)}</span>
+                      <span class="colLetter">${getColumnLetter(sheet, header) || "—"}</span>
                       <span>${header}</span>
                     </span>
                     <button
