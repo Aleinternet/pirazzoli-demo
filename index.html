@@ -1201,7 +1201,7 @@
           <strong>Pirazzoli</strong>
           <span>Seguimiento de Importaciones</span>
         </div>
-      </div>async function loadWorkbookFromFile(path)
+      </div>
 
       <h1 class="loginTitle">Ingreso a plataforma</h1>
       <p class="loginSub">Ingresa tus credenciales para acceder al resumen y visualización de archivos.</p>
@@ -1800,89 +1800,93 @@ function isRedHeaderCell(cell){
     }
 
     function parseSheet(workbook, sheetName, fileLabel){
-      const range = XLSX.utils.decode_range(ref);
-      const headerRowIndex = range.s.r;
-      const headers = [];
-      const visibleColumns = [];
+  const ws = workbook.Sheets[sheetName];
+  const ref = ws["!ref"];
+  if (!ref) return { name: sheetName, headers: [], rows: [] };
 
-      for (let c = range.s.c; c <= range.e.c; c++) {
-        const addr = XLSX.utils.encode_cell({ r: headerRowIndex, c });
-        const cell = ws[addr];
+  const range = XLSX.utils.decode_range(ref);
+  const headerRowIndex = range.s.r;
+  const headers = [];
+  const visibleColumns = [];
 
-        // Si el encabezado está pintado de rojo, ocultamos esa columna
-        if (isRedHeaderCell(cell)) continue;
+  for (let c = range.s.c; c <= range.e.c; c++) {
+    const addr = XLSX.utils.encode_cell({ r: headerRowIndex, c });
+    const cell = ws[addr];
 
-        let header = cleanText(formatCellValue(cell, workbook, sheetName, addr));
-        if (!header) header = `Columna ${c + 1}`;
+    // Si el encabezado está pintado de rojo, ocultamos esa columna
+    if (isRedHeaderCell(cell)) continue;
 
-        headers.push(header);
-        visibleColumns.push({
-          colIndex: c,
-          header
-        });
+    let header = cleanText(formatCellValue(cell, workbook, sheetName, addr));
+    if (!header) header = `Columna ${c + 1}`;
+
+    headers.push(header);
+    visibleColumns.push({
+      colIndex: c,
+      header
+    });
+  }
+
+  const rows = [];
+  for (let r = headerRowIndex + 1; r <= range.e.r; r++) {
+    const values = {};
+    let hasAnyContent = false;
+
+    visibleColumns.forEach(({ header, colIndex }) => {
+      const addr = XLSX.utils.encode_cell({ r, c: colIndex });
+      const cell = ws[addr];
+      const rawText = cleanText(formatCellValue(cell, workbook, sheetName, addr));
+      const hyperlink = cell?.l?.Target ? String(cell.l.Target).trim() : "";
+      const tooltip = cell?.l?.Tooltip ? String(cell.l.Tooltip).trim() : "";
+      const valueIsUrl = looksLikeUrl(rawText);
+
+      if (hyperlink || valueIsUrl) {
+        values[header] = {
+          text: rawText || header,
+          url: hyperlink || toUrl(rawText),
+          tooltip
+        };
+        hasAnyContent = true;
+      } else {
+        values[header] = rawText;
+        if (!isMissingValue(rawText)) hasAnyContent = true;
       }
+    });
 
-      const rows = [];
-      for (let r = headerRowIndex + 1; r <= range.e.r; r++) {
-        const values = {};
-        let hasAnyContent = false;
+    if (!hasAnyContent) continue;
 
-        visibleColumns.forEach(({ header, colIndex }) => {
-          const addr = XLSX.utils.encode_cell({ r, c: colIndex });
-          const cell = ws[addr];
-          const rawText = cleanText(formatCellValue(cell, workbook, sheetName, addr));
-          const hyperlink = cell?.l?.Target ? String(cell.l.Target).trim() : "";
-          const tooltip = cell?.l?.Tooltip ? String(cell.l.Tooltip).trim() : "";
-          const valueIsUrl = looksLikeUrl(rawText);
+    const refHeader =
+      headers.find(h => normalize(h).includes("REFERENCIA CLIENTE")) ||
+      headers[0] ||
+      "";
 
-          if (hyperlink || valueIsUrl) {
-            values[header] = {
-              text: rawText || header,
-              url: hyperlink || toUrl(rawText),
-              tooltip
-            };
-            hasAnyContent = true;
-          } else {
-            values[header] = rawText;
-            if (!isMissingValue(rawText)) hasAnyContent = true;
-          }
-        });
+    const dispatchHeader =
+      headers.find(h => normalize(h).includes("NUMERO DE DESPACHO")) ||
+      headers.find(h => normalize(h) === "DESPACHO") ||
+      headers[1] ||
+      "";
 
-        if (!hasAnyContent) continue;
+    const baseId = [
+      fileLabel,
+      sheetName,
+      safe(values[refHeader]),
+      safe(values[dispatchHeader]),
+      r + 1
+    ].join("|");
 
-        const refHeader =
-          headers.find(h => normalize(h).includes("REFERENCIA CLIENTE")) ||
-          headers[0] ||
-          "";
+    rows.push({
+      _id: baseId,
+      _sheet: sheetName,
+      _file: fileLabel,
+      values
+    });
+  }
 
-        const dispatchHeader =
-          headers.find(h => normalize(h).includes("NUMERO DE DESPACHO")) ||
-          headers.find(h => normalize(h) === "DESPACHO") ||
-          headers[1] ||
-          "";
-
-        const baseId = [
-          fileLabel,
-          sheetName,
-          safe(values[refHeader]),
-          safe(values[dispatchHeader]),
-          r + 1
-        ].join("|");
-
-        rows.push({
-          _id: baseId,
-          _sheet: sheetName,
-          _file: fileLabel,
-          values
-        });
-      }
-
-      return {
-        name: sheetName,
-        headers,
-        rows
-      };
-    }
+  return {
+    name: sheetName,
+    headers,
+    rows
+  };
+}
 
     async function loadWorkbookFromFile(path){
       const data = await fetchArrayBuffer(path);
