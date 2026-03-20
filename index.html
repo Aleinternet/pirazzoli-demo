@@ -40,10 +40,12 @@
       --danger-text:#b42318;
 
       --check-w:32px;
+      --rownum-w:58px;
       --sticky-1-w:200px;
       --sticky-2-w:170px;
-      --sticky-1-left:var(--check-w);
-      --sticky-2-left:calc(var(--check-w) + var(--sticky-1-w));
+      --sticky-rownum-left:var(--check-w);
+      --sticky-1-left:calc(var(--check-w) + var(--rownum-w));
+      --sticky-2-left:calc(var(--check-w) + var(--rownum-w) + var(--sticky-1-w));
     }
 
     *{box-sizing:border-box}
@@ -478,6 +480,23 @@
       gap:6px;
     }
 
+    .colLetter{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:20px;
+      height:18px;
+      padding:0 6px;
+      border-radius:999px;
+      background:#e7f2fb;
+      color:#0a5488;
+      font-size:9px;
+      font-weight:900;
+      line-height:1;
+      border:1px solid #c7dff0;
+      flex-shrink:0;
+    }
+
     .sortBtn{
       width:18px;
       height:18px;
@@ -540,6 +559,35 @@
       z-index:35;
       background:#fff;
       border-right:1px solid #e8eef4;
+    }
+
+    .rowNumberCell,.headRowNumberCell{
+      width:var(--rownum-w);
+      min-width:var(--rownum-w);
+      max-width:var(--rownum-w);
+      text-align:center;
+      padding:0 6px !important;
+      position:sticky;
+      left:var(--sticky-rownum-left);
+      z-index:34;
+      background:#fff;
+      border-right:1px solid #e8eef4;
+      color:#5d7287;
+      font-weight:800;
+    }
+
+    thead .headRowNumberCell{
+      z-index:44;
+      background:#f5f9fd;
+      font-size:10px;
+    }
+
+    tbody tr:hover .rowNumberCell{
+      background:#f9fcff;
+    }
+
+    tbody tr.selected .rowNumberCell{
+      background:#ebf5fd !important;
     }
 
     .stickyCol1,
@@ -972,6 +1020,7 @@
 
     @media (max-width:980px){
       :root{
+        --rownum-w:50px;
         --sticky-1-w:150px;
         --sticky-2-w:135px;
       }
@@ -1570,8 +1619,13 @@
       return activeFile.sheets.find(s => s.name === activeSheetName) || null;
     }
 
-    function getHeaders(sheet){
-      return sheet?.headers || [];
+    function getHeaderMeta(sheet){
+      return sheet?.headerMeta || [];
+    }
+
+    function getColumnLetter(sheet, header){
+      const meta = getHeaderMeta(sheet).find(h => h.header === header);
+      return meta?.excelColLetter || "";
     }
 
     function getReferenceHeader(sheet){
@@ -1827,14 +1881,15 @@
     }
 
     function parseSheet(workbook, sheetName, fileLabel){
-  const ws = workbook.Sheets[sheetName];
-  const ref = ws["!ref"];
-  if (!ref) return { name: sheetName, headers: [], rows: [] };
+      const ws = workbook.Sheets[sheetName];
+      const ref = ws["!ref"];
+      if (!ref) return { name: sheetName, headers: [], headerMeta: [], rows: [] };
 
-  const range = XLSX.utils.decode_range(ref);
-  const headerRowIndex = range.s.r;
-  const headers = [];
-  const visibleColumns = [];
+      const range = XLSX.utils.decode_range(ref);
+      const headerRowIndex = range.s.r;
+      const headers = [];
+      const headerMeta = [];
+      const visibleColumns = [];
 
   for (let c = range.s.c; c <= range.e.c; c++) {
     const addr = XLSX.utils.encode_cell({ r: headerRowIndex, c });
@@ -1852,14 +1907,23 @@
 
 
 
-    let header = cleanText(formatCellValue(cell, workbook, sheetName, addr));
-    if (!header) header = `Columna ${c + 1}`;
+        let header = cleanText(formatCellValue(cell, workbook, sheetName, addr));
+          if (!header) header = `Columna ${c + 1}`;
 
-    headers.push(header);
-    visibleColumns.push({
-      colIndex: c,
-      header
-    });
+          const excelColLetter = XLSX.utils.encode_col(c);
+
+          headers.push(header);
+          headerMeta.push({
+            header,
+            colIndex: c,
+            excelColLetter
+          });
+
+          visibleColumns.push({
+            colIndex: c,
+            header,
+            excelColLetter
+          });
   }
 
   const rows = [];
@@ -1909,17 +1973,19 @@
       r + 1
     ].join("|");
 
-    rows.push({
-      _id: baseId,
-      _sheet: sheetName,
-      _file: fileLabel,
-      values
-    });
+      rows.push({
+        _id: baseId,
+        _sheet: sheetName,
+        _file: fileLabel,
+        _excelRowNumber: r + 1,
+        values
+      });
   }
 
   return {
     name: sheetName,
     headers,
+    headerMeta,
     rows
   };
 }
@@ -2121,24 +2187,28 @@
       const otherHeaders = headers.filter(h => !fixedHeaders.includes(h));
       const orderedHeaders = [...fixedHeaders, ...otherHeaders];
 
-      tableHead.innerHTML = `
-        <th class="headCheckCell">
-          <input class="masterCheck" id="masterCheck" type="checkbox">
-        </th>
-        ${orderedHeaders.map((header, index) => `
-          <th class="${index === 0 ? "stickyHead1" : ""} ${index === 1 ? "stickyHead2" : ""}">
-            <div class="thInner">
-              <span class="thLabel">${header}</span>
-              <button
-                class="sortBtn ${(currentSort.key === header && currentSort.direction !== 0) ? "active" : ""}"
-                type="button"
-                data-sort="${encodeURIComponent(header)}"
-                title="Ordenar"
-              >${getSortSymbol(header)}</button>
-            </div>
-          </th>
-        `).join("")}
-      `;
+            tableHead.innerHTML = `
+              <th class="headCheckCell">
+                <input class="masterCheck" id="masterCheck" type="checkbox">
+              </th>
+              <th class="headRowNumberCell">Fila</th>
+              ${orderedHeaders.map((header, index) => `
+                <th class="${index === 0 ? "stickyHead1" : ""} ${index === 1 ? "stickyHead2" : ""}">
+                  <div class="thInner">
+                    <span class="thLabel">
+                      <span class="colLetter">${getColumnLetter(sheet, header)}</span>
+                      <span>${header}</span>
+                    </span>
+                    <button
+                      class="sortBtn ${(currentSort.key === header && currentSort.direction !== 0) ? "active" : ""}"
+                      type="button"
+                      data-sort="${encodeURIComponent(header)}"
+                      title="Ordenar"
+                    >${getSortSymbol(header)}</button>
+                  </div>
+                </th>
+              `).join("")}
+            `;
 
       tableHead.querySelectorAll("[data-sort]").forEach(btn => {
         btn.addEventListener("click", () => toggleSort(decodeURIComponent(btn.dataset.sort)));
@@ -2147,9 +2217,9 @@
       const visibleRows = sortRows(getFilteredRows());
 
       if (!visibleRows.length) {
-        tableBody.innerHTML = `
+                tableBody.innerHTML = `
           <tr>
-            <td colspan="${orderedHeaders.length + 1}">
+            <td colspan="${orderedHeaders.length + 2}">
               <div class="emptyState">
                 <strong>Sin resultados</strong>
                 No hay registros con el filtro actual.
@@ -2196,11 +2266,12 @@
           `;
         }).join("");
 
-        return `
+                return `
           <tr class="rowClickable ${selectedClass}" data-id="${encodeURIComponent(row._id)}">
             <td class="rowCheckCell">
               <input class="rowCheck" type="checkbox" data-row-check="${encodeURIComponent(row._id)}" ${selectedRowIds.has(row._id) ? "checked" : ""}>
             </td>
+            <td class="rowNumberCell">${row._excelRowNumber || "—"}</td>
             ${cells}
           </tr>
         `;
