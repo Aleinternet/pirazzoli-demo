@@ -1,0 +1,8 @@
+{
+  "terrestre": [
+    "minerva_terrestre_importaciones.xlsx",
+    "minerva_terrestre_exportaciones.xlsx"
+  ],
+  "aereo": [],
+  "maritimo": []
+}

@@ -1247,6 +1247,10 @@
         <button class="backBtn hidden" id="backHomeBtn" type="button">← Volver</button>
         <div class="viewLabel" id="viewLabel">Inicio</div>
       </div>
+
+      <div class="navRight">
+        <button class="backBtn" id="refreshDataBtn" type="button">Actualizar</button>
+      </div>
     </section>
 
     <section class="toolbar hidden" id="toolbar">
@@ -1377,6 +1381,8 @@
     const sheetInfo = document.getElementById("sheetInfo");
     const sidebarToggle = document.getElementById("sidebarToggle");
     const sidebarOpenHandle = document.getElementById("sidebarOpenHandle");
+
+    const refreshDataBtn = document.getElementById("refreshDataBtn");
 
     function safe(v){
       if (v === null || v === undefined) return "—";
@@ -1645,7 +1651,7 @@
 
     async function getManifestConfig(){
       try{
-        const res = await fetch("./excels/manifest.json?v=" + Date.now(), { cache: "no-store" });
+        const res = await fetch("./data/manifest.json?v=" + Date.now(), { cache: "no-store" });
         if (!res.ok) throw new Error("manifest no encontrado");
         return await res.json();
       }catch(_){
@@ -2403,6 +2409,43 @@
           </div>
         `;
       });
+
+
+      refreshDataBtn.addEventListener("click", async () => {
+      try {
+        await loadData();
+
+        if (currentView === "home") {
+          renderHomeDashboard();
+        } else {
+          const category = getActiveCategory();
+          const activeFile = getActiveFile();
+
+          if (!category || !activeFile) {
+            goToHomeView();
+          } else {
+            const stillExists = category.files.some(f => f.file === activeFileKey);
+            if (!stillExists) {
+              goToHomeView();
+            } else {
+              const fileObj = category.files.find(f => f.file === activeFileKey);
+              const sheetStillExists = fileObj?.sheets?.some(s => s.name === activeSheetName);
+
+              if (!sheetStillExists) {
+                activeSheetName = fileObj?.sheets?.[0]?.name || null;
+              }
+
+              renderAll();
+            }
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        alert("No se pudieron recargar los datos.");
+      }
+    });
   </script>
 </body>
 </html>
+
+
