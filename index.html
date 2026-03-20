@@ -1674,43 +1674,70 @@
       return normalize(sheetName) === "MATRIZ DATOS";
     }
 
-    function getCellFillColor(cell){
-  if (!cell || !cell.s) return "";
+    function getCellFillInfo(cell){
+      if (!cell || !cell.s) return null;
 
-  const candidates = [
-    cell.s.fgColor?.rgb,
-    cell.s.bgColor?.rgb,
-    cell.s.fill?.fgColor?.rgb,
-    cell.s.fill?.bgColor?.rgb,
-    cell.s.patternFill?.fgColor?.rgb,
-    cell.s.patternFill?.bgColor?.rgb
-  ];
+      const candidates = [
+        cell.s.fgColor,
+        cell.s.bgColor,
+        cell.s.fill?.fgColor,
+        cell.s.fill?.bgColor,
+        cell.s.patternFill?.fgColor,
+        cell.s.patternFill?.bgColor
+      ];
 
-  for (const color of candidates) {
-    if (color && typeof color === "string") {
-      return color.toUpperCase();
+      for (const color of candidates) {
+        if (!color) continue;
+
+        if (color.rgb && typeof color.rgb === "string") {
+          return { type: "rgb", value: color.rgb.toUpperCase() };
+        }
+
+        if (color.theme !== undefined && color.theme !== null) {
+          return { type: "theme", value: String(color.theme) };
+        }
+
+        if (color.indexed !== undefined && color.indexed !== null) {
+          return { type: "indexed", value: String(color.indexed) };
+        }
+
+        if (color.tint !== undefined && color.tint !== null) {
+          return { type: "tint", value: String(color.tint) };
+        }
+      }
+
+      return null;
     }
-  }
 
-  return "";
-}
+    function isRedHeaderCell(cell){
+      const info = getCellFillInfo(cell);
+      if (!info) return false;
 
-function isRedHeaderCell(cell){
-  const color = getCellFillColor(cell);
-  if (!color) return false;
+      if (info.type === "rgb") {
+        const normalized = info.value.replace(/^FF/, "");
 
-  const normalized = color.replace(/^FF/, "");
+        const redColors = [
+          "FF0000",
+          "C00000",
+          "E53935",
+          "D32F2F",
+          "F44336"
+        ];
 
-  const redColors = [
-    "FF0000",
-    "C00000",
-    "E53935",
-    "D32F2F",
-    "F44336"
-  ];
+        if (redColors.includes(normalized)) return true;
+      }
 
-  return redColors.includes(normalized);
-}
+      // Fallback: revisar serialización completa del estilo
+      const styleText = JSON.stringify(cell.s || {}).toUpperCase();
+
+      return (
+        styleText.includes("FF0000") ||
+        styleText.includes("C00000") ||
+        styleText.includes("E53935") ||
+        styleText.includes("D32F2F") ||
+        styleText.includes("F44336")
+      );
+    }
 
     function getReferencedCellValue(workbook, formula, seenRefs = new Set()){
       if (!formula) return "";
@@ -1813,8 +1840,17 @@ function isRedHeaderCell(cell){
     const addr = XLSX.utils.encode_cell({ r: headerRowIndex, c });
     const cell = ws[addr];
 
-    // Si el encabezado está pintado de rojo, ocultamos esa columna
+    console.log("HEADER DEBUG", {
+      hoja: sheetName,
+      celda: addr,
+      texto: cell ? formatCellValue(cell, workbook, sheetName, addr) : "",
+      style: cell?.s
+    });
+
     if (isRedHeaderCell(cell)) continue;
+
+
+
 
     let header = cleanText(formatCellValue(cell, workbook, sheetName, addr));
     if (!header) header = `Columna ${c + 1}`;
