@@ -36,8 +36,8 @@
       --neutral-bg:#eef2f6;
       --neutral-text:#5f6e7d;
 
-      --danger-bg:#fde7e9;
-      --danger-text:#b42318;
+      --storage-bg:#fde7e9;
+      --storage-text:#b42318;
 
       --check-w:32px;
       --rownum-w:58px;
@@ -694,6 +694,7 @@
     .chip-warn{background:var(--warn-bg);color:var(--warn-text)}
     .chip-pending{background:var(--pending-bg);color:var(--pending-text)}
     .chip-neutral{background:var(--neutral-bg);color:var(--neutral-text)}
+    .chip-storage{background:var(--storage-bg);color:var(--storage-text)}
     .chip-danger{background:var(--danger-bg);color:var(--danger-text)}
 
     .docLink{
@@ -1536,10 +1537,17 @@
 
     function chipClassFromValue(value){
       const v = normalize(value);
+
+      if (["EN ALMACEN"].some(x => v.includes(x))) return "chip-storage";
+
       if (["LIBERADO","COMPLETADO","APROBADO","OK","EMITIDA","PAGADO","CERRADO","ENTREGADO"].some(x => v.includes(x))) return "chip-ok";
-      if (["PRESENTADO","EN TRANSITO","ARRIBADA EN PUERTO","EN ALMACEN","DESPACHADO","EN CURSO","TRAMITE"].some(x => v.includes(x))) return "chip-pending";
+
+      if (["PRESENTADO","EN TRANSITO","ARRIBADA EN PUERTO","DESPACHADO","EN CURSO","TRAMITE"].some(x => v.includes(x))) return "chip-pending";
+
       if (["PENDIENTE","OBSERVADO","OBSERVACION","EN ESPERA"].some(x => v.includes(x))) return "chip-warn";
+
       if (["ERROR","RECHAZADO","NO CONFORME","VENCIDO"].some(x => v.includes(x))) return "chip-danger";
+
       return "chip-neutral";
     }
 
