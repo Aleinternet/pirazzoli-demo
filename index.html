@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -15,30 +16,24 @@
       --line-soft:#ebf0f5;
       --text:#18324a;
       --muted:#61758b;
-
       --brand:#1177bf;
       --brand-2:#0d67a7;
       --brand-3:#0a5488;
       --brand-soft:#eaf5fd;
       --brand-soft-2:#dff0fb;
-
       --shadow:0 14px 32px rgba(17,119,191,.08);
-
       --ok-bg:#dff4e6;
       --ok-text:#157347;
-
       --warn-bg:#fff3cd;
       --warn-text:#9a6b00;
-
       --pending-bg:#e8f1fd;
       --pending-text:#185abc;
-
       --neutral-bg:#eef2f6;
       --neutral-text:#5f6e7d;
-
       --storage-bg:#fde7e9;
       --storage-text:#b42318;
-
+      --danger-bg:#fde7e9;
+      --danger-text:#b42318;
       --check-w:32px;
       --rownum-w:58px;
       --sticky-1-w:200px;
@@ -57,10 +52,8 @@
       color:var(--text);
       overflow:hidden;
     }
-
     .hidden{display:none !important;}
 
-    /* LOGIN */
     .loginScreen{
       min-height:100vh;
       display:grid;
@@ -71,7 +64,6 @@
         radial-gradient(circle at bottom left, rgba(17,119,191,.07), transparent 28%),
         var(--bg);
     }
-
     .loginCard{
       width:min(100%, 420px);
       background:#fff;
@@ -80,1169 +72,302 @@
       box-shadow:0 18px 38px rgba(17,119,191,.10);
       padding:28px;
     }
-
-    .loginBrand{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-bottom:22px;
-    }
-
+    .loginBrand{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
     .loginLogo{
-      width:44px;
-      height:44px;
-      border-radius:12px;
+      width:44px;height:44px;border-radius:12px;
       background:linear-gradient(135deg,var(--brand),var(--brand-3));
-      color:#fff;
-      display:grid;
-      place-items:center;
-      font-weight:900;
-      font-size:22px;
-      box-shadow:0 10px 22px rgba(17,119,191,.22);
-      flex-shrink:0;
+      color:#fff;display:grid;place-items:center;font-weight:900;font-size:22px;
+      box-shadow:0 10px 22px rgba(17,119,191,.22);flex-shrink:0;
     }
-
-    .loginBrandText strong{
-      display:block;
-      font-size:18px;
-      line-height:1.1;
-    }
-
-    .loginBrandText span{
-      display:block;
-      margin-top:4px;
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .loginTitle{
-      margin:0 0 8px;
-      font-size:18px;
-      font-weight:900;
-    }
-
-    .loginSub{
-      margin:0 0 18px;
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.5;
-    }
-
-    .field{
-      margin-bottom:14px;
-    }
-
-    .field label{
-      display:block;
-      font-size:12px;
-      font-weight:800;
-      color:#597189;
-      margin-bottom:6px;
-    }
-
+    .loginBrandText strong{display:block;font-size:18px;line-height:1.1;}
+    .loginBrandText span{display:block;margin-top:4px;font-size:12px;color:var(--muted);}
+    .loginTitle{margin:0 0 8px;font-size:18px;font-weight:900;}
+    .loginSub{margin:0 0 18px;font-size:13px;color:var(--muted);line-height:1.5;}
+    .field{margin-bottom:14px;}
+    .field label{display:block;font-size:12px;font-weight:800;color:#597189;margin-bottom:6px;}
     .field input{
-      width:100%;
-      height:44px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:#fff;
-      padding:0 12px;
-      font-size:14px;
-      outline:none;
-      color:var(--text);
+      width:100%;height:44px;border:1px solid var(--line);border-radius:12px;background:#fff;
+      padding:0 12px;font-size:14px;outline:none;color:var(--text);
     }
-
-    .field input:focus{
-      border-color:#93c4e6;
-      box-shadow:0 0 0 4px rgba(17,119,191,.10);
-    }
-
+    .field input:focus{border-color:#93c4e6;box-shadow:0 0 0 4px rgba(17,119,191,.10);}
     .loginBtn{
-      width:100%;
-      height:46px;
-      border:0;
-      border-radius:12px;
-      background:linear-gradient(135deg,var(--brand),var(--brand-3));
-      color:#fff;
-      font-size:14px;
-      font-weight:900;
-      cursor:pointer;
-      box-shadow:0 12px 24px rgba(17,119,191,.18);
-      transition:transform .16s ease, box-shadow .16s ease;
+      width:100%;height:46px;border:0;border-radius:12px;
+      background:linear-gradient(135deg,var(--brand),var(--brand-3));color:#fff;
+      font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 12px 24px rgba(17,119,191,.18);
     }
+    .loginError{min-height:18px;margin-top:12px;font-size:12px;color:var(--danger-text);font-weight:700;}
 
-    .loginBtn:hover{
-      transform:translateY(-1px);
-      box-shadow:0 16px 28px rgba(17,119,191,.22);
-    }
-
-    .loginError{
-      min-height:18px;
-      margin-top:12px;
-      font-size:12px;
-      color:var(--danger-text);
-      font-weight:700;
-    }
-
-    /* APP */
-    .app{
-      height:100vh;
-      display:grid;
-      grid-template-rows:auto auto auto 1fr;
-    }
-
+    .app{height:100vh;display:grid;grid-template-rows:auto auto auto auto auto 1fr;}
     .topbar{
-      min-height:58px;
-      background:#fff;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      padding:10px 18px;
-      position:sticky;
-      top:0;
-      z-index:80;
+      min-height:58px;background:#fff;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 18px;
+      position:sticky;top:0;z-index:80;
     }
-
-    .brandWrap{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-    }
-
+    .brandWrap{display:flex;align-items:center;gap:12px;min-width:0;}
     .logoBox{
-      width:32px;
-      height:32px;
-      border-radius:8px;
-      background:linear-gradient(135deg,var(--brand),var(--brand-3));
-      display:grid;
-      place-items:center;
-      color:#fff;
-      font-weight:900;
-      font-size:16px;
-      box-shadow:0 10px 20px rgba(17,119,191,.22);
-      flex-shrink:0;
+      width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand-3));
+      display:grid;place-items:center;color:#fff;font-weight:900;font-size:16px;box-shadow:0 10px 20px rgba(17,119,191,.22);flex-shrink:0;
     }
+    .brandText{min-width:0;display:flex;flex-direction:column;}
+    .brandText strong{font-size:15px;line-height:1.1;}
+    .brandText span{margin-top:2px;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .topStats{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+    .miniStat{border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 12px;font-size:12px;color:var(--muted);white-space:nowrap;}
+    .miniStat strong{color:var(--text);margin-left:6px;}
 
-    .brandText{
-      min-width:0;
-      display:flex;
-      flex-direction:column;
+    .fxBar{
+      background:#fff;border-bottom:1px solid var(--line);padding:8px 16px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
     }
-
-    .brandText strong{
-      font-size:15px;
-      line-height:1.1;
+    .fxWrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .fxCard{
+      border:1px solid #d8e5f0;background:#f8fbff;border-radius:12px;padding:7px 10px;
+      display:flex;align-items:center;gap:8px;font-size:12px;
     }
-
-    .brandText span{
-      margin-top:2px;
-      font-size:12px;
-      color:var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .topStats{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    .miniStat{
-      border:1px solid var(--line);
-      border-radius:999px;
-      background:#fff;
-      padding:8px 12px;
-      font-size:12px;
-      color:var(--muted);
-      white-space:nowrap;
-    }
-
-    .miniStat strong{
-      color:var(--text);
-      margin-left:6px;
-    }
+    .fxCard strong{font-size:12px;}
+    .fxUpdate{font-size:11px;color:var(--muted);font-weight:700;}
+    .fxLoading{color:#0d67a7;}
+    .fxError{color:#b42318;}
 
     .navBar{
-      background:#fff;
-      border-bottom:1px solid var(--line);
-      padding:10px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
+      background:#fff;border-bottom:1px solid var(--line);padding:10px 16px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
     }
-
-    .navLeft{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
+    .navLeft{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
     .backBtn{
-      height:38px;
-      border:1px solid #cfe0ee;
-      border-radius:10px;
-      background:#fff;
-      color:#23415d;
-      padding:0 12px;
-      font-size:13px;
-      font-weight:800;
-      cursor:pointer;
-      transition:.15s ease;
+      height:38px;border:1px solid #cfe0ee;border-radius:10px;background:#fff;color:#23415d;
+      padding:0 12px;font-size:13px;font-weight:800;cursor:pointer;
     }
-
-    .backBtn:hover{
-      background:#eef7fd;
-      border-color:#9fc5e2;
-      color:#0d67a7;
-    }
-
-    .viewLabel{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:800;
-      white-space:nowrap;
-    }
+    .backBtn:hover{background:#eef7fd;border-color:#9fc5e2;color:#0d67a7;}
+    .viewLabel{font-size:12px;color:var(--muted);font-weight:800;white-space:nowrap;}
 
     .toolbar{
-      background:#fff;
-      border-bottom:1px solid var(--line);
-      padding:10px 16px;
-      display:flex;
-      gap:12px;
-      align-items:center;
-      flex-wrap:wrap;
+      background:#fff;border-bottom:1px solid var(--line);padding:10px 16px;
+      display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:relative;
     }
-
-    .searchWrap{
-      flex:1;
-      min-width:280px;
-    }
-
+    .searchWrap{flex:1;min-width:260px;}
     .searchWrap input{
-      width:100%;
-      height:38px;
-      border:1px solid var(--line);
-      border-radius:10px;
-      background:#fff;
-      padding:0 12px;
-      font-size:14px;
-      outline:none;
-      color:var(--text);
+      width:100%;height:38px;border:1px solid var(--line);border-radius:10px;background:#fff;
+      padding:0 12px;font-size:14px;outline:none;color:var(--text);
     }
+    .searchWrap input:focus{border-color:#93c4e6;box-shadow:0 0 0 4px rgba(17,119,191,.10);}
+    .toolbarInfo{color:var(--muted);font-size:12px;font-weight:700;white-space:nowrap;}
+    .toolbarActions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .toolbarSelect{
+      height:38px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:0 10px;font-size:13px;color:var(--text);
+    }
+    .softBtn{
+      height:38px;border:1px solid #cfe0ee;border-radius:10px;background:#fff;color:#23415d;
+      padding:0 12px;font-size:13px;font-weight:800;cursor:pointer;
+    }
+    .softBtn.primary{
+      background:linear-gradient(135deg,var(--brand),var(--brand-3));
+      border-color:var(--brand-3);color:#fff;
+    }
+    .softBtn:hover{background:#eef7fd;border-color:#9fc5e2;color:#0d67a7;}
+    .softBtn.primary:hover{background:linear-gradient(135deg,var(--brand),var(--brand-3));color:#fff;}
 
-    .searchWrap input:focus{
-      border-color:#93c4e6;
-      box-shadow:0 0 0 4px rgba(17,119,191,.10);
+    .summaryBar{
+      background:#f9fcff;border-bottom:1px solid var(--line);padding:10px 16px;
+      display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
     }
-
-    .toolbarInfo{
-      color:var(--muted);
-      font-size:12px;
-      font-weight:700;
-      white-space:nowrap;
+    .summaryTitle{font-size:12px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.04em;}
+    .summaryCards{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;}
+    .summaryCard{
+      background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 12px;min-width:120px;
+      box-shadow:0 6px 14px rgba(17,119,191,.04);
     }
+    .summaryCard strong{display:block;font-size:14px;color:var(--text);}
+    .summaryCard span{display:block;margin-top:3px;font-size:11px;color:var(--muted);}
+    .filterSummary{font-size:12px;color:var(--muted);font-weight:700;}
 
     .content{
-      min-height:0;
-      height:100%;
-      display:grid;
-      grid-template-columns:minmax(0,1fr) 0px;
-      transition:grid-template-columns .26s ease;
-      overflow:hidden;
-      position:relative;
+      min-height:0;height:100%;display:grid;grid-template-columns:minmax(0,1fr) 0px;
+      transition:grid-template-columns .26s ease;overflow:hidden;position:relative;
     }
+    .content.sidebar-open{grid-template-columns:minmax(0,1fr) 380px;}
+    .main{min-width:0;display:grid;grid-template-rows:auto 1fr;background:#fff;overflow:hidden;position:relative;}
 
-    .content.sidebar-open{
-      grid-template-columns:minmax(0,1fr) 380px;
-    }
-
-    .main{
-      min-width:0;
-      display:grid;
-      grid-template-rows:auto 1fr;
-      background:#fff;
-      overflow:hidden;
-      position:relative;
-    }
-
-    .columnTabsWrap{
-      background:#fff;
-      border-bottom:1px solid var(--line);
-      padding:10px 16px 0;
-      overflow:hidden;
-      flex-shrink:0;
-    }
-
-    .columnTabs{
-      display:flex;
-      gap:8px;
-      overflow:auto;
-      padding-bottom:10px;
-    }
-
+    .columnTabsWrap{background:#fff;border-bottom:1px solid var(--line);padding:10px 16px 0;overflow:hidden;flex-shrink:0;}
+    .columnTabs{display:flex;gap:8px;overflow:auto;padding-bottom:10px;}
     .columnTab{
-      position:relative;
-      border:1px solid #cfe0ee;
-      border-bottom:1px solid transparent;
-      background:linear-gradient(180deg,#ffffff 0%, #f7fbff 100%);
-      color:#23415d;
-      border-radius:12px 12px 0 0;
-      padding:10px 14px;
-      cursor:pointer;
-      font-size:12px;
-      font-weight:800;
-      white-space:nowrap;
-      transition:
-        background .22s ease,
-        color .22s ease,
-        border-color .22s ease,
-        transform .18s ease,
-        box-shadow .22s ease;
+      position:relative;border:1px solid #cfe0ee;border-bottom:1px solid transparent;
+      background:linear-gradient(180deg,#ffffff 0%, #f7fbff 100%);color:#23415d;border-radius:12px 12px 0 0;
+      padding:10px 14px;cursor:pointer;font-size:12px;font-weight:800;white-space:nowrap;
       box-shadow:inset 0 -1px 0 rgba(255,255,255,.75);
     }
-
     .columnTab.active{
       background:linear-gradient(135deg,var(--brand) 0%, var(--brand-3) 100%);
-      border-color:var(--brand-3);
-      border-bottom-color:transparent;
-      color:#ffffff;
-      box-shadow:
-        0 10px 22px rgba(17,119,191,.18),
-        inset 0 1px 0 rgba(255,255,255,.18);
+      border-color:var(--brand-3);border-bottom-color:transparent;color:#ffffff;
+      box-shadow:0 10px 22px rgba(17,119,191,.18), inset 0 1px 0 rgba(255,255,255,.18);
       transform:translateY(-1px);
     }
 
-    .columnTab:hover{
-      background:linear-gradient(180deg,#fafdff 0%, #edf7ff 100%);
-      border-color:#aecde5;
-      color:var(--brand-3);
-      transform:translateY(-1px);
-      box-shadow:0 8px 18px rgba(17,119,191,.10);
-    }
-
-    .columnTab:focus-visible{
-      outline:none;
-      box-shadow:
-        0 0 0 3px rgba(17,119,191,.16),
-        0 8px 18px rgba(17,119,191,.10);
-    }
-
-    .tableWrap{
-      min-height:0;
-      overflow:auto;
-      background:#fff;
-    }
-
-    table{
-      width:max-content;
-      min-width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      font-size:10.5px;
-    }
-
+    .tableWrap{min-height:0;overflow:auto;background:#fff;}
+    table{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px;}
     thead th{
-      position:sticky;
-      top:0;
-      z-index:20;
-      background:#f5f9fd;
-      color:#29445d;
-      border-bottom:1px solid var(--line);
-      border-right:1px solid #e8eef4;
-      text-align:left;
-      padding:6px 7px;
-      font-size:10px;
-      font-weight:900;
-      white-space:nowrap;
-      box-shadow:0 1px 0 #e8eef4;
+      position:sticky;top:0;z-index:20;background:#f5f9fd;color:#29445d;border-bottom:1px solid var(--line);
+      border-right:1px solid #e8eef4;text-align:left;padding:6px 7px;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 1px 0 #e8eef4;
     }
-
-    .thInner{
-      display:flex;
-      align-items:center;
-      gap:5px;
-      min-height:18px;
-    }
-
-    .thLabel{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-    }
-
+    .thInner{display:flex;align-items:center;gap:5px;min-height:18px;}
+    .thLabel{display:inline-flex;align-items:center;gap:6px;}
     .colLetter{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:20px;
-      height:18px;
-      padding:0 6px;
-      border-radius:999px;
-      background:#e7f2fb;
-      color:#0a5488;
-      font-size:9px;
-      font-weight:900;
-      line-height:1;
-      border:1px solid #c7dff0;
-      flex-shrink:0;
+      display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:18px;padding:0 6px;border-radius:999px;
+      background:#e7f2fb;color:#0a5488;font-size:9px;font-weight:900;line-height:1;border:1px solid #c7dff0;flex-shrink:0;
     }
-
-    .sortBtn{
-      width:18px;
-      height:18px;
-      border:1px solid #cfe0ef;
-      border-radius:5px;
-      background:#fff;
-      color:#4d6580;
-      font-size:9px;
-      line-height:1;
-      cursor:pointer;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      flex-shrink:0;
-      transition:.15s ease;
+    .sortBtn,.filterBtn{
+      width:18px;height:18px;border:1px solid #cfe0ef;border-radius:5px;background:#fff;color:#4d6580;font-size:9px;line-height:1;
+      cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
     }
-
-    .sortBtn:hover{
-      background:#eef7fd;
-      border-color:#9fc5e2;
-      color:#0d67a7;
-    }
-
-    .sortBtn.active{
-      background:#dff0fb;
-      border-color:#81b7db;
-      color:#0a5488;
-      font-weight:900;
-    }
-
+    .sortBtn.active,.filterBtn.active{background:#dff0fb;border-color:#81b7db;color:#0a5488;font-weight:900;}
     tbody td{
-      border-bottom:1px solid var(--line-soft);
-      border-right:1px solid #f2f5f8;
-      padding:5px 7px;
-      vertical-align:middle;
-      white-space:nowrap;
-      background:#fff;
-      font-size:10.5px;
-      line-height:1.2;
+      border-bottom:1px solid var(--line-soft);border-right:1px solid #f2f5f8;padding:5px 7px;vertical-align:middle;
+      white-space:nowrap;background:#fff;font-size:10.5px;line-height:1.2;
     }
-
-    tbody tr:hover td{
-      background:#f9fcff;
-    }
-
-    tbody tr.selected td{
-      background:#ebf5fd !important;
-    }
-
+    tbody tr:hover td{background:#f9fcff;}
+    tbody tr.selected td{background:#ebf5fd !important;}
     .rowClickable{cursor:pointer}
-
     .rowCheckCell,.headCheckCell{
-      width:var(--check-w);
-      min-width:var(--check-w);
-      max-width:var(--check-w);
-      text-align:center;
-      padding:0 4px !important;
-      position:sticky;
-      left:0;
-      z-index:35;
-      background:#fff;
-      border-right:1px solid #e8eef4;
+      width:var(--check-w);min-width:var(--check-w);max-width:var(--check-w);text-align:center;padding:0 4px !important;
+      position:sticky;left:0;z-index:35;background:#fff;border-right:1px solid #e8eef4;
     }
-
     .rowNumberCell,.headRowNumberCell{
-      width:var(--rownum-w);
-      min-width:var(--rownum-w);
-      max-width:var(--rownum-w);
-      text-align:center;
-      padding:0 6px !important;
-      position:sticky;
-      left:var(--sticky-rownum-left);
-      z-index:34;
-      background:#fff;
-      border-right:1px solid #e8eef4;
-      color:#5d7287;
-      font-weight:800;
+      width:var(--rownum-w);min-width:var(--rownum-w);max-width:var(--rownum-w);text-align:center;padding:0 6px !important;
+      position:sticky;left:var(--sticky-rownum-left);z-index:34;background:#fff;border-right:1px solid #e8eef4;color:#5d7287;font-weight:800;
     }
-
-    thead .headRowNumberCell{
-      z-index:44;
-      background:#f5f9fd;
-      font-size:10px;
+    thead .headRowNumberCell{z-index:44;background:#f5f9fd;font-size:10px;}
+    .stickyCol1,.stickyHead1{
+      position:sticky !important;left:var(--sticky-1-left) !important;min-width:var(--sticky-1-w);width:var(--sticky-1-w);max-width:var(--sticky-1-w);
+      z-index:27;background:#fff;border-right:1px solid #e8eef4;box-shadow:2px 0 0 rgba(213,222,232,.45);
     }
-
-    tbody tr:hover .rowNumberCell{
-      background:#f9fcff;
+    .stickyCol2,.stickyHead2{
+      position:sticky !important;left:var(--sticky-2-left) !important;min-width:var(--sticky-2-w);width:var(--sticky-2-w);max-width:var(--sticky-2-w);
+      z-index:26;background:#fff;border-right:1px solid #e8eef4;box-shadow:2px 0 0 rgba(213,222,232,.45);
     }
-
-    tbody tr.selected .rowNumberCell{
-      background:#ebf5fd !important;
-    }
-
-    .stickyCol1,
-    .stickyHead1{
-      position:sticky !important;
-      left:var(--sticky-1-left) !important;
-      min-width:var(--sticky-1-w);
-      width:var(--sticky-1-w);
-      max-width:var(--sticky-1-w);
-      z-index:27;
-      background:#fff;
-      border-right:1px solid #e8eef4;
-      box-shadow:2px 0 0 rgba(213,222,232,.45);
-    }
-
-    .stickyCol2,
-    .stickyHead2{
-      position:sticky !important;
-      left:var(--sticky-2-left) !important;
-      min-width:var(--sticky-2-w);
-      width:var(--sticky-2-w);
-      max-width:var(--sticky-2-w);
-      z-index:26;
-      background:#fff;
-      border-right:1px solid #e8eef4;
-      box-shadow:2px 0 0 rgba(213,222,232,.45);
-    }
-
     thead .headCheckCell{z-index:45;background:#f5f9fd}
     thead .stickyHead1{z-index:43;background:#f5f9fd}
     thead .stickyHead2{z-index:42;background:#f5f9fd}
+    tbody tr:hover .rowCheckCell,tbody tr:hover .stickyCol1,tbody tr:hover .stickyCol2{background:#f9fcff;}
+    tbody tr.selected .rowCheckCell,tbody tr.selected .stickyCol1,tbody tr.selected .stickyCol2{background:#ebf5fd !important;}
 
-    tbody tr:hover .rowCheckCell,
-    tbody tr:hover .stickyCol1,
-    tbody tr:hover .stickyCol2{
-      background:#f9fcff;
+    .rowCheck,.masterCheck,.colCheck{
+      width:14px;height:14px;border:1px solid #bad2e5;border-radius:3px;appearance:none;-webkit-appearance:none;background:#fff;cursor:pointer;position:relative;margin:0;
+    }
+    .rowCheck:checked,.masterCheck:checked,.colCheck:checked{background:var(--brand-soft-2);border-color:#7fb7dc;}
+    .rowCheck:checked::after,.masterCheck:checked::after,.colCheck:checked::after{
+      content:"";position:absolute;left:3px;top:0px;width:4px;height:7px;border:solid var(--brand-3);border-width:0 2px 2px 0;transform:rotate(45deg);
     }
 
-    tbody tr.selected .rowCheckCell,
-    tbody tr.selected .stickyCol1,
-    tbody tr.selected .stickyCol2{
-      background:#ebf5fd !important;
-    }
-
-    .rowCheck,.masterCheck{
-      width:14px;
-      height:14px;
-      border:1px solid #bad2e5;
-      border-radius:3px;
-      appearance:none;
-      -webkit-appearance:none;
-      background:#fff;
-      cursor:pointer;
-      position:relative;
-      margin:0;
-    }
-
-    .rowCheck:checked,.masterCheck:checked{
-      background:var(--brand-soft-2);
-      border-color:#7fb7dc;
-    }
-
-    .rowCheck:checked::after,.masterCheck:checked::after{
-      content:"";
-      position:absolute;
-      left:3px;
-      top:0px;
-      width:4px;
-      height:7px;
-      border:solid var(--brand-3);
-      border-width:0 2px 2px 0;
-      transform:rotate(45deg);
-    }
-
-    .cellWrap{
-      max-width:190px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .cellWrap.long{
-      max-width:260px;
-    }
-
-    .stickyCol1 .cellWrap,
-    .stickyCol2 .cellWrap{
-      max-width:none;
-    }
-
+    .cellWrap{max-width:190px;overflow:hidden;text-overflow:ellipsis;}
+    .cellWrap.long{max-width:260px;}
+    .stickyCol1 .cellWrap,.stickyCol2 .cellWrap{max-width:none;}
     .chip{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:19px;
-      padding:2px 7px;
-      border-radius:999px;
-      font-size:10px;
-      font-weight:900;
-      white-space:nowrap;
-      border:1px solid transparent;
+      display:inline-flex;align-items:center;justify-content:center;min-height:19px;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:900;white-space:nowrap;border:1px solid transparent;
     }
-
     .chip-ok{background:var(--ok-bg);color:var(--ok-text)}
     .chip-warn{background:var(--warn-bg);color:var(--warn-text)}
     .chip-pending{background:var(--pending-bg);color:var(--pending-text)}
     .chip-neutral{background:var(--neutral-bg);color:var(--neutral-text)}
     .chip-storage{background:var(--storage-bg);color:var(--storage-text)}
     .chip-danger{background:var(--danger-bg);color:var(--danger-text)}
-
-    .docLink{
-      color:#0d67a7;
-      text-decoration:underline;
-      font-style:italic;
-      font-weight:700;
-      cursor:pointer;
-    }
+    .docLink{color:#0d67a7;text-decoration:underline;font-style:italic;font-weight:700;cursor:pointer;}
 
     .sidebar{
-      min-width:0;
-      min-height:0;
-      background:#fbfdff;
-      border-left:1px solid var(--line);
-      display:grid;
-      grid-template-rows:auto minmax(0,1fr);
-      overflow:visible;
-      position:relative;
-      z-index:20;
+      min-width:0;min-height:0;background:#fbfdff;border-left:1px solid var(--line);
+      display:grid;grid-template-rows:auto minmax(0,1fr);overflow:visible;position:relative;z-index:20;
     }
-
-    .sidebarOpenHandle{
-      position:absolute;
-      right:0;
-      top:14px;
-      width:34px;
-      height:34px;
-      border:1px solid var(--line);
-      border-right:0;
-      border-radius:10px 0 0 10px;
-      background:#fff;
-      color:var(--brand-3);
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      box-shadow:0 8px 18px rgba(17,119,191,.10);
-      z-index:40;
-      transition:background .18s ease, opacity .18s ease, transform .18s ease, box-shadow .18s ease;
+    .sidebarOpenHandle,.sidebarToggle{
+      position:absolute;top:14px;width:34px;height:34px;border:1px solid var(--line);border-right:0;border-radius:10px 0 0 10px;
+      background:#fff;color:var(--brand-3);display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 18px rgba(17,119,191,.10);z-index:40;
     }
+    .sidebarOpenHandle{right:0;}
+    .sidebarToggle{left:-34px;}
+    .content.sidebar-open .sidebarOpenHandle{opacity:0;pointer-events:none;}
+    .sidebarHead{padding:16px 18px 12px;border-bottom:1px solid var(--line);background:#fff;flex-shrink:0;}
+    .sidebarHead h3{margin:0;font-size:16px;line-height:1.2;}
+    .sidebarHead p{margin:6px 0 0;font-size:12px;color:var(--muted);line-height:1.5;}
+    .sidebarInner{min-height:0;height:100%;overflow-y:auto;overflow-x:hidden;padding:14px;}
+    .detailGroup{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 8px 18px rgba(17,119,191,.04);}
+    .detailGroupTitle{padding:10px 12px;border-bottom:1px solid var(--line);background:#f4f9fd;color:#5a7086;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;}
+    .detailGrid{padding:10px;display:grid;gap:8px;}
+    .detailItem{border:1px solid #edf2f6;border-radius:12px;padding:10px;background:#fff;}
+    .detailItem label{display:block;font-size:10px;font-weight:900;color:#6e8194;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
+    .detailItem div{font-size:12px;line-height:1.4;word-break:break-word;}
+    .docsList{display:grid;gap:8px;}
+    .docBtn{width:100%;text-align:left;border:1px solid #cde1f0;background:#eef7fd;color:#0a5488;border-radius:12px;padding:10px 12px;cursor:pointer;font-size:12px;font-weight:800;}
+    .viewerBlock{border:1px dashed #bfd2e4;border-radius:12px;background:#f7fbff;padding:12px;font-size:12px;line-height:1.5;color:#4f6479;margin-bottom:12px;}
+    .viewerBlock a{color:#0d67a7;font-weight:800;}
+    .emptyState{padding:34px 18px;text-align:center;color:var(--muted);font-size:13px;}
+    .emptyState strong{display:block;color:var(--text);margin-bottom:8px;font-size:15px;}
 
-    .sidebarOpenHandle:hover{ background:#eef7fd; }
-
-    .content.sidebar-open .sidebarOpenHandle{
-      opacity:0;
-      pointer-events:none;
-    }
-
-    .sidebarToggle{
-      position:absolute;
-      left:-34px;
-      top:14px;
-      width:34px;
-      height:34px;
-      border:1px solid var(--line);
-      border-right:0;
-      border-radius:10px 0 0 10px;
-      background:#fff;
-      color:var(--brand-3);
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      box-shadow:0 8px 18px rgba(17,119,191,.10);
-      z-index:40;
-    }
-
-    .sidebarToggle:hover{ background:#eef7fd; }
-
-    .sidebarHead{
-      padding:16px 18px 12px;
-      border-bottom:1px solid var(--line);
-      background:#fff;
-      flex-shrink:0;
-    }
-
-    .sidebarHead h3{
-      margin:0;
-      font-size:16px;
-      line-height:1.2;
-    }
-
-    .sidebarHead p{
-      margin:6px 0 0;
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.5;
-    }
-
-    .sidebarInner{
-      min-height:0;
-      height:100%;
-      overflow-y:auto;
-      overflow-x:hidden;
-      padding:14px;
-    }
-
-    .detailGroup{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:16px;
-      overflow:hidden;
-      margin-bottom:12px;
-      box-shadow:0 8px 18px rgba(17,119,191,.04);
-    }
-
-    .detailGroupTitle{
-      padding:10px 12px;
-      border-bottom:1px solid var(--line);
-      background:#f4f9fd;
-      color:#5a7086;
-      font-size:11px;
-      font-weight:900;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-    }
-
-    .detailGrid{
-      padding:10px;
-      display:grid;
-      gap:8px;
-    }
-
-    .detailItem{
-      border:1px solid #edf2f6;
-      border-radius:12px;
-      padding:10px;
-      background:#fff;
-    }
-
-    .detailItem label{
-      display:block;
-      font-size:10px;
-      font-weight:900;
-      color:#6e8194;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-      margin-bottom:4px;
-    }
-
-    .detailItem div{
-      font-size:12px;
-      line-height:1.4;
-      word-break:break-word;
-    }
-
-    .docsList{
-      display:grid;
-      gap:8px;
-    }
-
-    .docBtn{
-      width:100%;
-      text-align:left;
-      border:1px solid #cde1f0;
-      background:#eef7fd;
-      color:#0a5488;
-      border-radius:12px;
-      padding:10px 12px;
-      cursor:pointer;
-      font-size:12px;
-      font-weight:800;
-    }
-
-    .docBtn:hover{
-      background:#e7f2fb;
-    }
-
-    .viewerBlock{
-      border:1px dashed #bfd2e4;
-      border-radius:12px;
-      background:#f7fbff;
-      padding:12px;
-      font-size:12px;
-      line-height:1.5;
-      color:#4f6479;
-      margin-bottom:12px;
-    }
-
-    .viewerBlock a{
-      color:#0d67a7;
-      font-weight:800;
-    }
-
-    .emptyState{
-      padding:34px 18px;
-      text-align:center;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .emptyState strong{
-      display:block;
-      color:var(--text);
-      margin-bottom:8px;
-      font-size:15px;
-    }
-
-    /* HOME DASHBOARD */
-    .homeView{
-      min-height:0;
-      overflow:auto;
-      padding:22px;
-      background:var(--bg);
-    }
-
-    .homeHero{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:22px;
-      box-shadow:var(--shadow);
-      margin-bottom:16px;
-    }
-
-    .homeHero h2{
-      margin:0 0 8px;
-      font-size:22px;
-      line-height:1.1;
-    }
-
-    .homeHero p{
-      margin:0;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.5;
-    }
-
-    .dashboardGrid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:14px;
-    }
-
+    .homeView{min-height:0;overflow:auto;padding:22px;background:var(--bg);}
+    .homeHero{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow);margin-bottom:16px;}
+    .homeHero h2{margin:0 0 8px;font-size:22px;line-height:1.1;}
+    .homeHero p{margin:0;color:var(--muted);font-size:14px;line-height:1.5;}
+    .dashboardGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
     .dashboardCard{
-      border:1px solid #cfe0ee;
-      background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
-      border-radius:18px;
-      padding:18px;
-      transition:.18s ease;
-      box-shadow:0 8px 18px rgba(17,119,191,.05);
-      min-height:180px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
+      border:1px solid #cfe0ee;background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);border-radius:18px;padding:18px;
+      box-shadow:0 8px 18px rgba(17,119,191,.05);min-height:180px;display:flex;flex-direction:column;justify-content:space-between;
     }
-
-    .dashboardTop{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:14px;
-    }
-
-    .dashboardTitle{
-      font-size:16px;
-      font-weight:900;
-      color:#23415d;
-    }
-
+    .dashboardTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;}
+    .dashboardTitle{font-size:16px;font-weight:900;color:#23415d;}
     .dashboardNumber{
-      width:48px;
-      height:48px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      background:#eef7fd;
-      color:var(--brand-3);
-      font-size:20px;
-      font-weight:900;
-      flex-shrink:0;
+      width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#eef7fd;color:var(--brand-3);font-size:20px;font-weight:900;flex-shrink:0;
     }
-
-    .dashboardMeta{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.5;
-      margin-bottom:12px;
-    }
-
-    .dashboardFileList{
-      display:grid;
-      gap:8px;
-      margin-top:6px;
-    }
-
+    .dashboardMeta{color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:12px;}
+    .dashboardFileList{display:grid;gap:8px;margin-top:6px;}
     .dashboardFileLink{
-      appearance:none;
-      -webkit-appearance:none;
-      border:0;
-      background:transparent;
-      padding:0;
-      margin:0;
-      text-align:left;
-      color:#0d67a7;
-      text-decoration:underline;
-      font-size:13px;
-      font-weight:800;
-      cursor:pointer;
+      appearance:none;-webkit-appearance:none;border:0;background:transparent;padding:0;margin:0;text-align:left;color:#0d67a7;text-decoration:underline;font-size:13px;font-weight:800;cursor:pointer;
     }
+    .dashboardEmptyText{font-size:12px;color:var(--muted);font-weight:700;}
+    .dashboardFooter{margin-top:14px;font-size:12px;font-weight:800;color:var(--brand-3);}
 
-    .dashboardFileLink:hover{
-      color:#0a5488;
+    .popup{
+      position:fixed;z-index:9999;min-width:260px;max-width:340px;background:#fff;border:1px solid var(--line);border-radius:14px;
+      box-shadow:0 18px 38px rgba(17,119,191,.16);padding:10px;display:none;
     }
-
-    .dashboardEmptyText{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
+    .popup.show{display:block;}
+    .popupTitle{font-size:12px;font-weight:900;color:#23415d;margin-bottom:8px;}
+    .popupSearch{width:100%;height:34px;border:1px solid var(--line);border-radius:10px;padding:0 10px;font-size:12px;margin-bottom:8px;}
+    .popupList{max-height:250px;overflow:auto;border:1px solid #ecf2f7;border-radius:10px;padding:6px;}
+    .popupItem{display:flex;align-items:center;gap:8px;padding:6px 4px;font-size:12px;}
+    .popupFooter{display:flex;justify-content:space-between;gap:8px;margin-top:8px;flex-wrap:wrap;}
+    .miniBtn{
+      height:32px;border:1px solid #cfe0ee;border-radius:10px;background:#fff;color:#23415d;padding:0 10px;font-size:12px;font-weight:800;cursor:pointer;
     }
-
-    .dashboardFooter{
-      margin-top:14px;
-      font-size:12px;
-      font-weight:800;
-      color:var(--brand-3);
+    .activeFilters{
+      display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:0 16px 10px;background:#f9fcff;border-bottom:1px solid var(--line);
     }
-
-    @media (max-width:1200px){
-      .content.sidebar-open{
-        grid-template-columns:minmax(0,1fr) 340px;
-      }
+    .activeFilterChip{
+      display:inline-flex;align-items:center;gap:8px;background:#eef7fd;color:#0a5488;border:1px solid #cfe0ee;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:800;
+    }
+    .activeFilterChip button{
+      border:0;background:transparent;color:#0a5488;cursor:pointer;font-weight:900;padding:0;font-size:12px;
     }
 
     @media (max-width:980px){
-      :root{
-        --rownum-w:50px;
-        --sticky-1-w:150px;
-        --sticky-2-w:135px;
-      }
-
-      html,body{
-        height:auto;
-        min-height:100%;
-        overflow-x:hidden;
-        overflow-y:auto;
-      }
-
-      body{
-        -webkit-text-size-adjust:100%;
-      }
-
-      .loginScreen{
-        padding:16px;
-      }
-
-      .loginCard{
-        padding:22px 18px;
-        border-radius:20px;
-      }
-
-      .app{
-        height:auto;
-        min-height:100vh;
-        display:grid;
-        grid-template-rows:auto auto auto auto auto;
-      }
-
-      .topbar{
-        position:static;
-        padding:10px 12px;
-        gap:10px;
-        align-items:flex-start;
-        flex-direction:column;
-      }
-
-      .brandWrap{ width:100%; }
-
-      .brandText strong{ font-size:14px; }
-
-      .brandText span{
-        font-size:11px;
-        white-space:normal;
-      }
-
-      .topStats{
-        width:100%;
-        justify-content:flex-start;
-        gap:8px;
-      }
-
-      .miniStat{
-        padding:6px 10px;
-        font-size:11px;
-      }
-
-      .navBar{
-        padding:10px 12px;
-      }
-
-      .toolbar{
-        padding:10px 12px;
-      }
-
-      .searchWrap{
-        min-width:0;
-        width:100%;
-      }
-
-      .searchWrap input{
-        height:40px;
-        font-size:14px;
-      }
-
-      .content,
-      .content.sidebar-open{
-        height:auto;
-        min-height:0;
-        display:grid;
-        grid-template-columns:1fr;
-        grid-template-rows:auto auto;
-        overflow:visible;
-      }
-
-      .main{
-        min-height:0;
-        overflow:hidden;
-      }
-
-      .columnTabsWrap{
-        padding:8px 10px 0;
-      }
-
-      .columnTabs{
-        gap:6px;
-        padding-bottom:8px;
-      }
-
-      .columnTab{
-        padding:8px 10px;
-        font-size:11px;
-        border-radius:10px 10px 0 0;
-      }
-
-      .tableWrap{
-        overflow:auto;
-        -webkit-overflow-scrolling:touch;
-      }
-
-      .sidebar{
-        display:grid;
-        grid-template-rows:auto minmax(0,1fr);
-        min-width:0;
-        width:100%;
-        border-left:0;
-        border-top:1px solid var(--line);
-        overflow:visible;
-      }
-
-      .sidebarHead{
-        padding:12px 12px 10px;
-      }
-
-      .sidebarHead h3{ font-size:15px; }
-
-      .sidebarHead p{ font-size:11px; }
-
-      .sidebarInner{
-        height:auto;
-        max-height:none;
-        overflow:visible;
-        padding:12px;
-      }
-
-      .sidebarOpenHandle,
-      .sidebarToggle{
-        display:none !important;
-      }
-
-      table{ font-size:10px; }
-
-      thead th{
-        font-size:9px;
-        padding:6px 6px;
-      }
-
-      tbody td{
-        font-size:10px;
-        padding:5px 6px;
-      }
-
-      .cellWrap{ max-width:120px; }
-      .cellWrap.long{ max-width:160px; }
-
-      .chip{
-        min-height:18px;
-        padding:2px 6px;
-        font-size:9px;
-      }
-
-      .detailGroup{
-        margin-bottom:10px;
-        border-radius:14px;
-      }
-
-      .detailGroupTitle{
-        padding:9px 10px;
-        font-size:10px;
-      }
-
-      .detailGrid{
-        padding:8px;
-        gap:7px;
-      }
-
-      .detailItem{
-        padding:9px;
-        border-radius:10px;
-      }
-
-      .detailItem label{ font-size:9px; }
-      .detailItem div{ font-size:11px; }
-
-      .docBtn{
-        padding:9px 10px;
-        font-size:11px;
-        border-radius:10px;
-      }
-
-      .viewerBlock{
-        padding:10px;
-        font-size:11px;
-      }
-
-      .homeView{
-        padding:14px;
-      }
-
-      .homeHero{
-        padding:18px;
-      }
-
-      .homeHero h2{
-        font-size:20px;
-      }
-
-      .dashboardGrid{
-        grid-template-columns:1fr;
-      }
-
-      .dashboardCard{
-        min-height:126px;
-      }
+      :root{--rownum-w:50px;--sticky-1-w:150px;--sticky-2-w:135px;}
+      html,body{height:auto;min-height:100%;overflow-x:hidden;overflow-y:auto;}
+      body{-webkit-text-size-adjust:100%;}
+      .app{height:auto;min-height:100vh;display:grid;grid-template-rows:auto auto auto auto auto auto auto;}
+      .topbar,.navBar,.toolbar,.summaryBar,.fxBar{padding-left:12px;padding-right:12px;}
+      .topbar{position:static;gap:10px;align-items:flex-start;flex-direction:column;}
+      .brandWrap{width:100%;}
+      .brandText span{white-space:normal;}
+      .topStats{width:100%;justify-content:flex-start;gap:8px;}
+      .content,.content.sidebar-open{height:auto;min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:auto auto;overflow:visible;}
+      .sidebar{width:100%;border-left:0;border-top:1px solid var(--line);}
+      .sidebarOpenHandle,.sidebarToggle{display:none !important;}
+      .dashboardGrid{grid-template-columns:1fr;}
+      .homeView{padding:14px;}
+      .columnTabsWrap{padding:8px 10px 0;}
+      .toolbarActions,.summaryCards,.fxWrap{width:100%;}
+      .searchWrap{min-width:0;width:100%;}
+      .popup{left:8px !important;right:8px !important;top:auto !important;bottom:10px !important;max-width:none;min-width:0;}
     }
   </style>
 </head>
 <body>
-  <!-- LOGIN -->
   <section class="loginScreen" id="loginScreen">
     <div class="loginCard">
       <div class="loginBrand">
@@ -1261,19 +386,16 @@
           <label for="loginUser">Usuario</label>
           <input id="loginUser" type="text" placeholder="Ingresa usuario" />
         </div>
-
         <div class="field">
           <label for="loginPass">Contraseña</label>
           <input id="loginPass" type="password" placeholder="Ingresa contraseña" />
         </div>
-
         <button class="loginBtn" type="submit">Entrar</button>
         <div class="loginError" id="loginError"></div>
       </form>
     </div>
   </section>
 
-  <!-- APP -->
   <div class="app hidden" id="app">
     <header class="topbar">
       <div class="brandWrap">
@@ -1286,18 +408,27 @@
 
       <div class="topStats">
         <div class="miniStat">Tipo activo <strong id="statTransport">—</strong></div>
+        <div class="miniStat">Empresa <strong id="statCompany">—</strong></div>
         <div class="miniStat">Registros <strong id="statTotal">0</strong></div>
         <div class="miniStat">Visibles <strong id="statVisible">0</strong></div>
         <div class="miniStat">Con documentos <strong id="statDocs">0</strong></div>
       </div>
     </header>
 
+    <section class="fxBar">
+      <div class="fxWrap">
+        <div class="fxCard"><strong>CLP</strong><span id="fxClp">1,00</span></div>
+        <div class="fxCard"><strong>USD</strong><span id="fxUsd" class="fxLoading">Cargando…</span></div>
+        <div class="fxCard"><strong>UF</strong><span id="fxUf" class="fxLoading">Cargando…</span></div>
+      </div>
+      <div class="fxUpdate" id="fxUpdatedAt">Actualización pendiente</div>
+    </section>
+
     <section class="navBar">
       <div class="navLeft">
         <button class="backBtn hidden" id="backHomeBtn" type="button">← Volver</button>
         <div class="viewLabel" id="viewLabel">Inicio</div>
       </div>
-
       <div class="navRight">
         <button class="backBtn" id="refreshDataBtn" type="button">Actualizar</button>
       </div>
@@ -1307,20 +438,33 @@
       <div class="searchWrap">
         <input id="searchInput" type="text" placeholder="Buscar por cualquier columna de la hoja activa..." />
       </div>
+      <div class="toolbarActions">
+        <select class="toolbarSelect" id="summaryColumnSelect"></select>
+        <button class="softBtn" id="columnSelectorBtn" type="button">Columnas a exportar</button>
+        <button class="softBtn" id="clearFiltersBtn" type="button">Quitar filtros</button>
+        <button class="softBtn primary" id="exportSelectionBtn" type="button">Descargar Excel</button>
+      </div>
       <div class="toolbarInfo" id="sheetInfo">Sin archivo cargado</div>
     </section>
 
-    <!-- HOME -->
+    <section class="summaryBar hidden" id="summaryBar">
+      <div>
+        <div class="summaryTitle">Resumen ejecutivo</div>
+        <div class="filterSummary" id="filterSummaryText">Sin filtros activos</div>
+      </div>
+      <div class="summaryCards" id="summaryCards"></div>
+    </section>
+
+    <section class="activeFilters hidden" id="activeFilters"></section>
+
     <section class="homeView" id="homeView">
       <div class="homeHero">
         <h2>Resumen de archivos disponibles</h2>
-        <p>Selecciona un archivo específico para visualizar su información.</p>
+        <p>La clasificación se construye por nombre de hoja, no por nombre de archivo. Un mismo Excel puede alimentar terrestre, marítimo y aéreo según sus tabs.</p>
       </div>
-
       <div class="dashboardGrid" id="dashboardGrid"></div>
     </section>
 
-    <!-- DATA -->
     <section class="content hidden" id="content">
       <button class="sidebarOpenHandle" id="sidebarOpenHandle" type="button" title="Mostrar panel">◀</button>
 
@@ -1331,9 +475,7 @@
 
         <div class="tableWrap">
           <table>
-            <thead>
-              <tr id="tableHead"></tr>
-            </thead>
+            <thead><tr id="tableHead"></tr></thead>
             <tbody id="tableBody"></tbody>
           </table>
         </div>
@@ -1341,12 +483,10 @@
 
       <aside class="sidebar" id="sidebar">
         <button class="sidebarToggle" id="sidebarToggle" type="button" title="Mostrar / ocultar panel">◀</button>
-
         <div class="sidebarHead">
           <h3 id="detailTitle">Selecciona una operación</h3>
           <p id="detailSub">Haz clic en una fila para ver el detalle completo y los documentos asociados.</p>
         </div>
-
         <div class="sidebarInner" id="sidebarInner">
           <div class="emptyState" id="detailBody">
             <strong>Sin selección</strong>
@@ -1357,41 +497,29 @@
     </section>
   </div>
 
+  <div class="popup" id="filterPopup"></div>
+  <div class="popup" id="columnPopup"></div>
+
   <script>
-    /*
-      Credenciales demo:
-      Usuario: CIVI
-      Contraseña: 123456
-
-      Nota técnica:
-      Un HTML estático no puede listar automáticamente todos los archivos de una carpeta.
-      Este script usa:
-      1) ./excels/manifest.json si existe
-      2) si no existe, intenta con archivos por defecto conocidos
-    */
-
     const DEMO_USER = "CIVI";
     const DEMO_PASS = "123456";
 
     const CATEGORY_DEFS = [
-      {
-        key: "terrestre",
-        label: "Terrestre",
-        defaultFiles: ["terrestre.xlsx", "minerva_terrestre_importaciones.xlsx"]
-      },
-      {
-        key: "aereo",
-        label: "Aéreo",
-        defaultFiles: ["aereo.xlsx"]
-      },
-      {
-        key: "maritimo",
-        label: "Marítimo",
-        defaultFiles: ["maritimo.xlsx"]
-      }
+      { key: "terrestre", label: "Terrestre" },
+      { key: "aereo", label: "Aéreo" },
+      { key: "maritimo", label: "Marítimo" }
+    ];
+
+    const ALL_FILES_FALLBACK = [
+      "terrestre.xlsx",
+      "aereo.xlsx",
+      "maritimo.xlsx",
+      "minerva.xlsx",
+      "Minerva.xlsx"
     ];
 
     let categoryStore = {};
+    let allLoadedFiles = [];
     let activeCategoryKey = null;
     let activeFileKey = null;
     let activeSheetName = null;
@@ -1399,9 +527,13 @@
 
     let currentSearch = "";
     let currentSort = { key: null, direction: 0 };
+    let currentColumnFilters = {};
     let selectedRowIds = new Set();
+    let selectedExportColumns = new Set();
     let selectedId = null;
     let sidebarOpen = false;
+    let currentSummaryHeader = null;
+    let currentRates = null;
 
     const loginScreen = document.getElementById("loginScreen");
     const app = document.getElementById("app");
@@ -1413,9 +545,13 @@
     const homeView = document.getElementById("homeView");
     const dashboardGrid = document.getElementById("dashboardGrid");
     const toolbar = document.getElementById("toolbar");
+    const summaryBar = document.getElementById("summaryBar");
+    const summaryCards = document.getElementById("summaryCards");
+    const summaryColumnSelect = document.getElementById("summaryColumnSelect");
     const content = document.getElementById("content");
     const backHomeBtn = document.getElementById("backHomeBtn");
     const viewLabel = document.getElementById("viewLabel");
+    const activeFiltersEl = document.getElementById("activeFilters");
 
     const columnTabs = document.getElementById("columnTabs");
     const tableHead = document.getElementById("tableHead");
@@ -1425,14 +561,25 @@
     const detailBody = document.getElementById("detailBody");
     const searchInput = document.getElementById("searchInput");
     const statTransport = document.getElementById("statTransport");
+    const statCompany = document.getElementById("statCompany");
     const statTotal = document.getElementById("statTotal");
     const statVisible = document.getElementById("statVisible");
     const statDocs = document.getElementById("statDocs");
     const sheetInfo = document.getElementById("sheetInfo");
     const sidebarToggle = document.getElementById("sidebarToggle");
     const sidebarOpenHandle = document.getElementById("sidebarOpenHandle");
-
     const refreshDataBtn = document.getElementById("refreshDataBtn");
+    const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+    const exportSelectionBtn = document.getElementById("exportSelectionBtn");
+    const columnSelectorBtn = document.getElementById("columnSelectorBtn");
+    const filterPopup = document.getElementById("filterPopup");
+    const columnPopup = document.getElementById("columnPopup");
+    const filterSummaryText = document.getElementById("filterSummaryText");
+
+    const fxClp = document.getElementById("fxClp");
+    const fxUsd = document.getElementById("fxUsd");
+    const fxUf = document.getElementById("fxUf");
+    const fxUpdatedAt = document.getElementById("fxUpdatedAt");
 
     function safe(v){
       if (v === null || v === undefined) return "—";
@@ -1447,17 +594,15 @@
     }
 
     function normalize(v){
-      return safe(v)
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/\s+/g, " ")
-        .trim()
-        .toUpperCase();
+      return safe(v).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim().toUpperCase();
     }
 
-    function isMobileLayout(){
-      return window.innerWidth <= 980;
+    function cleanText(value){
+      if (value === null || value === undefined) return "";
+      return String(value).replace(/\s+/g, " ").trim();
     }
+
+    function isMobileLayout(){ return window.innerWidth <= 980; }
 
     function looksLikeUrl(value){
       const s = String(value || "").trim();
@@ -1473,7 +618,24 @@
     }
 
     function getFileBaseName(fileName){
-      return String(fileName || "").replace(/\.(xlsx|xlxs)$/i, "");
+      return String(fileName || "").replace(/\.(xlsx|xlsm|xls)$/i, "");
+    }
+
+    function prettifyCompanyName(baseName){
+      return String(baseName || "").replace(/[_-]+/g, " ").trim();
+    }
+
+    function detectTransportKey(sheetName){
+      const s = normalize(sheetName);
+      if (s.includes("TERR")) return "terrestre";
+      if (s.includes("AERE")) return "aereo";
+      if (s.includes("MAR")) return "maritimo";
+      return null;
+    }
+
+    function shouldHideSheet(sheetName){
+      const s = normalize(sheetName);
+      return s === "MATRIZ DATOS" || s === "HOJA1";
     }
 
     function formatDate(date){
@@ -1484,6 +646,20 @@
       return `${dd}/${mm}/${yy}`;
     }
 
+    function formatDateTime(date){
+      if (!(date instanceof Date) || isNaN(date)) return "—";
+      return date.toLocaleString("es-CL", {
+        day:"2-digit", month:"2-digit", year:"numeric",
+        hour:"2-digit", minute:"2-digit"
+      });
+    }
+
+    function formatNumberCL(value, digits = 2){
+      const num = Number(value);
+      if (!isFinite(num)) return "—";
+      return num.toLocaleString("es-CL", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+    }
+
     function parseExcelDateSerial(serial){
       const parsed = XLSX.SSF.parse_date_code(serial);
       if (!parsed) return null;
@@ -1492,19 +668,12 @@
 
     function tryFormatDateCell(cell){
       if (!cell) return "";
-
-      if (cell.t === "d" && cell.v instanceof Date) {
-        return formatDate(cell.v);
-      }
+      if (cell.t === "d" && cell.v instanceof Date) return formatDate(cell.v);
 
       if (typeof cell.v === "number") {
         const z = String(cell.z || "").toLowerCase();
         const w = String(cell.w || "").trim();
-
-        const looksDateFormat =
-          /d|m|y/.test(z) ||
-          /^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(w);
-
+        const looksDateFormat = /d|m|y/.test(z) || /^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(w);
         if (looksDateFormat) {
           const date = parseExcelDateSerial(cell.v);
           if (date && !isNaN(date)) return formatDate(date);
@@ -1515,39 +684,103 @@
       if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(rawText)) {
         const parts = rawText.split(/[\/\-]/).map(Number);
         if (parts.length === 3) {
-          let a = parts[0];
-          let b = parts[1];
-          let c = parts[2];
+          let [a,b,c] = parts;
           if (c < 100) c += 2000;
-
           if (a > 12 && b <= 12) return `${String(a).padStart(2,"0")}/${String(b).padStart(2,"0")}/${c}`;
           if (b > 12 && a <= 12) return `${String(b).padStart(2,"0")}/${String(a).padStart(2,"0")}/${c}`;
-
           return `${String(a).padStart(2,"0")}/${String(b).padStart(2,"0")}/${c}`;
         }
       }
-
       return "";
     }
 
-    function cleanText(value){
-      if (value === null || value === undefined) return "";
-      return String(value).replace(/\s+/g, " ").trim();
+    function getCellFillInfo(cell){
+      if (!cell || !cell.s) return null;
+      const candidates = [cell.s.fgColor, cell.s.bgColor, cell.s.fill?.fgColor, cell.s.fill?.bgColor, cell.s.patternFill?.fgColor, cell.s.patternFill?.bgColor];
+      for (const color of candidates) {
+        if (!color) continue;
+        if (color.rgb && typeof color.rgb === "string") return { type: "rgb", value: color.rgb.toUpperCase() };
+        if (color.theme !== undefined && color.theme !== null) return { type: "theme", value: String(color.theme) };
+        if (color.indexed !== undefined && color.indexed !== null) return { type: "indexed", value: String(color.indexed) };
+      }
+      return null;
     }
+
+    function isRedHeaderCell(cell){
+      const info = getCellFillInfo(cell);
+      if (!info) return false;
+      if (info.type === "rgb") {
+        const normalized = info.value.replace(/^FF/, "");
+        if (["FF0000","C00000","E53935","D32F2F","F44336"].includes(normalized)) return true;
+      }
+      const styleText = JSON.stringify(cell.s || {}).toUpperCase();
+      return styleText.includes("FF0000") || styleText.includes("C00000") || styleText.includes("E53935") || styleText.includes("D32F2F") || styleText.includes("F44336");
+    }
+
+    function getReferencedCellValue(workbook, formula, seenRefs = new Set()){
+      if (!formula) return "";
+      const refs = [];
+      const regex = /(?:'([^']+)'|([A-Za-z0-9_ áéíóúÁÉÍÓÚñÑ.-]+))!([$]?[A-Z]+[$]?\d+)/g;
+      let match;
+      while ((match = regex.exec(formula)) !== null) {
+        const sheetName = (match[1] || match[2] || "").trim();
+        const addr = (match[3] || "").replace(/\$/g, "");
+        refs.push({ sheetName, addr });
+      }
+      for (const ref of refs) {
+        const key = `${ref.sheetName}!${ref.addr}`;
+        if (seenRefs.has(key)) continue;
+        seenRefs.add(key);
+        const ws = workbook.Sheets[ref.sheetName];
+        if (!ws) continue;
+        const cell = ws[ref.addr];
+        if (!cell) continue;
+        const val = formatCellValue(cell, workbook, ref.sheetName, ref.addr, seenRefs);
+        if (!isMissingValue(val) && val !== "#REF!") return val;
+      }
+      return "";
+    }
+
+    function formatCellValue(cell, workbook = null, currentSheetName = "", cellAddress = "", seenRefs = new Set()){
+      if (!cell) return "";
+      const forcedDate = tryFormatDateCell(cell);
+      if (forcedDate) return forcedDate;
+
+      if (cell.f && workbook) {
+        const rawFormulaShown = typeof cell.w === "string" ? cell.w.trim() : typeof cell.v === "string" ? cell.v.trim() : "";
+        if (rawFormulaShown === "#REF!" || rawFormulaShown === "#VALUE!" || rawFormulaShown === "#N/A" || rawFormulaShown === "") {
+          const resolved = getReferencedCellValue(workbook, cell.f, seenRefs);
+          if (resolved) return cleanText(resolved);
+        }
+      }
+
+      try {
+        const formatted = XLSX.utils.format_cell(cell);
+        if (formatted !== undefined && formatted !== null) return String(formatted).trim();
+      } catch(_) {}
+
+      if (cell.w !== undefined && cell.w !== null) return String(cell.w).trim();
+      if (cell.v === undefined || cell.v === null) return "";
+      return String(cell.v).trim();
+    }
+
+    function isDocRowValue(val){
+      return val && typeof val === "object" && !!val.url;
+    }
+
+    function getDocumentValues(row){
+      return Object.entries(row.values).filter(([, value]) => isDocRowValue(value)).map(([header, value]) => ({ header, value }));
+    }
+
+    function countDocs(row){ return getDocumentValues(row).length; }
 
     function chipClassFromValue(value){
       const v = normalize(value);
-
       if (["EN ALMACEN"].some(x => v.includes(x))) return "chip-storage";
-
       if (["LIBERADO","COMPLETADO","APROBADO","OK","EMITIDA","PAGADO","CERRADO","ENTREGADO"].some(x => v.includes(x))) return "chip-ok";
-
       if (["PRESENTADO","EN TRANSITO","ARRIBADA EN PUERTO","DESPACHADO","EN CURSO","TRAMITE"].some(x => v.includes(x))) return "chip-pending";
-
       if (["PENDIENTE","OBSERVADO","OBSERVACION","EN ESPERA"].some(x => v.includes(x))) return "chip-warn";
-
       if (["ERROR","RECHAZADO","NO CONFORME","VENCIDO"].some(x => v.includes(x))) return "chip-danger";
-
       return "chip-neutral";
     }
 
@@ -1563,41 +796,27 @@
 
     function parseSortableValue(value){
       if (value === null || value === undefined) return { type:"empty", value:"" };
-      if (typeof value === "object" && value !== null) {
-        return { type:"text", value: normalize(value.text || value.display || value.url || "") };
-      }
-
+      if (typeof value === "object" && value !== null) return { type:"text", value: normalize(value.text || value.display || value.url || "") };
       const raw = safe(value);
       if (raw === "—" || raw === "-") return { type:"empty", value:"" };
-
       const normalizedNum = raw.replace(/\./g, "").replace(",", ".").trim();
-      if (/^-?\d+(\.\d+)?$/.test(normalizedNum)) {
-        return { type:"number", value: parseFloat(normalizedNum) };
-      }
-
+      if (/^-?\d+(\.\d+)?$/.test(normalizedNum)) return { type:"number", value: parseFloat(normalizedNum) };
       if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(raw)) {
         const [d,m,y] = raw.split("/").map(Number);
         return { type:"date", value: new Date(y, m - 1, d).getTime() };
       }
-
-      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
-        return { type:"date", value: new Date(raw + "T00:00:00").getTime() };
-      }
-
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return { type:"date", value: new Date(raw + "T00:00:00").getTime() };
       return { type:"text", value: normalize(raw) };
     }
 
     function compareValues(a, b){
       const va = parseSortableValue(a);
       const vb = parseSortableValue(b);
-
       if (va.type === "empty" && vb.type !== "empty") return 1;
       if (va.type !== "empty" && vb.type === "empty") return -1;
       if (va.type === "empty" && vb.type === "empty") return 0;
-
       const rank = { number:1, date:2, text:3, empty:4 };
       if (va.type !== vb.type) return rank[va.type] - rank[vb.type];
-
       if (va.value < vb.value) return -1;
       if (va.value > vb.value) return 1;
       return 0;
@@ -1611,9 +830,7 @@
       });
     }
 
-    function getActiveCategory(){
-      return categoryStore[activeCategoryKey] || null;
-    }
+    function getActiveCategory(){ return categoryStore[activeCategoryKey] || null; }
 
     function getActiveFile(){
       const category = getActiveCategory();
@@ -1621,102 +838,95 @@
       return category.files.find(f => f.file === activeFileKey) || null;
     }
 
-
-
     function getActiveSheet(){
       const activeFile = getActiveFile();
       if (!activeFile) return null;
       return activeFile.sheets.find(s => s.name === activeSheetName) || null;
     }
 
-    function getHeaders(sheet){
-      return sheet?.headers || [];
-    }
-
-    function getHeaderMeta(sheet){
-      return sheet?.headerMeta || [];
-    }
-
+    function getHeaders(sheet){ return sheet?.headers || []; }
+    function getHeaderMeta(sheet){ return sheet?.headerMeta || []; }
     function getColumnLetter(sheet, header){
       const meta = getHeaderMeta(sheet).find(h => h.header === header);
       return meta?.excelColLetter || "";
     }
-
-
-
-
-    function getColumnLetter(sheet, header){
-      const meta = getHeaderMeta(sheet).find(h => h.header === header);
-      return meta?.excelColLetter || "";
-    }
-
     function getReferenceHeader(sheet){
       const headers = getHeaders(sheet);
       return headers.find(h => normalize(h).includes("REFERENCIA CLIENTE")) || null;
     }
-
     function getDispatchHeader(sheet){
       const headers = getHeaders(sheet);
       return headers.find(h => normalize(h).includes("NUMERO DE DESPACHO")) || headers.find(h => normalize(h) === "DESPACHO") || null;
     }
 
-    function isDocRowValue(val){
-      return val && typeof val === "object" && !!val.url;
-    }
+    function parseSheet(workbook, sheetName, fileLabel, companyName){
+      const ws = workbook.Sheets[sheetName];
+      const ref = ws["!ref"];
+      if (!ref) return { name: sheetName, headers: [], headerMeta: [], rows: [], transportKey: detectTransportKey(sheetName), companyName };
+      const range = XLSX.utils.decode_range(ref);
+      const headerRowIndex = range.s.r;
+      const headers = [];
+      const headerMeta = [];
+      const visibleColumns = [];
 
-    function getDocumentValues(row){
-      return Object.entries(row.values)
-        .filter(([, value]) => isDocRowValue(value))
-        .map(([header, value]) => ({
-          header,
-          value
-        }));
-    }
-
-    function countDocs(row){
-      return getDocumentValues(row).length;
-    }
-
-    function getAllRows(){
-      const sheet = getActiveSheet();
-      return sheet ? sheet.rows : [];
-    }
-
-    function rowMatchesSearch(row){
-      if (!currentSearch) return true;
-      const haystack = Object.values(row.values)
-        .map(value => {
-          if (isDocRowValue(value)) return `${safe(value.text)} ${safe(value.url)}`.toLowerCase();
-          return safe(value).toLowerCase();
-        })
-        .join(" ");
-      return haystack.includes(currentSearch);
-    }
-
-    function getFilteredRows(){
-      return getAllRows().filter(row => rowMatchesSearch(row));
-    }
-
-    function toggleSort(key){
-      if (currentSort.key !== key) currentSort = { key, direction:1 };
-      else if (currentSort.direction === 1) currentSort = { key, direction:-1 };
-      else if (currentSort.direction === -1) currentSort = { key:null, direction:0 };
-      else currentSort = { key, direction:1 };
-      renderTable();
-    }
-
-    function getSortSymbol(key){
-      if (currentSort.key !== key || currentSort.direction === 0) return "↕";
-      return currentSort.direction === 1 ? "↑" : "↓";
-    }
-
-    function setSidebarOpen(open){
-      sidebarOpen = isMobileLayout() ? true : open;
-      content.classList.toggle("sidebar-open", sidebarOpen);
-      if (sidebarToggle) {
-        sidebarToggle.textContent = "▶";
-        sidebarToggle.title = "Ocultar panel";
+      for (let c = range.s.c; c <= range.e.c; c++) {
+        const addr = XLSX.utils.encode_cell({ r: headerRowIndex, c });
+        const cell = ws[addr];
+        if (isRedHeaderCell(cell)) continue;
+        let header = cleanText(formatCellValue(cell, workbook, sheetName, addr));
+        if (!header) header = `Columna ${c + 1}`;
+        const excelColLetter = XLSX.utils.encode_col(c);
+        headers.push(header);
+        headerMeta.push({ header, colIndex: c, excelColLetter });
+        visibleColumns.push({ colIndex: c, header, excelColLetter });
       }
+
+      const rows = [];
+      for (let r = headerRowIndex + 1; r <= range.e.r; r++) {
+        const values = {};
+        let hasAnyContent = false;
+
+        visibleColumns.forEach(({ header, colIndex }) => {
+          const addr = XLSX.utils.encode_cell({ r, c: colIndex });
+          const cell = ws[addr];
+          const rawText = cleanText(formatCellValue(cell, workbook, sheetName, addr));
+          const hyperlink = cell?.l?.Target ? String(cell.l.Target).trim() : "";
+          const tooltip = cell?.l?.Tooltip ? String(cell.l.Tooltip).trim() : "";
+          const valueIsUrl = looksLikeUrl(rawText);
+
+          if (hyperlink || valueIsUrl) {
+            values[header] = { text: rawText || header, url: hyperlink || toUrl(rawText), tooltip };
+            hasAnyContent = true;
+          } else {
+            values[header] = rawText;
+            if (!isMissingValue(rawText)) hasAnyContent = true;
+          }
+        });
+
+        if (!hasAnyContent) continue;
+
+        const refHeader = headers.find(h => normalize(h).includes("REFERENCIA CLIENTE")) || headers[0] || "";
+        const dispatchHeader = headers.find(h => normalize(h).includes("NUMERO DE DESPACHO")) || headers.find(h => normalize(h) === "DESPACHO") || headers[1] || "";
+        const baseId = [fileLabel, sheetName, safe(values[refHeader]), safe(values[dispatchHeader]), r + 1].join("|");
+
+        rows.push({
+          _id: baseId,
+          _sheet: sheetName,
+          _file: fileLabel,
+          _company: companyName,
+          _excelRowNumber: r + 1,
+          values
+        });
+      }
+
+      return {
+        name: sheetName,
+        headers,
+        headerMeta,
+        rows,
+        transportKey: detectTransportKey(sheetName),
+        companyName
+      };
     }
 
     async function fetchArrayBuffer(url){
@@ -1735,323 +945,67 @@
       }
     }
 
-    function normalizeManifest(manifest){
-      const out = {};
+    function getManifestFiles(manifest){
+      const files = new Set();
+      if (Array.isArray(manifest?.files)) manifest.files.forEach(f => files.add(String(f).trim()));
       CATEGORY_DEFS.forEach(cat => {
-        const val = manifest?.[cat.key];
-        if (Array.isArray(val)) out[cat.key] = val;
-        else if (typeof val === "string" && val.trim()) out[cat.key] = [val.trim()];
-        else out[cat.key] = cat.defaultFiles;
+        const value = manifest?.[cat.key];
+        if (Array.isArray(value)) value.forEach(f => files.add(String(f).trim()));
+        else if (typeof value === "string" && value.trim()) files.add(value.trim());
       });
-      return out;
+      if (!files.size) ALL_FILES_FALLBACK.forEach(f => files.add(f));
+      return [...files].filter(Boolean);
     }
-
-    function shouldHideSheet(sheetName){
-      return normalize(sheetName) === "MATRIZ DATOS";
-    }
-
-    function getCellFillInfo(cell){
-      if (!cell || !cell.s) return null;
-
-      const candidates = [
-        cell.s.fgColor,
-        cell.s.bgColor,
-        cell.s.fill?.fgColor,
-        cell.s.fill?.bgColor,
-        cell.s.patternFill?.fgColor,
-        cell.s.patternFill?.bgColor
-      ];
-
-      for (const color of candidates) {
-        if (!color) continue;
-
-        if (color.rgb && typeof color.rgb === "string") {
-          return { type: "rgb", value: color.rgb.toUpperCase() };
-        }
-
-        if (color.theme !== undefined && color.theme !== null) {
-          return { type: "theme", value: String(color.theme) };
-        }
-
-        if (color.indexed !== undefined && color.indexed !== null) {
-          return { type: "indexed", value: String(color.indexed) };
-        }
-
-        if (color.tint !== undefined && color.tint !== null) {
-          return { type: "tint", value: String(color.tint) };
-        }
-      }
-
-      return null;
-    }
-
-    function isRedHeaderCell(cell){
-      const info = getCellFillInfo(cell);
-      if (!info) return false;
-
-      if (info.type === "rgb") {
-        const normalized = info.value.replace(/^FF/, "");
-
-        const redColors = [
-          "FF0000",
-          "C00000",
-          "E53935",
-          "D32F2F",
-          "F44336"
-        ];
-
-        if (redColors.includes(normalized)) return true;
-      }
-
-      // Fallback: revisar serialización completa del estilo
-      const styleText = JSON.stringify(cell.s || {}).toUpperCase();
-
-      return (
-        styleText.includes("FF0000") ||
-        styleText.includes("C00000") ||
-        styleText.includes("E53935") ||
-        styleText.includes("D32F2F") ||
-        styleText.includes("F44336")
-      );
-    }
-
-    function getReferencedCellValue(workbook, formula, seenRefs = new Set()){
-      if (!formula) return "";
-
-      const refs = [];
-      const regex = /(?:'([^']+)'|([A-Za-z0-9_ áéíóúÁÉÍÓÚñÑ.-]+))!([$]?[A-Z]+[$]?\d+)/g;
-      let match;
-
-      while ((match = regex.exec(formula)) !== null) {
-        const sheetName = (match[1] || match[2] || "").trim();
-        const addr = (match[3] || "").replace(/\$/g, "");
-        refs.push({ sheetName, addr });
-      }
-
-      for (const ref of refs) {
-        const key = `${ref.sheetName}!${ref.addr}`;
-        if (seenRefs.has(key)) continue;
-        seenRefs.add(key);
-
-        const ws = workbook.Sheets[ref.sheetName];
-        if (!ws) continue;
-
-        const cell = ws[ref.addr];
-        if (!cell) continue;
-
-        const val = formatCellValue(cell, workbook, ref.sheetName, ref.addr, seenRefs);
-        if (!isMissingValue(val) && val !== "#REF!") return val;
-      }
-
-      return "";
-    }
-
-    function formatCellValue(cell, workbook = null, currentSheetName = "", cellAddress = "", seenRefs = new Set()){
-      if (!cell) return "";
-
-      const forcedDate = tryFormatDateCell(cell);
-      if (forcedDate) return forcedDate;
-
-      if (cell.f && workbook) {
-        const rawFormulaShown =
-          typeof cell.w === "string" ? cell.w.trim() :
-          typeof cell.v === "string" ? cell.v.trim() : "";
-
-        if (rawFormulaShown === "#REF!" || rawFormulaShown === "#VALUE!" || rawFormulaShown === "#N/A" || rawFormulaShown === "") {
-          const resolved = getReferencedCellValue(workbook, cell.f, seenRefs);
-          if (resolved) return cleanText(resolved);
-        }
-      }
-
-      try {
-        const formatted = XLSX.utils.format_cell(cell);
-        if (formatted !== undefined && formatted !== null) {
-          const txt = String(formatted).trim();
-          if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(txt)) {
-            const parts = txt.split(/[\/\-]/).map(Number);
-            if (parts.length === 3) {
-              let a = parts[0];
-              let b = parts[1];
-              let c = parts[2];
-              if (c < 100) c += 2000;
-              if (a > 12 && b <= 12) return `${String(a).padStart(2,"0")}/${String(b).padStart(2,"0")}/${c}`;
-              if (b > 12 && a <= 12) return `${String(b).padStart(2,"0")}/${String(a).padStart(2,"0")}/${c}`;
-            }
-          }
-          return txt;
-        }
-      } catch(_) {}
-
-      if (cell.w !== undefined && cell.w !== null) {
-        const txt = String(cell.w).trim();
-        if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(txt)) {
-          const parts = txt.split(/[\/\-]/).map(Number);
-          if (parts.length === 3) {
-            let a = parts[0];
-            let b = parts[1];
-            let c = parts[2];
-            if (c < 100) c += 2000;
-            if (a > 12 && b <= 12) return `${String(a).padStart(2,"0")}/${String(b).padStart(2,"0")}/${c}`;
-            if (b > 12 && a <= 12) return `${String(b).padStart(2,"0")}/${String(a).padStart(2,"0")}/${c}`;
-          }
-        }
-        return txt;
-      }
-
-      if (cell.v === undefined || cell.v === null) return "";
-      return String(cell.v).trim();
-    }
-
-    function parseSheet(workbook, sheetName, fileLabel){
-      const ws = workbook.Sheets[sheetName];
-      const ref = ws["!ref"];
-      if (!ref) return { name: sheetName, headers: [], headerMeta: [], rows: [] };
-
-      const range = XLSX.utils.decode_range(ref);
-      const headerRowIndex = range.s.r;
-      const headers = [];
-      const headerMeta = [];
-      const visibleColumns = [];
-
-  for (let c = range.s.c; c <= range.e.c; c++) {
-    const addr = XLSX.utils.encode_cell({ r: headerRowIndex, c });
-    const cell = ws[addr];
-
-    console.log("HEADER DEBUG", {
-      hoja: sheetName,
-      celda: addr,
-      texto: cell ? formatCellValue(cell, workbook, sheetName, addr) : "",
-      style: cell?.s
-    });
-
-    if (isRedHeaderCell(cell)) continue;
-
-
-
-
-        let header = cleanText(formatCellValue(cell, workbook, sheetName, addr));
-          if (!header) header = `Columna ${c + 1}`;
-
-          const excelColLetter = XLSX.utils.encode_col(c);
-
-          headers.push(header);
-          headerMeta.push({
-            header,
-            colIndex: c,
-            excelColLetter
-          });
-
-          visibleColumns.push({
-            colIndex: c,
-            header,
-            excelColLetter
-          });
-  }
-
-  const rows = [];
-  for (let r = headerRowIndex + 1; r <= range.e.r; r++) {
-    const values = {};
-    let hasAnyContent = false;
-
-    visibleColumns.forEach(({ header, colIndex }) => {
-      const addr = XLSX.utils.encode_cell({ r, c: colIndex });
-      const cell = ws[addr];
-      const rawText = cleanText(formatCellValue(cell, workbook, sheetName, addr));
-      const hyperlink = cell?.l?.Target ? String(cell.l.Target).trim() : "";
-      const tooltip = cell?.l?.Tooltip ? String(cell.l.Tooltip).trim() : "";
-      const valueIsUrl = looksLikeUrl(rawText);
-
-      if (hyperlink || valueIsUrl) {
-        values[header] = {
-          text: rawText || header,
-          url: hyperlink || toUrl(rawText),
-          tooltip
-        };
-        hasAnyContent = true;
-      } else {
-        values[header] = rawText;
-        if (!isMissingValue(rawText)) hasAnyContent = true;
-      }
-    });
-
-    if (!hasAnyContent) continue;
-
-    const refHeader =
-      headers.find(h => normalize(h).includes("REFERENCIA CLIENTE")) ||
-      headers[0] ||
-      "";
-
-    const dispatchHeader =
-      headers.find(h => normalize(h).includes("NUMERO DE DESPACHO")) ||
-      headers.find(h => normalize(h) === "DESPACHO") ||
-      headers[1] ||
-      "";
-
-    const baseId = [
-      fileLabel,
-      sheetName,
-      safe(values[refHeader]),
-      safe(values[dispatchHeader]),
-      r + 1
-    ].join("|");
-
-      rows.push({
-        _id: baseId,
-        _sheet: sheetName,
-        _file: fileLabel,
-        _excelRowNumber: r + 1,
-        values
-      });
-  }
-
-  return {
-    name: sheetName,
-    headers,
-    headerMeta,
-    rows
-  };
-}
 
     async function loadWorkbookFromFile(path){
       const data = await fetchArrayBuffer(path);
-      const workbook = XLSX.read(data, {
-        type: "array",
-        cellDates: true,
-        cellStyles: true
-      });
-
+      const workbook = XLSX.read(data, { type: "array", cellDates: true, cellStyles: true });
+      const fileName = path.split("/").pop();
+      const baseName = getFileBaseName(fileName);
+      const companyName = prettifyCompanyName(baseName);
       const visibleSheetNames = workbook.SheetNames.filter(name => !shouldHideSheet(name));
 
       return {
-        file: path.split("/").pop(),
-        baseName: getFileBaseName(path.split("/").pop()),
-        sheets: visibleSheetNames.map(name => parseSheet(workbook, name, path.split("/").pop()))
+        file: fileName,
+        baseName,
+        companyName,
+        sheets: visibleSheetNames.map(name => parseSheet(workbook, name, fileName, companyName))
       };
+    }
+
+    function rebuildCategoryStore(){
+      categoryStore = {};
+      CATEGORY_DEFS.forEach(cat => {
+        categoryStore[cat.key] = { key: cat.key, label: cat.label, files: [] };
+      });
+
+      allLoadedFiles.forEach(fileObj => {
+        CATEGORY_DEFS.forEach(cat => {
+          const filteredSheets = fileObj.sheets.filter(s => s.transportKey === cat.key);
+          if (filteredSheets.length) {
+            categoryStore[cat.key].files.push({
+              file: fileObj.file,
+              baseName: fileObj.baseName,
+              companyName: fileObj.companyName,
+              sheets: filteredSheets
+            });
+          }
+        });
+      });
     }
 
     async function loadData(){
       const manifestRaw = await getManifestConfig();
-      const manifest = normalizeManifest(manifestRaw || {});
-
-      categoryStore = {};
-
-      for (const cat of CATEGORY_DEFS) {
-        const files = manifest[cat.key] || [];
-        const loadedFiles = [];
-
-        for (const fileName of files) {
-          try{
-            const wb = await loadWorkbookFromFile(`./excels/${fileName}`);
-            loadedFiles.push(wb);
-          }catch(_){}
-        }
-
-        categoryStore[cat.key] = {
-          key: cat.key,
-          label: cat.label,
-          files: loadedFiles
-        };
+      const filesToTry = getManifestFiles(manifestRaw);
+      const loaded = [];
+      for (const fileName of filesToTry) {
+        try{
+          const wb = await loadWorkbookFromFile(`./excels/${fileName}`);
+          loaded.push(wb);
+        }catch(_){}
       }
+      allLoadedFiles = loaded;
+      rebuildCategoryStore();
 
       const firstAvailableCategory = CATEGORY_DEFS.find(cat => (categoryStore[cat.key]?.files.length || 0) > 0);
       activeCategoryKey = firstAvailableCategory ? firstAvailableCategory.key : CATEGORY_DEFS[0].key;
@@ -2065,197 +1019,242 @@
     function resetDataViewState(){
       currentSort = { key:null, direction:0 };
       currentSearch = "";
+      currentColumnFilters = {};
       searchInput.value = "";
       selectedRowIds.clear();
+      selectedExportColumns.clear();
       selectedId = null;
+      currentSummaryHeader = null;
     }
 
-    function goToHomeView(){
-      currentView = "home";
-      homeView.classList.remove("hidden");
-      content.classList.add("hidden");
-      toolbar.classList.add("hidden");
-      backHomeBtn.classList.add("hidden");
-      viewLabel.textContent = "Inicio";
-      statTransport.textContent = "—";
-      statTotal.textContent = "0";
-      statVisible.textContent = "0";
-      statDocs.textContent = "0";
-      sheetInfo.textContent = "Sin archivo cargado";
-      renderHomeDashboard();
-      renderEmptyDetail();
+    function selectDefaultSummaryHeader(){
+      const sheet = getActiveSheet();
+      if (!sheet) return;
+      const preferred = sheet.headers.find(h => normalize(h).includes("ESTADO DE LA CARGA"))
+        || sheet.headers.find(h => normalize(h).includes("ESTADO"))
+        || sheet.headers[0]
+        || null;
+      currentSummaryHeader = preferred;
     }
 
-    function goToDataView(categoryKey, fileKey){
-      const category = categoryStore[categoryKey];
-      if (!category || !category.files.length) return;
-
-      const fileObj = category.files.find(f => f.file === fileKey);
-      if (!fileObj) return;
-
-      currentView = "data";
-      activeCategoryKey = categoryKey;
-      activeFileKey = fileObj.file;
-      activeSheetName = fileObj.sheets[0]?.name || null;
-      resetDataViewState();
-
-      homeView.classList.add("hidden");
-      content.classList.remove("hidden");
-      toolbar.classList.remove("hidden");
-      backHomeBtn.classList.remove("hidden");
-      viewLabel.textContent = category.label;
-
-      renderAll();
+    function getAllRows(){
+      const sheet = getActiveSheet();
+      return sheet ? sheet.rows : [];
     }
 
-    function renderHomeDashboard(){
-      dashboardGrid.innerHTML = CATEGORY_DEFS.map(cat => {
-        const item = categoryStore[cat.key];
-        const count = item?.files?.length || 0;
+    function rowMatchesSearch(row){
+      if (!currentSearch) return true;
+      const haystack = Object.values(row.values).map(value => {
+        if (isDocRowValue(value)) return `${safe(value.text)} ${safe(value.url)}`.toLowerCase();
+        return safe(value).toLowerCase();
+      }).join(" ");
+      return haystack.includes(currentSearch);
+    }
 
-        return `
-          <div class="dashboardCard">
-            <div>
-              <div class="dashboardTop">
-                <div class="dashboardTitle">${cat.label}</div>
-                <div class="dashboardNumber">${count}</div>
-              </div>
-              <div class="dashboardMeta">
-                ${count === 0 ? "No hay archivos cargados." : count === 1 ? "1 archivo disponible." : `${count} archivos disponibles.`}
-              </div>
-
-              <div class="dashboardFileList">
-                ${
-                  count === 0
-                    ? `<div class="dashboardEmptyText">Sin archivos para mostrar.</div>`
-                    : item.files.map(fileObj => `
-                        <button
-                          class="dashboardFileLink"
-                          type="button"
-                          data-category="${cat.key}"
-                          data-file="${encodeURIComponent(fileObj.file)}"
-                        >
-                          ${fileObj.baseName}
-                        </button>
-                      `).join("")
-                }
-              </div>
-            </div>
-
-            <div class="dashboardFooter">${count === 0 ? "Sin información" : "Haz clic en el nombre del archivo"}</div>
-          </div>
-        `;
-      }).join("");
-
-      dashboardGrid.querySelectorAll(".dashboardFileLink").forEach(btn => {
-        btn.addEventListener("click", () => {
-          goToDataView(btn.dataset.category, decodeURIComponent(btn.dataset.file));
-        });
+    function rowMatchesColumnFilters(row){
+      const entries = Object.entries(currentColumnFilters);
+      if (!entries.length) return true;
+      return entries.every(([header, allowedValues]) => {
+        if (!(allowedValues instanceof Set) || !allowedValues.size) return true;
+        const value = row.values[header];
+        const comparable = isDocRowValue(value) ? safe(value.text || value.url) : safe(value);
+        return allowedValues.has(comparable);
       });
+    }
+
+    function getFilteredRows(){
+      return getAllRows().filter(row => rowMatchesColumnFilters(row) && rowMatchesSearch(row));
+    }
+
+    function getDistinctValuesForHeader(header, rows = null){
+      const list = rows || getAllRows();
+      const counter = new Map();
+      list.forEach(row => {
+        const value = row.values[header];
+        const comparable = isDocRowValue(value) ? safe(value.text || value.url) : safe(value);
+        counter.set(comparable, (counter.get(comparable) || 0) + 1);
+      });
+      return [...counter.entries()].sort((a,b) => compareValues(a[0], b[0])).map(([value, count]) => ({ value, count }));
+    }
+
+    function toggleSort(key){
+      if (currentSort.key !== key) currentSort = { key, direction:1 };
+      else if (currentSort.direction === 1) currentSort = { key, direction:-1 };
+      else if (currentSort.direction === -1) currentSort = { key:null, direction:0 };
+      else currentSort = { key, direction:1 };
+      renderTable();
+      renderSummary();
+    }
+
+    function getSortSymbol(key){
+      if (currentSort.key !== key || currentSort.direction === 0) return "↕";
+      return currentSort.direction === 1 ? "↑" : "↓";
+    }
+
+    function setSidebarOpen(open){
+      sidebarOpen = isMobileLayout() ? true : open;
+      content.classList.toggle("sidebar-open", sidebarOpen);
+      if (sidebarToggle) {
+        sidebarToggle.textContent = "▶";
+        sidebarToggle.title = "Ocultar panel";
+      }
+    }
+
+    function closePopups(){
+      filterPopup.classList.remove("show");
+      columnPopup.classList.remove("show");
     }
 
     function renderSheetTabs(){
       const activeFile = getActiveFile();
       const sheets = activeFile?.sheets || [];
-
       columnTabs.innerHTML = sheets.length
-        ? sheets.map(sheet => `
-            <button class="columnTab ${sheet.name === activeSheetName ? "active" : ""}" data-sheet="${sheet.name}">
-              ${sheet.name}
-            </button>
-          `).join("")
+        ? sheets.map(sheet => `<button class="columnTab ${sheet.name === activeSheetName ? "active" : ""}" data-sheet="${sheet.name}">${sheet.name}</button>`).join("")
         : `<div class="emptyState" style="padding:12px 0 16px;text-align:left;">No hay hojas disponibles.</div>`;
 
       columnTabs.querySelectorAll("[data-sheet]").forEach(btn => {
         btn.addEventListener("click", () => {
           activeSheetName = btn.dataset.sheet;
           currentSort = { key:null, direction:0 };
+          currentColumnFilters = {};
           selectedRowIds.clear();
           selectedId = null;
+          selectedExportColumns.clear();
+          selectDefaultSummaryHeader();
           renderAll();
         });
       });
     }
 
+    function getOrderedHeaders(sheet){
+      const headers = [...sheet.headers];
+      const refHeader = getReferenceHeader(sheet);
+      const dispatchHeader = getDispatchHeader(sheet);
+      const fixedHeaders = [];
+      if (refHeader) fixedHeaders.push(refHeader);
+      if (dispatchHeader && dispatchHeader !== refHeader) fixedHeaders.push(dispatchHeader);
+      const otherHeaders = headers.filter(h => !fixedHeaders.includes(h));
+      return [...fixedHeaders, ...otherHeaders];
+    }
+
+    function renderSummarySelector(){
+      const sheet = getActiveSheet();
+      if (!sheet) {
+        summaryColumnSelect.innerHTML = "";
+        return;
+      }
+      if (!currentSummaryHeader || !sheet.headers.includes(currentSummaryHeader)) selectDefaultSummaryHeader();
+      summaryColumnSelect.innerHTML = sheet.headers.map(header => `
+        <option value="${encodeURIComponent(header)}" ${header === currentSummaryHeader ? "selected" : ""}>Resumen: ${header}</option>
+      `).join("");
+    }
+
+    function renderSummary(){
+      const sheet = getActiveSheet();
+      if (!sheet || !currentSummaryHeader) {
+        summaryBar.classList.add("hidden");
+        return;
+      }
+      summaryBar.classList.remove("hidden");
+
+      const rows = getFilteredRows();
+      const summary = getDistinctValuesForHeader(currentSummaryHeader, rows).sort((a,b) => b.count - a.count || compareValues(a.value,b.value));
+      const topItems = summary.slice(0, 12);
+
+      summaryCards.innerHTML = topItems.length
+        ? topItems.map(item => `<div class="summaryCard"><strong>${item.count}</strong><span>${safe(item.value)}</span></div>`).join("")
+        : `<div class="summaryCard"><strong>0</strong><span>Sin datos visibles</span></div>`;
+
+      const filterCount = Object.keys(currentColumnFilters).filter(h => currentColumnFilters[h] && currentColumnFilters[h].size).length;
+      const searchText = currentSearch ? ` · búsqueda: "${currentSearch}"` : "";
+      filterSummaryText.textContent = filterCount
+        ? `${filterCount} filtro(s) activo(s)${searchText}. El resumen usa solamente lo visible.`
+        : `Sin filtros activos${searchText}. El resumen usa solamente lo visible.`;
+
+      renderActiveFilters();
+    }
+
+    function renderActiveFilters(){
+      const activeItems = [];
+      Object.entries(currentColumnFilters).forEach(([header, set]) => {
+        if (set && set.size) activeItems.push({ header, values:[...set] });
+      });
+
+      if (!activeItems.length) {
+        activeFiltersEl.classList.add("hidden");
+        activeFiltersEl.innerHTML = "";
+        return;
+      }
+
+      activeFiltersEl.classList.remove("hidden");
+      activeFiltersEl.innerHTML = activeItems.map(item => `
+        <span class="activeFilterChip">
+          ${item.header}: ${item.values.length === 1 ? safe(item.values[0]) : `${item.values.length} valores`}
+          <button type="button" data-remove-filter="${encodeURIComponent(item.header)}">✕</button>
+        </span>
+      `).join("");
+
+      activeFiltersEl.querySelectorAll("[data-remove-filter]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const header = decodeURIComponent(btn.dataset.removeFilter);
+          delete currentColumnFilters[header];
+          renderTable();
+          renderSummary();
+        });
+      });
+    }
+
     function renderTable(){
+      closePopups();
       const category = getActiveCategory();
       const activeFile = getActiveFile();
       const sheet = getActiveSheet();
 
       if (!category || !activeFile || !sheet) {
         tableHead.innerHTML = "";
-        tableBody.innerHTML = `
-          <tr>
-            <td>
-              <div class="emptyState">
-                <strong>Sin excels disponibles</strong>
-                No se encontró ningún archivo Excel en la carpeta <code>./excels</code>.
-              </div>
-            </td>
-          </tr>
-        `;
+        tableBody.innerHTML = `<tr><td><div class="emptyState"><strong>Sin excels disponibles</strong>No se encontró ningún archivo Excel cargable.</div></td></tr>`;
         updateStats([]);
+        renderSummary();
         return;
       }
 
-      const headers = [...sheet.headers];
-      const refHeader = getReferenceHeader(sheet);
-      const dispatchHeader = getDispatchHeader(sheet);
+      const orderedHeaders = getOrderedHeaders(sheet);
 
-      const fixedHeaders = [];
-      if (refHeader) fixedHeaders.push(refHeader);
-      if (dispatchHeader && dispatchHeader !== refHeader) fixedHeaders.push(dispatchHeader);
-
-      const otherHeaders = headers.filter(h => !fixedHeaders.includes(h));
-      const orderedHeaders = [...fixedHeaders, ...otherHeaders];
-
-            tableHead.innerHTML = `
-              <th class="headCheckCell">
-                <input class="masterCheck" id="masterCheck" type="checkbox">
-              </th>
-              <th class="headRowNumberCell">Fila</th>
-              ${orderedHeaders.map((header, index) => `
-                <th class="${index === 0 ? "stickyHead1" : ""} ${index === 1 ? "stickyHead2" : ""}">
-                  <div class="thInner">
-                    <span class="thLabel">
-                      <span class="colLetter">${getColumnLetter(sheet, header) || "—"}</span>
-                      <span>${header}</span>
-                    </span>
-                    <button
-                      class="sortBtn ${(currentSort.key === header && currentSort.direction !== 0) ? "active" : ""}"
-                      type="button"
-                      data-sort="${encodeURIComponent(header)}"
-                      title="Ordenar"
-                    >${getSortSymbol(header)}</button>
-                  </div>
-                </th>
-              `).join("")}
-            `;
+      tableHead.innerHTML = `
+        <th class="headCheckCell"><input class="masterCheck" id="masterCheck" type="checkbox"></th>
+        <th class="headRowNumberCell">Fila</th>
+        ${orderedHeaders.map((header, index) => `
+          <th class="${index === 0 ? "stickyHead1" : ""} ${index === 1 ? "stickyHead2" : ""}">
+            <div class="thInner">
+              <span class="thLabel">
+                <span class="colLetter">${getColumnLetter(sheet, header) || "—"}</span>
+                <span>${header}</span>
+              </span>
+              <button class="sortBtn ${(currentSort.key === header && currentSort.direction !== 0) ? "active" : ""}" type="button" data-sort="${encodeURIComponent(header)}" title="Ordenar">${getSortSymbol(header)}</button>
+              <button class="filterBtn ${(currentColumnFilters[header] && currentColumnFilters[header].size) ? "active" : ""}" type="button" data-filter="${encodeURIComponent(header)}" title="Filtrar">▾</button>
+            </div>
+          </th>
+        `).join("")}
+      `;
 
       tableHead.querySelectorAll("[data-sort]").forEach(btn => {
         btn.addEventListener("click", () => toggleSort(decodeURIComponent(btn.dataset.sort)));
+      });
+      tableHead.querySelectorAll("[data-filter]").forEach(btn => {
+        btn.addEventListener("click", (e) => openFilterPopup(decodeURIComponent(btn.dataset.filter), e.currentTarget));
       });
 
       const visibleRows = sortRows(getFilteredRows());
 
       if (!visibleRows.length) {
-                tableBody.innerHTML = `
-          <tr>
-            <td colspan="${orderedHeaders.length + 2}">
-              <div class="emptyState">
-                <strong>Sin resultados</strong>
-                No hay registros con el filtro actual.
-              </div>
-            </td>
-          </tr>
-        `;
+        tableBody.innerHTML = `<tr><td colspan="${orderedHeaders.length + 2}"><div class="emptyState"><strong>Sin resultados</strong>No hay registros con el filtro actual.</div></td></tr>`;
         updateStats([]);
+        renderSummary();
         return;
       }
 
-      let html = visibleRows.map(row => {
+      tableBody.innerHTML = visibleRows.map(row => {
         const selectedClass = row._id === selectedId ? "selected" : "";
-
         const cells = orderedHeaders.map((header, index) => {
           const value = row.values[header];
           const stickyClass = index === 0 ? "stickyCol1" : index === 1 ? "stickyCol2" : "";
@@ -2263,43 +1262,25 @@
           if (isDocRowValue(value)) {
             const encoded = encodeURIComponent(JSON.stringify(value));
             const text = safe(value.text || value.display || "Abrir");
-            return `
-              <td class="${stickyClass}">
-                <div class="cellWrap">
-                  <span class="docLink" data-doc="${encoded}">${text}</span>
-                </div>
-              </td>
-            `;
+            return `<td class="${stickyClass}"><div class="cellWrap"><span class="docLink" data-doc="${encoded}">${text}</span></div></td>`;
           }
 
           if (isStatusLikeHeader(header)) {
-            return `
-              <td class="${stickyClass}">
-                <span class="chip ${chipClassFromValue(value)}">${safe(value)}</span>
-              </td>
-            `;
+            return `<td class="${stickyClass}"><span class="chip ${chipClassFromValue(value)}">${safe(value)}</span></td>`;
           }
 
           const cls = isLikelyLongText(header) ? "cellWrap long" : "cellWrap";
-          return `
-            <td class="${stickyClass}">
-              <div class="${cls}">${safe(value)}</div>
-            </td>
-          `;
+          return `<td class="${stickyClass}"><div class="${cls}">${safe(value)}</div></td>`;
         }).join("");
 
-                return `
+        return `
           <tr class="rowClickable ${selectedClass}" data-id="${encodeURIComponent(row._id)}">
-            <td class="rowCheckCell">
-              <input class="rowCheck" type="checkbox" data-row-check="${encodeURIComponent(row._id)}" ${selectedRowIds.has(row._id) ? "checked" : ""}>
-            </td>
+            <td class="rowCheckCell"><input class="rowCheck" type="checkbox" data-row-check="${encodeURIComponent(row._id)}" ${selectedRowIds.has(row._id) ? "checked" : ""}></td>
             <td class="rowNumberCell">${row._excelRowNumber || "—"}</td>
             ${cells}
           </tr>
         `;
       }).join("");
-
-      tableBody.innerHTML = html;
 
       const masterCheck = document.getElementById("masterCheck");
       const allSelected = visibleRows.length > 0 && visibleRows.every(r => selectedRowIds.has(r._id));
@@ -2308,10 +1289,7 @@
       if (masterCheck) {
         masterCheck.addEventListener("click", (e) => {
           const checked = e.target.checked;
-          visibleRows.forEach(r => {
-            if (checked) selectedRowIds.add(r._id);
-            else selectedRowIds.delete(r._id);
-          });
+          visibleRows.forEach(r => checked ? selectedRowIds.add(r._id) : selectedRowIds.delete(r._id));
           renderTable();
         });
       }
@@ -2320,8 +1298,7 @@
         chk.addEventListener("click", (e) => {
           e.stopPropagation();
           const id = decodeURIComponent(chk.dataset.rowCheck);
-          if (chk.checked) selectedRowIds.add(id);
-          else selectedRowIds.delete(id);
+          chk.checked ? selectedRowIds.add(id) : selectedRowIds.delete(id);
           renderTable();
         });
       });
@@ -2330,15 +1307,10 @@
         tr.addEventListener("click", (e) => {
           if (e.target.matches("[data-row-check]") || e.target.closest("[data-row-check]")) return;
           if (e.target.matches(".docLink") || e.target.closest(".docLink")) return;
-
-          selectedRowIds.clear();
           selectedId = decodeURIComponent(tr.dataset.id);
-
           renderTable();
-
-          if (sidebarOpen || isMobileLayout()) {
-            renderDetail();
-          } else {
+          if (sidebarOpen || isMobileLayout()) renderDetail();
+          else {
             detailTitle.textContent = "Detalle cargado";
             detailSub.textContent = "Abre el panel con la flecha derecha para ver la información.";
           }
@@ -2355,6 +1327,7 @@
       });
 
       updateStats(visibleRows);
+      renderSummary();
     }
 
     function renderDetailValue(header, value){
@@ -2362,31 +1335,19 @@
         const encoded = encodeURIComponent(JSON.stringify(value));
         return `<span class="docLink" data-doc="${encoded}">${safe(value.text || value.display || "Abrir")}</span>`;
       }
-
-      if (isStatusLikeHeader(header)) {
-        return `<span class="chip ${chipClassFromValue(value)}">${safe(value)}</span>`;
-      }
-
+      if (isStatusLikeHeader(header)) return `<span class="chip ${chipClassFromValue(value)}">${safe(value)}</span>`;
       return safe(value);
     }
 
     function renderEmptyDetail(){
       detailTitle.textContent = "Selecciona una operación";
-      detailSub.textContent = isMobileLayout()
-        ? "Haz clic en una fila para ver el detalle abajo."
-        : "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
-      detailBody.innerHTML = `
-        <div class="emptyState">
-          <strong>Sin selección</strong>
-          El detalle de la operación aparecerá aquí.
-        </div>
-      `;
+      detailSub.textContent = isMobileLayout() ? "Haz clic en una fila para ver el detalle abajo." : "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha.";
+      detailBody.innerHTML = `<div class="emptyState"><strong>Sin selección</strong>El detalle de la operación aparecerá aquí.</div>`;
     }
 
     function renderDetail(){
       const row = getAllRows().find(r => r._id === selectedId);
       const sheet = getActiveSheet();
-
       if (!row || !sheet) {
         renderEmptyDetail();
         return;
@@ -2396,34 +1357,18 @@
       const dispatchHeader = getDispatchHeader(sheet);
       const statusHeader = sheet.headers.find(h => normalize(h).includes("ESTADO")) || null;
 
-      detailTitle.textContent = safe(row.values[refHeader]) !== "—"
-        ? safe(row.values[refHeader])
-        : `Despacho ${safe(row.values[dispatchHeader])}`;
-
+      detailTitle.textContent = safe(row.values[refHeader]) !== "—" ? safe(row.values[refHeader]) : `Despacho ${safe(row.values[dispatchHeader])}`;
       detailSub.textContent = `${dispatchHeader || "Despacho"}: ${safe(row.values[dispatchHeader])} · ${statusHeader || "Estado"}: ${safe(row.values[statusHeader])} · Documentos: ${countDocs(row)}`;
 
       const docs = getDocumentValues(row);
-
-      const viewerHtml = `
-        <div class="viewerBlock" id="docViewer">
-          --
-        </div>
-      `;
-
+      const viewerHtml = `<div class="viewerBlock" id="docViewer">--</div>`;
       const docsHtml = `
         <section class="detailGroup">
           <div class="detailGroupTitle">Documentos detectados en la fila</div>
           <div class="detailGrid">
-            ${
-              docs.length
-                ? `<div class="docsList">
-                    ${docs.map(d => `
-                      <button class="docBtn" data-doc="${encodeURIComponent(JSON.stringify(d.value))}">
-                        ${d.header} · ${safe(d.value.text || "Abrir documento")}
-                      </button>
-                    `).join("")}
-                  </div>`
-                : `<div class="detailItem"><label>Documentos</label><div>No hay documentos asociados en esta fila.</div></div>`
+            ${docs.length
+              ? `<div class="docsList">${docs.map(d => `<button class="docBtn" data-doc="${encodeURIComponent(JSON.stringify(d.value))}">${d.header} · ${safe(d.value.text || "Abrir documento")}</button>`).join("")}</div>`
+              : `<div class="detailItem"><label>Documentos</label><div>No hay documentos asociados en esta fila.</div></div>`
             }
           </div>
         </section>
@@ -2439,12 +1384,7 @@
         <section class="detailGroup">
           <div class="detailGroupTitle">Detalle completo · ${sheet.name}</div>
           <div class="detailGrid">
-            ${visibleFields.map(header => `
-              <div class="detailItem">
-                <label>${header}</label>
-                <div>${renderDetailValue(header, row.values[header])}</div>
-              </div>
-            `).join("")}
+            ${visibleFields.map(header => `<div class="detailItem"><label>${header}</label><div>${renderDetailValue(header, row.values[header])}</div></div>`).join("")}
           </div>
         </section>
       `;
@@ -2452,17 +1392,10 @@
       detailBody.innerHTML = viewerHtml + docsHtml + allFieldsHtml;
 
       detailBody.querySelectorAll(".docBtn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const doc = JSON.parse(decodeURIComponent(btn.dataset.doc));
-          openDocument(doc);
-        });
+        btn.addEventListener("click", () => openDocument(JSON.parse(decodeURIComponent(btn.dataset.doc))));
       });
-
       detailBody.querySelectorAll(".docLink").forEach(el => {
-        el.addEventListener("click", () => {
-          const doc = JSON.parse(decodeURIComponent(el.dataset.doc));
-          openDocument(doc);
-        });
+        el.addEventListener("click", () => openDocument(JSON.parse(decodeURIComponent(el.dataset.doc))));
       });
     }
 
@@ -2472,22 +1405,11 @@
         if (viewer) viewer.innerHTML = "Este documento no tiene URL disponible.";
         return;
       }
-
       const url = doc.url;
       const text = safe(doc.text || doc.display || "Documento");
-      const isSharepoint =
-        String(url).includes("sharepoint.com") ||
-        String(url).includes("onedrive.com") ||
-        String(url).includes("-my.sharepoint.com");
-
       if (viewer) {
-        viewer.innerHTML = `
-          <div><strong>${text}</strong></div>
-          <div style="margin-top:8px;">${isSharepoint ? "Este documento se abre en nueva pestaña." : "Archivo listo para abrir."}</div>
-          <div style="margin-top:10px;"><a href="${url}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>
-        `;
+        viewer.innerHTML = `<div><strong>${text}</strong></div><div style="margin-top:8px;">Este documento se abre en nueva pestaña.</div><div style="margin-top:10px;"><a href="${url}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>`;
       }
-
       window.open(url, "_blank", "noopener,noreferrer");
     }
 
@@ -2497,14 +1419,274 @@
       const sheet = getActiveSheet();
 
       statTransport.textContent = category?.label || "—";
+      statCompany.textContent = activeFile?.companyName || "—";
       statTotal.textContent = getAllRows().length;
       statVisible.textContent = visibleRows.length;
       statDocs.textContent = visibleRows.filter(r => countDocs(r) > 0).length;
 
       if (category && sheet && activeFile) {
-        sheetInfo.textContent = `${category.label} · Archivo: ${activeFile.baseName} · Hoja: ${sheet.name}`;
+        sheetInfo.textContent = `${category.label} · Empresa: ${activeFile.companyName} · Archivo: ${activeFile.baseName} · Hoja: ${sheet.name}`;
       } else {
         sheetInfo.textContent = "Sin archivo cargado";
+      }
+    }
+
+    function renderHomeDashboard(){
+      dashboardGrid.innerHTML = CATEGORY_DEFS.map(cat => {
+        const item = categoryStore[cat.key];
+        const count = item?.files?.length || 0;
+        const sheetCount = (item?.files || []).reduce((acc, f) => acc + (f.sheets?.length || 0), 0);
+
+        return `
+          <div class="dashboardCard">
+            <div>
+              <div class="dashboardTop">
+                <div class="dashboardTitle">${cat.label}</div>
+                <div class="dashboardNumber">${sheetCount}</div>
+              </div>
+              <div class="dashboardMeta">
+                ${count === 0 ? "No hay empresas cargadas." : `${count} empresa(s) con ${sheetCount} hoja(s) clasificadas en ${cat.label.toLowerCase()}.`}
+              </div>
+              <div class="dashboardFileList">
+                ${count === 0
+                  ? `<div class="dashboardEmptyText">Sin archivos para mostrar.</div>`
+                  : item.files.map(fileObj => `
+                      <button class="dashboardFileLink" type="button" data-category="${cat.key}" data-file="${encodeURIComponent(fileObj.file)}">
+                        ${fileObj.companyName} · ${fileObj.sheets.map(s => s.name).join(", ")}
+                      </button>
+                    `).join("")
+                }
+              </div>
+            </div>
+            <div class="dashboardFooter">${count === 0 ? "Sin información" : "Haz clic en una empresa para abrirla"}</div>
+          </div>
+        `;
+      }).join("");
+
+      dashboardGrid.querySelectorAll(".dashboardFileLink").forEach(btn => {
+        btn.addEventListener("click", () => goToDataView(btn.dataset.category, decodeURIComponent(btn.dataset.file)));
+      });
+    }
+
+    function goToHomeView(){
+      currentView = "home";
+      homeView.classList.remove("hidden");
+      content.classList.add("hidden");
+      toolbar.classList.add("hidden");
+      summaryBar.classList.add("hidden");
+      activeFiltersEl.classList.add("hidden");
+      backHomeBtn.classList.add("hidden");
+      viewLabel.textContent = "Inicio";
+      statTransport.textContent = "—";
+      statCompany.textContent = "—";
+      statTotal.textContent = "0";
+      statVisible.textContent = "0";
+      statDocs.textContent = "0";
+      sheetInfo.textContent = "Sin archivo cargado";
+      renderHomeDashboard();
+      renderEmptyDetail();
+      closePopups();
+    }
+
+    function goToDataView(categoryKey, fileKey){
+      const category = categoryStore[categoryKey];
+      if (!category || !category.files.length) return;
+      const fileObj = category.files.find(f => f.file === fileKey);
+      if (!fileObj) return;
+
+      currentView = "data";
+      activeCategoryKey = categoryKey;
+      activeFileKey = fileObj.file;
+      activeSheetName = fileObj.sheets[0]?.name || null;
+      resetDataViewState();
+      selectDefaultSummaryHeader();
+
+      homeView.classList.add("hidden");
+      content.classList.remove("hidden");
+      toolbar.classList.remove("hidden");
+      backHomeBtn.classList.remove("hidden");
+      viewLabel.textContent = `${category.label} · ${fileObj.companyName}`;
+
+      renderAll();
+    }
+
+    function openFilterPopup(header, anchorEl){
+      closePopups();
+      const allValues = getDistinctValuesForHeader(header, getAllRows());
+      const currentSet = currentColumnFilters[header] ? new Set(currentColumnFilters[header]) : new Set();
+      const rect = anchorEl.getBoundingClientRect();
+      filterPopup.style.left = `${Math.max(8, rect.left - 100)}px`;
+      filterPopup.style.top = `${rect.bottom + 8}px`;
+      filterPopup.innerHTML = `
+        <div class="popupTitle">Filtrar · ${header}</div>
+        <input class="popupSearch" id="filterValueSearch" type="text" placeholder="Buscar valor..." />
+        <div class="popupList" id="filterValueList">
+          ${allValues.map(item => `
+            <label class="popupItem" data-filter-item="${encodeURIComponent(item.value)}">
+              <input class="colCheck" type="checkbox" value="${encodeURIComponent(item.value)}" ${currentSet.size ? (currentSet.has(item.value) ? "checked" : "") : "checked"}>
+              <span>${safe(item.value)} <span style="color:#61758b">(${item.count})</span></span>
+            </label>
+          `).join("")}
+        </div>
+        <div class="popupFooter">
+          <button class="miniBtn" type="button" id="filterSelectAll">Seleccionar todo</button>
+          <button class="miniBtn" type="button" id="filterClearThis">Quitar filtro</button>
+          <button class="miniBtn" type="button" id="filterApply">Aplicar</button>
+        </div>
+      `;
+      filterPopup.classList.add("show");
+
+      const searchBox = document.getElementById("filterValueSearch");
+      const list = document.getElementById("filterValueList");
+
+      searchBox.addEventListener("input", () => {
+        const q = searchBox.value.trim().toLowerCase();
+        list.querySelectorAll("[data-filter-item]").forEach(item => {
+          item.style.display = item.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      });
+
+      document.getElementById("filterSelectAll").addEventListener("click", () => {
+        filterPopup.querySelectorAll(".colCheck").forEach(chk => chk.checked = true);
+      });
+
+      document.getElementById("filterClearThis").addEventListener("click", () => {
+        delete currentColumnFilters[header];
+        closePopups();
+        renderTable();
+      });
+
+      document.getElementById("filterApply").addEventListener("click", () => {
+        const checked = [...filterPopup.querySelectorAll(".colCheck:checked")].map(chk => decodeURIComponent(chk.value));
+        if (!checked.length || checked.length === allValues.length) delete currentColumnFilters[header];
+        else currentColumnFilters[header] = new Set(checked);
+        closePopups();
+        renderTable();
+      });
+    }
+
+    function openColumnPopup(anchorEl){
+      const sheet = getActiveSheet();
+      if (!sheet) return;
+      closePopups();
+      const headers = getOrderedHeaders(sheet);
+      const currentSet = selectedExportColumns.size ? new Set(selectedExportColumns) : new Set(headers);
+      const rect = anchorEl.getBoundingClientRect();
+      columnPopup.style.left = `${Math.max(8, rect.left - 120)}px`;
+      columnPopup.style.top = `${rect.bottom + 8}px`;
+      columnPopup.innerHTML = `
+        <div class="popupTitle">Columnas para exportar</div>
+        <div class="popupList">
+          ${headers.map(header => `
+            <label class="popupItem">
+              <input class="colCheck export-col-check" type="checkbox" value="${encodeURIComponent(header)}" ${currentSet.has(header) ? "checked" : ""}>
+              <span>${header}</span>
+            </label>
+          `).join("")}
+        </div>
+        <div class="popupFooter">
+          <button class="miniBtn" type="button" id="colsAll">Todas</button>
+          <button class="miniBtn" type="button" id="colsNone">Ninguna</button>
+          <button class="miniBtn" type="button" id="colsApply">Guardar</button>
+        </div>
+      `;
+      columnPopup.classList.add("show");
+
+      document.getElementById("colsAll").addEventListener("click", () => {
+        columnPopup.querySelectorAll(".export-col-check").forEach(chk => chk.checked = true);
+      });
+      document.getElementById("colsNone").addEventListener("click", () => {
+        columnPopup.querySelectorAll(".export-col-check").forEach(chk => chk.checked = false);
+      });
+      document.getElementById("colsApply").addEventListener("click", () => {
+        const checked = [...columnPopup.querySelectorAll(".export-col-check:checked")].map(chk => decodeURIComponent(chk.value));
+        selectedExportColumns = new Set(checked);
+        closePopups();
+      });
+    }
+
+    function exportCurrentSelection(){
+      const sheet = getActiveSheet();
+      const activeFile = getActiveFile();
+      const category = getActiveCategory();
+      if (!sheet || !activeFile || !category) return;
+
+      const orderedHeaders = getOrderedHeaders(sheet);
+      const exportHeaders = selectedExportColumns.size ? orderedHeaders.filter(h => selectedExportColumns.has(h)) : orderedHeaders;
+      if (!exportHeaders.length) {
+        alert("Debes seleccionar al menos una columna para exportar.");
+        return;
+      }
+
+      const visibleRows = sortRows(getFilteredRows());
+      const rowsToExport = selectedRowIds.size ? visibleRows.filter(r => selectedRowIds.has(r._id)) : visibleRows;
+      if (!rowsToExport.length) {
+        alert("No hay filas visibles o seleccionadas para exportar.");
+        return;
+      }
+
+      const data = rowsToExport.map(row => {
+        const obj = {};
+        exportHeaders.forEach(header => {
+          const value = row.values[header];
+          obj[header] = isDocRowValue(value) ? (value.url || value.text || "") : safe(value);
+        });
+        return obj;
+      });
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      rowsToExport.forEach((row, rowIndex) => {
+        exportHeaders.forEach((header, colIndex) => {
+          const value = row.values[header];
+          if (isDocRowValue(value) && value.url) {
+            const addr = XLSX.utils.encode_cell({ r: rowIndex + 1, c: colIndex });
+            if (!ws[addr]) ws[addr] = { t:"s", v: value.text || value.url };
+            ws[addr].l = { Target: value.url };
+          }
+        });
+      });
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Exportado");
+      const ts = new Date().toISOString().slice(0,19).replace(/[:T]/g, "-");
+      const fileName = `pirazzoli_${category.key}_${activeFile.companyName.replace(/\s+/g,"_")}_${sheet.name.replace(/\s+/g,"_")}_${ts}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+    }
+
+    async function updateExchangeRates(){
+      try{
+        fxUsd.textContent = "Cargando…";
+        fxUf.textContent = "Cargando…";
+        fxUsd.className = "fxLoading";
+        fxUf.className = "fxLoading";
+        fxUpdatedAt.textContent = "Actualizando indicadores...";
+
+        const [usdRes, ufRes] = await Promise.all([
+          fetch("https://mindicador.cl/api/dolar", { cache: "no-store" }),
+          fetch("https://mindicador.cl/api/uf", { cache: "no-store" })
+        ]);
+
+        if (!usdRes.ok || !ufRes.ok) throw new Error("No se pudieron obtener los indicadores");
+        const usdData = await usdRes.json();
+        const ufData = await ufRes.json();
+
+        const usdValue = usdData?.serie?.[0]?.valor;
+        const ufValue = ufData?.serie?.[0]?.valor;
+        currentRates = { usdValue, ufValue, updatedAt: new Date() };
+
+        fxClp.textContent = "1,00";
+        fxUsd.textContent = formatNumberCL(usdValue, 2);
+        fxUf.textContent = formatNumberCL(ufValue, 2);
+        fxUsd.className = "";
+        fxUf.className = "";
+        fxUpdatedAt.textContent = `Última actualización: ${formatDateTime(currentRates.updatedAt)}`;
+      }catch(err){
+        console.error(err);
+        fxUsd.textContent = "Error";
+        fxUf.textContent = "Error";
+        fxUsd.className = "fxError";
+        fxUf.className = "fxError";
+        fxUpdatedAt.textContent = "No se pudo actualizar el tipo de cambio";
       }
     }
 
@@ -2513,24 +1695,19 @@
         goToHomeView();
         return;
       }
-
       setSidebarOpen(sidebarOpen);
       renderSheetTabs();
+      renderSummarySelector();
       renderTable();
 
-      if (sidebarOpen || isMobileLayout()) {
-        renderDetail();
-      } else {
-        renderEmptyDetail();
-      }
+      if (sidebarOpen || isMobileLayout()) renderDetail();
+      else renderEmptyDetail();
     }
 
     loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
-
       const user = loginUser.value.trim().toUpperCase();
       const pass = loginPass.value.trim();
-
       if (user === DEMO_USER && pass === DEMO_PASS) {
         loginError.textContent = "";
         loginScreen.classList.add("hidden");
@@ -2544,15 +1721,16 @@
     searchInput.addEventListener("input", () => {
       currentSearch = searchInput.value.trim().toLowerCase();
       selectedId = null;
-      selectedRowIds.clear();
       renderTable();
-
       if (sidebarOpen || isMobileLayout()) renderDetail();
     });
 
-    backHomeBtn.addEventListener("click", () => {
-      goToHomeView();
+    summaryColumnSelect.addEventListener("change", () => {
+      currentSummaryHeader = decodeURIComponent(summaryColumnSelect.value);
+      renderSummary();
     });
+
+    backHomeBtn.addEventListener("click", () => goToHomeView());
 
     sidebarToggle.addEventListener("click", () => {
       if (isMobileLayout()) return;
@@ -2565,6 +1743,16 @@
       renderDetail();
     });
 
+    clearFiltersBtn.addEventListener("click", () => {
+      currentColumnFilters = {};
+      selectedId = null;
+      renderTable();
+      renderDetail();
+    });
+
+    exportSelectionBtn.addEventListener("click", exportCurrentSelection);
+    columnSelectorBtn.addEventListener("click", (e) => openColumnPopup(e.currentTarget));
+
     window.addEventListener("resize", () => {
       if (currentView !== "data") return;
       const shouldBeOpen = isMobileLayout() ? true : sidebarOpen;
@@ -2572,7 +1760,40 @@
       renderAll();
     });
 
-    loadData()
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".popup") && !e.target.closest("[data-filter]") && !e.target.closest("#columnSelectorBtn")) closePopups();
+    });
+
+    refreshDataBtn.addEventListener("click", async () => {
+      try {
+        await Promise.all([loadData(), updateExchangeRates()]);
+        if (currentView === "home") {
+          renderHomeDashboard();
+        } else {
+          const category = getActiveCategory();
+          const activeFile = getActiveFile();
+          if (!category || !activeFile) {
+            goToHomeView();
+          } else {
+            const stillExists = category.files.some(f => f.file === activeFileKey);
+            if (!stillExists) {
+              goToHomeView();
+            } else {
+              const fileObj = category.files.find(f => f.file === activeFileKey);
+              const sheetStillExists = fileObj?.sheets?.some(s => s.name === activeSheetName);
+              if (!sheetStillExists) activeSheetName = fileObj?.sheets?.[0]?.name || null;
+              if (!currentSummaryHeader || !(getActiveSheet()?.headers || []).includes(currentSummaryHeader)) selectDefaultSummaryHeader();
+              renderAll();
+            }
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        alert("No se pudieron recargar los datos.");
+      }
+    });
+
+    Promise.all([loadData(), updateExchangeRates()])
       .then(() => {
         setSidebarOpen(isMobileLayout());
       })
@@ -2585,43 +1806,6 @@
           </div>
         `;
       });
-
-
-      refreshDataBtn.addEventListener("click", async () => {
-      try {
-        await loadData();
-
-        if (currentView === "home") {
-          renderHomeDashboard();
-        } else {
-          const category = getActiveCategory();
-          const activeFile = getActiveFile();
-
-          if (!category || !activeFile) {
-            goToHomeView();
-          } else {
-            const stillExists = category.files.some(f => f.file === activeFileKey);
-            if (!stillExists) {
-              goToHomeView();
-            } else {
-              const fileObj = category.files.find(f => f.file === activeFileKey);
-              const sheetStillExists = fileObj?.sheets?.some(s => s.name === activeSheetName);
-
-              if (!sheetStillExists) {
-                activeSheetName = fileObj?.sheets?.[0]?.name || null;
-              }
-
-              renderAll();
-            }
-          }
-        }
-      } catch (err) {
-        console.error(err);
-        alert("No se pudieron recargar los datos.");
-      }
-    });
   </script>
 </body>
 </html>
-
-
