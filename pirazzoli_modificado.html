@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -6,7 +6,6 @@
   <title>Pirazzoli | Seguimiento de Importaciones</title>
 
   <script type="text/javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root{
@@ -135,7 +134,6 @@
     .tableWrap{min-height:0;overflow:auto;background:#fff}
     table{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px}
     thead th{position:sticky;top:0;z-index:20;background:#f5f9fd;color:#29445d;border-bottom:1px solid var(--line);border-right:1px solid #e8eef4;text-align:left;padding:6px 7px;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 1px 0 #e8eef4}
-    
     .thInner{display:flex;align-items:center;gap:5px;min-height:18px;max-width:100%}
     .thSelectWrap{display:flex;align-items:center;gap:6px;min-width:0;flex:1}
     .thLabel{display:inline-flex;align-items:center;gap:6px;min-width:0}
@@ -250,47 +248,6 @@
       .searchWrap{min-width:0;width:100%}
       .popup{left:8px !important;right:8px !important;top:auto !important;bottom:10px !important;max-width:none;min-width:0}
     }
-
-    .commentIconBtn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:1px solid #9ed7b3;border-radius:999px;background:#dff4e6;color:#157347;font-size:11px;line-height:1;cursor:pointer;flex-shrink:0;box-shadow:0 0 0 1px rgba(21,115,71,.03)}
-    .commentIconBtn:hover{background:#cfeeda;border-color:#7dc59a}
-    .commentIconBtn.hasComments{background:#dff4e6;color:#157347}
-    .commentedCell{box-shadow:inset 0 0 0 2px rgba(21,115,71,.16)}
-    .cellWrapWithComment{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
-    .cellContentWrap{min-width:0;flex:1}
-    .rowNumberContent{display:flex;align-items:center;justify-content:center;gap:6px}
-    .commentedCell{box-shadow:inset 0 0 0 2px rgba(21,115,71,.16)}
-    .commentTargetPulse{animation:commentPulse 1.2s ease}
-    @keyframes commentPulse{
-      0%{box-shadow:inset 0 0 0 0 rgba(21,115,71,.05), 0 0 0 0 rgba(21,115,71,.25)}
-      40%{box-shadow:inset 0 0 0 2px rgba(21,115,71,.14), 0 0 0 8px rgba(21,115,71,.18)}
-      100%{box-shadow:inset 0 0 0 2px rgba(21,115,71,.14), 0 0 0 0 rgba(21,115,71,0)}
-    }
-    .commentMenu{min-width:220px;max-width:260px}
-    .commentMenu .miniBtn{width:100%;justify-content:flex-start;text-align:left}
-    .commentThreadPopup{min-width:360px;max-width:420px;padding:0;overflow:hidden}
-    .commentThreadHead{padding:12px 14px;border-bottom:1px solid var(--line);background:#f8fbff}
-    .commentThreadHead strong{display:block;font-size:13px;color:#23415d}
-    .commentThreadHead span{display:block;margin-top:4px;font-size:11px;color:var(--muted);line-height:1.4}
-    .commentThreadBody{max-height:420px;overflow:auto;padding:12px 12px 6px}
-    .commentEmpty{padding:18px 12px;text-align:center;color:var(--muted);font-size:12px}
-    .commentItem{border:1px solid #e3edf5;border-radius:12px;background:#fff;padding:10px 10px 8px;margin-bottom:8px}
-    .commentItemReply{margin-left:18px;background:#fbfdff}
-    .commentMeta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
-    .commentAuthor{font-size:11px;font-weight:900;color:#0d67a7}
-    .commentDate{font-size:10px;color:var(--muted)}
-    .commentText{font-size:12px;line-height:1.45;color:var(--text);white-space:pre-wrap;word-break:break-word}
-    .commentActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .commentActionBtn{border:0;background:transparent;color:#0d67a7;font-size:11px;font-weight:800;cursor:pointer;padding:0}
-    .commentComposer{padding:12px;border-top:1px solid var(--line);background:#fff}
-    .commentComposer label{display:block;font-size:11px;font-weight:900;color:#5a7086;margin-bottom:6px}
-    .commentComposer textarea{width:100%;min-height:84px;max-height:180px;resize:vertical;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:12px;color:var(--text);outline:none}
-    .commentComposer textarea:focus{border-color:#93c4e6;box-shadow:0 0 0 4px rgba(17,119,191,.10)}
-    .commentComposerActions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
-    .commentComposerHint{font-size:11px;color:var(--muted);line-height:1.4}
-    .commentInlineReply{margin-top:8px;padding-top:8px;border-top:1px dashed #dbe7f0}
-    .commentInlineReply textarea{width:100%;min-height:66px;resize:vertical;border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit;font-size:12px}
-    .commentInlineReplyActions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
-
   </style>
 </head>
 <body>
@@ -311,7 +268,9 @@
         <button class="loginBtn" type="submit" id="loginSubmitBtn">Entrar</button>
         <div class="loginError" id="loginError"></div>
       </form>
-
+      <div class="loginAux">
+        <button class="linkBtn" id="openRegisterBtn" type="button">Registrarse / cambiar credenciales</button>
+      </div>
     </div>
   </section>
 
@@ -325,13 +284,12 @@
         </div>
       </div>
       <div class="topStats">
-        <div class="miniStat">Perfil <strong id="statProfile">—</strong></div>
         <div class="miniStat">Tipo activo <strong id="statTransport">—</strong></div>
         <div class="miniStat">Empresa <strong id="statCompany">—</strong></div>
         <div class="miniStat">Registros <strong id="statTotal">0</strong></div>
         <div class="miniStat">Visibles <strong id="statVisible">0</strong></div>
         <div class="miniStat">Con documentos <strong id="statDocs">0</strong></div>
-        <button class="softBtn" id="commentNavigatorBtn" type="button">Comentarios <strong id="commentNavigatorCount" style="margin-left:6px;">0</strong></button>
+        <button class="softBtn" id="changeCredentialsBtn" type="button">Cambiar credenciales</button>
       </div>
     </header>
 
@@ -409,27 +367,30 @@
   <div class="popup" id="filterPopup"></div>
 
 
-
-  <div class="popup commentMenu" id="commentMenu"></div>
-  <div class="popup commentThreadPopup" id="commentThreadPopup"></div>
-
+  <div class="authModal" id="authModal">
+    <div class="authModalCard">
+      <h3 id="authModalTitle">Registrar credenciales</h3>
+      <p id="authModalText">Define un usuario y una contraseña para este navegador. Luego podrás volver a cambiarlos cuando quieras.</p>
+      <div class="field"><label for="registerUser">Usuario</label><input id="registerUser" type="text" placeholder="Ej: CIVI" /></div>
+      <div class="field"><label for="registerPass">Contraseña</label><input id="registerPass" type="password" placeholder="Crea una contraseña" /></div>
+      <div class="field"><label for="registerPass2">Confirmar contraseña</label><input id="registerPass2" type="password" placeholder="Repite la contraseña" /></div>
+      <div class="loginError" id="registerError"></div>
+      <div class="modalActions">
+        <button class="softBtn" id="closeAuthModalBtn" type="button">Cancelar</button>
+        <button class="softBtn primary" id="saveCredentialsBtn" type="button">Guardar credenciales</button>
+      </div>
+    </div>
+  </div>
 
   <script>
-    const FIXED_AUTH = {
-      PIRAZZOLI: { user: "PIRAZZOLI", pass: "654321", role: "editor", label: "Pirazzoli" },
-      CIVI: { user: "CIVI", pass: "123456", role: "viewer", label: "CIVI" }
-    };
-    const SUPABASE_URL = "https://gafuzrktthzbsijoqxlc.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_y27OkYFc-SbK1yCCwuSQ6g_SaM_h9Uf";
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const AUTH_STORAGE_KEY = "pirazzoliAuth_v2";
+    const DEFAULT_AUTH = { user: "CIVI", pass: "123456" };
     const CATEGORY_DEFS = [
       { key: "terrestre", label: "Terrestre" },
       { key: "aereo", label: "Aéreo" },
       { key: "maritimo", label: "Marítimo" }
     ];
     const FALLBACK_FILES = ["minerva.xlsx", "Minerva.xlsx", "terrestre.xlsx", "aereo.xlsx", "maritimo.xlsx"];
-    const SPECIAL_ROW_NUMBER_KEY = "__ROWNUM__";
-
     let categoryStore = {};
     let allLoadedFiles = [];
     let activeCategoryKey = null;
@@ -444,10 +405,6 @@
     let selectedSummaryHeader = null;
     let selectedId = null;
     let sidebarOpen = false;
-    let currentUserSession = null;
-    let commentStore = {};
-    let activeCommentTarget = null;
-    let commentNavigatorIndex = -1;
 
     const loginScreen = document.getElementById("loginScreen");
     const app = document.getElementById("app");
@@ -456,6 +413,17 @@
     const loginPass = document.getElementById("loginPass");
     const loginError = document.getElementById("loginError");
     const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+    const openRegisterBtn = document.getElementById("openRegisterBtn");
+    const changeCredentialsBtn = document.getElementById("changeCredentialsBtn");
+    const authModal = document.getElementById("authModal");
+    const authModalTitle = document.getElementById("authModalTitle");
+    const authModalText = document.getElementById("authModalText");
+    const registerUser = document.getElementById("registerUser");
+    const registerPass = document.getElementById("registerPass");
+    const registerPass2 = document.getElementById("registerPass2");
+    const registerError = document.getElementById("registerError");
+    const saveCredentialsBtn = document.getElementById("saveCredentialsBtn");
+    const closeAuthModalBtn = document.getElementById("closeAuthModalBtn");
     const homeView = document.getElementById("homeView");
     const dashboardGrid = document.getElementById("dashboardGrid");
     const toolbar = document.getElementById("toolbar");
@@ -474,7 +442,6 @@
     const detailSub = document.getElementById("detailSub");
     const detailBody = document.getElementById("detailBody");
     const searchInput = document.getElementById("searchInput");
-    const statProfile = document.getElementById("statProfile");
     const statTransport = document.getElementById("statTransport");
     const statCompany = document.getElementById("statCompany");
     const statTotal = document.getElementById("statTotal");
@@ -491,15 +458,10 @@
     const fxUsd = document.getElementById("fxUsd");
     const fxUf = document.getElementById("fxUf");
     const fxUpdatedAt = document.getElementById("fxUpdatedAt");
-    const commentMenu = document.getElementById("commentMenu");
-    const commentThreadPopup = document.getElementById("commentThreadPopup");
-    const commentNavigatorBtn = document.getElementById("commentNavigatorBtn");
-    const commentNavigatorCount = document.getElementById("commentNavigatorCount");
 
     function safe(v){ if (v === null || v === undefined) return "—"; const s = String(v).trim(); return s === "" ? "—" : s; }
-    function escapeHtml(v){ return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
     function isMissingValue(v){ if (v === null || v === undefined) return true; const s = String(v).trim(); return s === "" || s === "-" || s === "—"; }
-    function normalize(v){ return safe(v).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim().toUpperCase(); }
+    function normalize(v){ return safe(v).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ").trim().toUpperCase(); }
     function cleanText(v){ if (v === null || v === undefined) return ""; return String(v).replace(/\s+/g, " ").trim(); }
     function isMobileLayout(){ return window.innerWidth <= 980; }
     function looksLikeUrl(v){ const s = String(v || "").trim(); return /^https?:\/\//i.test(s) || /^www\./i.test(s); }
@@ -511,178 +473,58 @@
     function formatDate(date){ if (!(date instanceof Date) || isNaN(date)) return ""; const dd = String(date.getDate()).padStart(2, "0"); const mm = String(date.getMonth() + 1).padStart(2, "0"); const yy = date.getFullYear(); return `${dd}/${mm}/${yy}`; }
     function formatDateTime(date){ if (!(date instanceof Date) || isNaN(date)) return "—"; return date.toLocaleString("es-CL", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" }); }
     function parseExcelDateSerial(serial){ const parsed = XLSX.SSF.parse_date_code(serial); if (!parsed) return null; return new Date(parsed.y, parsed.m - 1, parsed.d); }
-    function isEditor(){ return currentUserSession?.role === "editor"; }
-    function userDisplayName(){ return currentUserSession?.label || currentUserSession?.user || "Usuario"; }
 
-    async function loadCommentsFromSupabaseForActiveSheet(){
-      if(!activeFileKey || !activeSheetName){
-        commentStore = {};
-        updateCommentNavigator();
-        return;
-      }
-      const { data, error } = await supabaseClient
-        .from("cell_comments")
-        .select("id, file_key, sheet_name, row_id, column_key, parent_id, author_user, author_label, author_role, body, created_at")
-        .eq("file_key", activeFileKey)
-        .eq("sheet_name", activeSheetName)
-        .order("created_at", { ascending:true });
-      if(error){
-        console.error("Error cargando comentarios:", error);
-        commentStore = {};
-        updateCommentNavigator();
-        return;
-      }
-      commentStore = {};
-      (data || []).forEach(item => {
-        const key = `${item.file_key}__${item.sheet_name}__${item.row_id}__${item.column_key}`;
-        if(!Array.isArray(commentStore[key])) commentStore[key] = [];
-        commentStore[key].push({
-          id: item.id,
-          parentId: item.parent_id,
-          text: item.body,
-          authorUser: item.author_user,
-          authorLabel: item.author_label,
-          authorRole: item.author_role,
-          createdAt: item.created_at
-        });
-      });
-      updateCommentNavigator();
-    }
-    function getSheetCommentKeyParts(rowId, columnKey){
-      return `${activeFileKey || ""}__${activeSheetName || ""}__${rowId || ""}__${columnKey || ""}`;
-    }
-    function getCommentsForTarget(rowId, columnKey){
-      const key = getSheetCommentKeyParts(rowId, columnKey);
-      const arr = Array.isArray(commentStore[key]) ? commentStore[key] : [];
-      return arr.slice().sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
-    }
-    function getTopLevelComments(rowId, columnKey){
-      const arr = getCommentsForTarget(rowId, columnKey);
-      return arr.filter(item => !item.parentId);
-    }
-    function getReplies(rowId, columnKey, parentId){
-      return getCommentsForTarget(rowId, columnKey).filter(item => item.parentId === parentId);
-    }
-    function getCommentCountForTarget(rowId, columnKey){
-      return getCommentsForTarget(rowId, columnKey).length;
-    }
-    async function addComment(rowId, columnKey, text, parentId=null){
-      const clean = String(text || "").trim();
-      if(!clean) return false;
-      const payload = {
-        file_key: activeFileKey,
-        sheet_name: activeSheetName,
-        row_id: rowId,
-        column_key: columnKey,
-        parent_id: parentId || null,
-        author_user: currentUserSession?.user || "",
-        author_label: currentUserSession?.label || currentUserSession?.user || "",
-        author_role: currentUserSession?.role || "",
-        body: clean
-      };
-      const { error } = await supabaseClient.from("cell_comments").insert(payload);
-      if(error){
-        console.error("Error al guardar comentario:", error);
-        alert("No se pudo guardar el comentario.");
-        return false;
-      }
-      await loadCommentsFromSupabaseForActiveSheet();
-      return true;
-    }
-    async function deleteComment(rowId, columnKey, commentId){
-      const { error } = await supabaseClient.from("cell_comments").delete().eq("id", commentId);
-      if(error){
-        console.error("Error al eliminar comentario:", error);
-        alert("No se pudo eliminar el comentario.");
-        return false;
-      }
-      await loadCommentsFromSupabaseForActiveSheet();
-      return true;
+    function getStoredAuth(){
+      try {
+        const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+        if (!raw) return { ...DEFAULT_AUTH };
+        const parsed = JSON.parse(raw);
+        const user = String(parsed?.user || "").trim().toUpperCase();
+        const pass = String(parsed?.pass || "").trim();
+        if (!user || !pass) return { ...DEFAULT_AUTH };
+        return { user, pass };
+      } catch(_) { return { ...DEFAULT_AUTH }; }
     }
 
-    function currentSheetCommentTargets(){
-      if(!activeFileKey || !activeSheetName) return [];
-      const prefix = `${activeFileKey}__${activeSheetName}__`;
-      return Object.entries(commentStore)
-        .filter(([key, val]) => key.startsWith(prefix) && Array.isArray(val) && val.length)
-        .map(([key, val]) => {
-          const rest = key.slice(prefix.length);
-          const parts = rest.split("__");
-          const rowId = parts.shift() || "";
-          const columnKey = parts.join("__");
-          return { key, rowId, columnKey, count: val.length };
-        })
-        .sort((a,b) => {
-          const ra = getAllRows().findIndex(r => r._id === a.rowId);
-          const rb = getAllRows().findIndex(r => r._id === b.rowId);
-          if(ra !== rb) return ra - rb;
-          return a.columnKey.localeCompare(b.columnKey);
-        });
+    function saveStoredAuth(user, pass){
+      const payload = { user: String(user || "").trim().toUpperCase(), pass: String(pass || "").trim() };
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(payload));
+      return payload;
     }
 
-    function updateCommentNavigator(){
-      const targets = currentSheetCommentTargets();
-      commentNavigatorCount.textContent = String(targets.reduce((acc, item) => acc + item.count, 0));
-      commentNavigatorBtn.disabled = !targets.length || currentView !== "data";
-      if(!targets.length) commentNavigatorIndex = -1;
-      else if(commentNavigatorIndex >= targets.length || commentNavigatorIndex < -1) commentNavigatorIndex = -1;
+    function openAuthModal(editMode = false){
+      authModalTitle.textContent = editMode ? "Cambiar credenciales" : "Registrar credenciales";
+      authModalText.textContent = editMode
+        ? "Guarda un nuevo usuario y contraseña para este navegador. Desde ese momento ingresarás con el nuevo perfil."
+        : "Define un usuario y una contraseña para este navegador. Luego podrás volver a cambiarlos cuando quieras.";
+      const current = getStoredAuth();
+      registerUser.value = editMode ? current.user : "";
+      registerPass.value = "";
+      registerPass2.value = "";
+      registerError.textContent = "";
+      authModal.classList.add("show");
+      setTimeout(() => registerUser.focus(), 30);
     }
 
-    function getCellLabel(row, columnKey){
-      if(columnKey === SPECIAL_ROW_NUMBER_KEY) return `Fila ${row?._excelRowNumber || "—"}`;
-      const sheet = getActiveSheet();
-      const letter = sheet ? getColumnLetter(sheet, columnKey) : "";
-      return `${columnKey}${letter ? ` (${letter})` : ""}`;
+    function closeAuthModal(){
+      authModal.classList.remove("show");
+      registerError.textContent = "";
     }
 
-    function buildCommentTarget(rowId, columnKey){
-      const row = getAllRows().find(r => r._id === rowId);
-      if(!row) return null;
-      return {
-        rowId,
-        columnKey,
-        row,
-        label: getCellLabel(row, columnKey),
-        selector: `[data-comment-cell="${encodeURIComponent(rowId)}__${encodeURIComponent(columnKey)}"]`
-      };
-    }
-
-    function scrollToCommentTarget(target, openThread=true){
-      if(!target) return;
-      const selector = `[data-comment-cell="${encodeURIComponent(target.rowId)}__${encodeURIComponent(target.columnKey)}"]`;
-      const el = document.querySelector(selector);
-      if(!el) return;
-      const rowEl = el.closest("tr.rowClickable");
-      if(rowEl){
-        selectedId = target.rowId;
-        renderTable();
-        if(sidebarOpen || isMobileLayout()) renderDetail();
-      }
-      setTimeout(() => {
-        const cell = document.querySelector(selector);
-        if(!cell) return;
-        cell.scrollIntoView({ behavior:"smooth", block:"center", inline:"center" });
-        cell.classList.add("commentTargetPulse");
-        setTimeout(() => cell.classList.remove("commentTargetPulse"), 1300);
-        if(openThread){
-          const rect = cell.getBoundingClientRect();
-          openCommentThread(target.rowId, target.columnKey, { left: rect.right - 20, top: rect.top + 8, width: rect.width, height: rect.height });
-        }
-      }, 80);
-    }
-
-    function goToNextComment(){
-      const targets = currentSheetCommentTargets();
-      if(!targets.length) return;
-      commentNavigatorIndex = (commentNavigatorIndex + 1) % targets.length;
-      const targetInfo = targets[commentNavigatorIndex];
-      const target = buildCommentTarget(targetInfo.rowId, targetInfo.columnKey);
-      if(target) scrollToCommentTarget(target, true);
-    }
-
-    function findAuth(user, pass){
-      const entries = Object.values(FIXED_AUTH);
-      return entries.find(item => item.user === user && item.pass === pass) || null;
+    function saveCredentialsFromModal(){
+      const user = registerUser.value.trim().toUpperCase();
+      const pass = registerPass.value.trim();
+      const pass2 = registerPass2.value.trim();
+      if (!user) { registerError.textContent = "Debes ingresar un usuario."; return; }
+      if (!pass) { registerError.textContent = "Debes ingresar una contraseña."; return; }
+      if (pass.length < 4) { registerError.textContent = "La contraseña debe tener al menos 4 caracteres."; return; }
+      if (pass !== pass2) { registerError.textContent = "Las contraseñas no coinciden."; return; }
+      saveStoredAuth(user, pass);
+      loginUser.value = user;
+      loginPass.value = "";
+      loginError.textContent = "";
+      closeAuthModal();
+      alert("Credenciales guardadas correctamente.");
     }
 
     function tryFormatDateCell(cell){
@@ -948,7 +790,6 @@
       const firstFile = firstActiveCategory?.files?.[0] || null;
       activeFileKey = firstFile?.file || null;
       activeSheetName = firstFile?.sheets?.[0]?.name || null;
-      updateCommentNavigator();
     }
 
     function resetDataViewState(){
@@ -960,8 +801,6 @@
       selectedColumnHeaders.clear();
       selectedSummaryHeader = null;
       selectedId = null;
-      commentNavigatorIndex = -1;
-      closeCommentOverlays();
     }
 
     function getAllRows(){ const sheet = getActiveSheet(); return sheet ? sheet.rows : []; }
@@ -1013,13 +852,6 @@
     }
 
     function closePopups(){ filterPopup.classList.remove("show"); }
-    function closeCommentOverlays(){
-      commentMenu.classList.remove("show");
-      commentThreadPopup.classList.remove("show");
-      commentMenu.innerHTML = "";
-      commentThreadPopup.innerHTML = "";
-      activeCommentTarget = null;
-    }
 
     function getOrderedHeaders(sheet){
       const headers = [...sheet.headers];
@@ -1031,6 +863,7 @@
       const otherHeaders = headers.filter(h => !fixedHeaders.includes(h));
       return [...fixedHeaders, ...otherHeaders];
     }
+
 
     function estimateColumnWidth(header, rows){
       const vals = rows.slice(0, 1000).map(row => {
@@ -1059,7 +892,6 @@
       selectedColumnHeaders.clear();
       selectedSummaryHeader = null;
       selectedId = null;
-      closeCommentOverlays();
     }
 
     function updateActionButtonsState(){
@@ -1072,9 +904,9 @@
     function renderSheetTabs(){
       const activeFile = getActiveFile();
       const sheets = activeFile?.sheets || [];
-      columnTabs.innerHTML = sheets.length ? sheets.map(sheet => `<button class="columnTab ${sheet.name === activeSheetName ? "active" : ""}" data-sheet="${escapeHtml(sheet.name)}">${escapeHtml(sheet.name)}</button>`).join("") : `<div class="emptyState" style="padding:12px 0 16px;text-align:left;">No hay hojas disponibles.</div>`;
+      columnTabs.innerHTML = sheets.length ? sheets.map(sheet => `<button class="columnTab ${sheet.name === activeSheetName ? "active" : ""}" data-sheet="${sheet.name}">${sheet.name}</button>`).join("") : `<div class="emptyState" style="padding:12px 0 16px;text-align:left;">No hay hojas disponibles.</div>`;
       columnTabs.querySelectorAll("[data-sheet]").forEach(btn => {
-        btn.addEventListener("click", async () => {
+        btn.addEventListener("click", () => {
           activeSheetName = btn.dataset.sheet;
           currentSort = { key:null, direction:0 };
           currentColumnFilters = {};
@@ -1082,9 +914,6 @@
           selectedColumnHeaders.clear();
           selectedSummaryHeader = null;
           selectedId = null;
-          commentNavigatorIndex = -1;
-          closeCommentOverlays();
-          await loadCommentsFromSupabaseForActiveSheet();
           renderAll();
         });
       });
@@ -1095,7 +924,7 @@
       Object.entries(currentColumnFilters).forEach(([header, set]) => { if (set && set.size) activeItems.push({ header, values:[...set] }); });
       if (!activeItems.length) { activeFiltersEl.classList.add("hidden"); activeFiltersEl.innerHTML = ""; return; }
       activeFiltersEl.classList.remove("hidden");
-      activeFiltersEl.innerHTML = activeItems.map(item => `<span class="activeFilterChip">${escapeHtml(item.header)}: ${item.values.length === 1 ? escapeHtml(safe(item.values[0])) : `${item.values.length} valores`}<button type="button" data-remove-filter="${encodeURIComponent(item.header)}">✕</button></span>`).join("");
+      activeFiltersEl.innerHTML = activeItems.map(item => `<span class="activeFilterChip">${item.header}: ${item.values.length === 1 ? safe(item.values[0]) : `${item.values.length} valores`}<button type="button" data-remove-filter="${encodeURIComponent(item.header)}">✕</button></span>`).join("");
       activeFiltersEl.querySelectorAll("[data-remove-filter]").forEach(btn => btn.addEventListener("click", () => { delete currentColumnFilters[decodeURIComponent(btn.dataset.removeFilter)]; renderTable(); renderSummary(); }));
     }
 
@@ -1112,7 +941,7 @@
       const rows = getFilteredRows();
       const summary = getDistinctValuesForHeader(selectedSummaryHeader, rows).sort((a,b) => b.count - a.count || compareValues(a.value,b.value));
       summaryTitle.textContent = `Resumen ejecutivo · ${selectedSummaryHeader}`;
-      summaryCards.innerHTML = summary.length ? summary.map(item => `<div class="summaryCard"><strong>${item.count}</strong><span>${escapeHtml(safe(item.value))}</span></div>`).join("") : `<div class="summaryCard"><strong>0</strong><span>Sin datos visibles</span></div>`;
+      summaryCards.innerHTML = summary.length ? summary.map(item => `<div class="summaryCard"><strong>${item.count}</strong><span>${safe(item.value)}</span></div>`).join("") : `<div class="summaryCard"><strong>0</strong><span>Sin datos visibles</span></div>`;
       const filterCount = Object.keys(currentColumnFilters).filter(h => currentColumnFilters[h] && currentColumnFilters[h].size).length;
       const selectedColsText = selectedColumnHeaders.size ? ` · columnas seleccionadas: ${selectedColumnHeaders.size}` : "";
       const searchText = currentSearch ? ` · búsqueda: "${currentSearch}"` : "";
@@ -1127,10 +956,10 @@
       filterPopup.style.left = `${Math.max(8, rect.left - 100)}px`;
       filterPopup.style.top = `${rect.bottom + 8}px`;
       filterPopup.innerHTML = `
-        <div class="popupTitle">Filtrar · ${escapeHtml(header)}</div>
+        <div class="popupTitle">Filtrar · ${header}</div>
         <input class="popupSearch" id="filterValueSearch" type="text" placeholder="Buscar valor..." />
         <div class="popupList" id="filterValueList">
-          ${allValues.map(item => `<label class="popupItem" data-filter-item="${encodeURIComponent(item.value)}"><input class="colCheck" type="checkbox" value="${encodeURIComponent(item.value)}" ${currentSet.size ? (currentSet.has(item.value) ? "checked" : "") : "checked"}><span>${escapeHtml(safe(item.value))} <span style="color:#61758b">(${item.count})</span></span></label>`).join("")}
+          ${allValues.map(item => `<label class="popupItem" data-filter-item="${encodeURIComponent(item.value)}"><input class="colCheck" type="checkbox" value="${encodeURIComponent(item.value)}" ${currentSet.size ? (currentSet.has(item.value) ? "checked" : "") : "checked"}><span>${safe(item.value)} <span style="color:#61758b">(${item.count})</span></span></label>`).join("")}
         </div>
         <div class="popupFooter">
           <button class="miniBtn" type="button" id="filterSelectAll">Seleccionar todo</button>
@@ -1195,18 +1024,6 @@
       XLSX.writeFile(wb, fileName);
     }
 
-    function buildCommentButton(rowId, columnKey){
-      const count = getCommentCountForTarget(rowId, columnKey);
-      if(!count) return "";
-      return `<button class="commentIconBtn hasComments" type="button" data-comment-toggle="${encodeURIComponent(rowId)}__${encodeURIComponent(columnKey)}" title="Ver comentarios">💬</button>`;
-    }
-
-    function renderCellValueWithComment(row, header, value, contentHtml){
-      const count = getCommentCountForTarget(row._id, header);
-      const cellClasses = count ? "commentedCell" : "";
-      return `<div class="cellWrapWithComment ${cellClasses}"><div class="cellContentWrap">${contentHtml}</div>${buildCommentButton(row._id, header)}</div>`;
-    }
-
     function renderTable(){
       closePopups();
       const category = getActiveCategory();
@@ -1218,7 +1035,6 @@
         updateStats([]);
         updateActionButtonsState();
         renderSummary();
-        updateCommentNavigator();
         return;
       }
       const orderedHeaders = getOrderedHeaders(sheet);
@@ -1233,14 +1049,13 @@
                 <input class="headerCheck" type="checkbox" data-col-check="${encodeURIComponent(header)}" ${selectedColumnHeaders.has(header) ? "checked" : ""}>
                 <span class="thLabel">
                   <span class="colLetter">${getColumnLetter(sheet, header) || "—"}</span>
-                  <span class="thLabelText">${escapeHtml(header)}</span>
+                  <span class="thLabelText">${header}</span>
                 </span>
               </div>
               <button class="sortBtn ${(currentSort.key === header && currentSort.direction !== 0) ? "active" : ""}" type="button" data-sort="${encodeURIComponent(header)}" title="Ordenar">${getSortSymbol(header)}</button>
               <button class="filterBtn ${(currentColumnFilters[header] && currentColumnFilters[header].size) ? "active" : ""}" type="button" data-filter="${encodeURIComponent(header)}" title="Filtrar">▾</button>
             </div>
           </th>`).join("")}`;
-
       tableHead.querySelectorAll("[data-sort]").forEach(btn => btn.addEventListener("click", e => { e.stopPropagation(); toggleSort(decodeURIComponent(btn.dataset.sort)); }));
       tableHead.querySelectorAll("[data-filter]").forEach(btn => btn.addEventListener("click", e => { e.stopPropagation(); openFilterPopup(decodeURIComponent(btn.dataset.filter), e.currentTarget); }));
       tableHead.querySelectorAll("[data-col-check]").forEach(chk => chk.addEventListener("click", e => {
@@ -1263,38 +1078,25 @@
         updateStats([]);
         updateActionButtonsState();
         renderSummary();
-        updateCommentNavigator();
         return;
       }
 
       tableBody.innerHTML = visibleRows.map(row => {
         const selectedClass = row._id === selectedId ? "selected" : "";
-        const rowCommentCount = getCommentCountForTarget(row._id, SPECIAL_ROW_NUMBER_KEY);
-        const rowNumberCommentBtn = buildCommentButton(row._id, SPECIAL_ROW_NUMBER_KEY);
-        const rowNumberClasses = rowCommentCount ? "commentedCell" : "";
         const cells = orderedHeaders.map((header, index) => {
           const value = row.values[header];
           const stickyClass = index === 0 ? "stickyCol1" : index === 1 ? "stickyCol2" : "";
           const selectedColClass = selectedColumnHeaders.has(header) ? "selectedColumnCell" : "";
-          let inner = "";
           if (isDocRowValue(value)) {
             const encoded = encodeURIComponent(JSON.stringify(value));
             const text = safe(value.text || value.display || "Abrir");
-            inner = `<div class="cellWrap"><span class="docLink" data-doc="${encoded}">${escapeHtml(text)}</span></div>`;
-          } else if (isStatusLikeHeader(header)) {
-            inner = `<span class="chip ${chipClassFromValue(value)}">${escapeHtml(safe(value))}</span>`;
-          } else {
-            const cls = isLikelyLongText(header) ? "cellWrap long" : "cellWrap";
-            inner = `<div class="${cls}">${escapeHtml(safe(value))}</div>`;
+            return `<td style="min-width:${colWidths[header]}px;width:${colWidths[header]}px;max-width:${colWidths[header]}px" class="${stickyClass} ${selectedColClass}"><div class="cellWrap"><span class="docLink" data-doc="${encoded}">${text}</span></div></td>`;
           }
-          return `<td style="min-width:${colWidths[header]}px;width:${colWidths[header]}px;max-width:${colWidths[header]}px" class="${stickyClass} ${selectedColClass}" data-comment-cell="${encodeURIComponent(row._id)}__${encodeURIComponent(header)}">${renderCellValueWithComment(row, header, value, inner)}</td>`;
+          if (isStatusLikeHeader(header)) return `<td style="min-width:${colWidths[header]}px;width:${colWidths[header]}px;max-width:${colWidths[header]}px" class="${stickyClass} ${selectedColClass}"><span class="chip ${chipClassFromValue(value)}">${safe(value)}</span></td>`;
+          const cls = isLikelyLongText(header) ? "cellWrap long" : "cellWrap";
+          return `<td style="min-width:${colWidths[header]}px;width:${colWidths[header]}px;max-width:${colWidths[header]}px" class="${stickyClass} ${selectedColClass}"><div class="${cls}">${safe(value)}</div></td>`;
         }).join("");
-
-        return `<tr class="rowClickable ${selectedClass}" data-id="${encodeURIComponent(row._id)}">
-          <td class="rowCheckCell"><input class="rowCheck" type="checkbox" data-row-check="${encodeURIComponent(row._id)}" ${selectedRowIds.has(row._id) ? "checked" : ""}></td>
-          <td class="rowNumberCell ${rowNumberClasses}" data-comment-cell="${encodeURIComponent(row._id)}__${encodeURIComponent(SPECIAL_ROW_NUMBER_KEY)}"><div class="rowNumberContent"><span>${row._excelRowNumber || "—"}</span>${rowNumberCommentBtn}</div></td>
-          ${cells}
-        </tr>`;
+        return `<tr class="rowClickable ${selectedClass}" data-id="${encodeURIComponent(row._id)}"><td class="rowCheckCell"><input class="rowCheck" type="checkbox" data-row-check="${encodeURIComponent(row._id)}" ${selectedRowIds.has(row._id) ? "checked" : ""}></td><td class="rowNumberCell">${row._excelRowNumber || "—"}</td>${cells}</tr>`;
       }).join("");
 
       const masterCheck = document.getElementById("masterCheck");
@@ -1309,180 +1111,24 @@
         renderTable();
         renderSummary();
       });
-
       tableBody.querySelectorAll("[data-row-check]").forEach(chk => chk.addEventListener("click", e => { e.stopPropagation(); const id = decodeURIComponent(chk.dataset.rowCheck); chk.checked ? selectedRowIds.add(id) : selectedRowIds.delete(id); renderTable(); }));
       tableBody.querySelectorAll("tr.rowClickable").forEach(tr => tr.addEventListener("click", e => {
-        if (e.target.matches("[data-row-check]") || e.target.closest("[data-row-check]") || e.target.matches(".docLink") || e.target.closest(".docLink") || e.target.closest("[data-comment-toggle]")) return;
+        if (e.target.matches("[data-row-check]") || e.target.closest("[data-row-check]") || e.target.matches(".docLink") || e.target.closest(".docLink")) return;
         selectedId = decodeURIComponent(tr.dataset.id);
         renderTable();
         if (sidebarOpen || isMobileLayout()) renderDetail();
         else { detailTitle.textContent = "Detalle cargado"; detailSub.textContent = "Abre el panel con la flecha derecha para ver la información."; }
       }));
       tableBody.querySelectorAll(".docLink").forEach(el => el.addEventListener("click", e => { e.stopPropagation(); const doc = JSON.parse(decodeURIComponent(el.dataset.doc)); if (sidebarOpen || isMobileLayout()) openDocument(doc); else window.open(doc.url, "_blank", "noopener,noreferrer"); }));
-
-      tableBody.querySelectorAll("[data-comment-toggle]").forEach(btn => btn.addEventListener("click", e => {
-        e.stopPropagation();
-        const [rowIdEncoded, colEncoded] = btn.dataset.commentToggle.split("__");
-        const rowId = decodeURIComponent(rowIdEncoded);
-        const columnKey = decodeURIComponent(colEncoded);
-        const rect = btn.getBoundingClientRect();
-        const targetKey = `${rowId}__${columnKey}`;
-        if(activeCommentTarget && activeCommentTarget.key === targetKey && commentThreadPopup.classList.contains("show")){
-          closeCommentOverlays();
-          return;
-        }
-        openCommentThread(rowId, columnKey, rect);
-      }));
-
-      tableBody.querySelectorAll("td[data-comment-cell]").forEach(td => {
-        td.addEventListener("contextmenu", e => {
-          if(!isEditor()) return;
-          e.preventDefault();
-          const parts = td.dataset.commentCell.split("__");
-          const rowId = decodeURIComponent(parts[0]);
-          const columnKey = decodeURIComponent(parts[1]);
-          openCommentMenu(rowId, columnKey, e.clientX, e.clientY);
-        });
-      });
-
       updateStats(visibleRows);
       updateActionButtonsState();
       renderSummary();
-      updateCommentNavigator();
-    }
-
-    function openCommentMenu(rowId, columnKey, x, y){
-      closeCommentOverlays();
-      const row = getAllRows().find(r => r._id === rowId);
-      if(!row) return;
-      const count = getCommentCountForTarget(rowId, columnKey);
-      commentMenu.style.left = `${Math.max(8, x)}px`;
-      commentMenu.style.top = `${Math.max(8, y)}px`;
-      commentMenu.innerHTML = `
-        <div class="popupTitle">Comentarios · ${escapeHtml(getCellLabel(row, columnKey))}</div>
-        <div style="font-size:12px;color:#61758b;line-height:1.5;margin-bottom:10px;">${count ? `Esta celda tiene ${count} comentario(s).` : "Esta celda aún no tiene comentarios."}</div>
-        <div class="popupFooter" style="margin-top:0;">
-          <button class="miniBtn" type="button" id="openCommentComposerBtn">${count ? "Ver / agregar comentario" : "Comentar"}</button>
-        </div>`;
-      commentMenu.classList.add("show");
-      document.getElementById("openCommentComposerBtn").addEventListener("click", () => {
-        const anchor = { left:x, top:y, width:0, height:0 };
-        openCommentThread(rowId, columnKey, anchor, true);
-        commentMenu.classList.remove("show");
-      });
-    }
-
-    function renderCommentItem(rowId, columnKey, item, isReply=false){
-      const replies = getReplies(rowId, columnKey, item.id);
-      const canEdit = isEditor();
-      return `
-        <div class="commentItem ${isReply ? "commentItemReply" : ""}" data-comment-item="${escapeHtml(item.id)}">
-          <div class="commentMeta">
-            <div class="commentAuthor">${escapeHtml(item.authorLabel || item.authorUser || "Usuario")}</div>
-            <div class="commentDate">${escapeHtml(formatDateTime(new Date(item.createdAt)))}</div>
-          </div>
-          <div class="commentText">${escapeHtml(item.text)}</div>
-          ${canEdit ? `<div class="commentActions">
-            <button class="commentActionBtn" type="button" data-reply-comment="${escapeHtml(item.id)}">Responder</button>
-            <button class="commentActionBtn" type="button" data-delete-comment="${escapeHtml(item.id)}">Eliminar</button>
-          </div>` : ""}
-          ${canEdit ? `
-            <div class="commentInlineReply hidden" data-reply-box="${escapeHtml(item.id)}">
-              <textarea placeholder="Escribe una respuesta..."></textarea>
-              <div class="commentInlineReplyActions">
-                <button class="miniBtn" type="button" data-cancel-reply="${escapeHtml(item.id)}">Cancelar</button>
-                <button class="miniBtn" type="button" data-submit-reply="${escapeHtml(item.id)}">Publicar respuesta</button>
-              </div>
-            </div>` : ""}
-          ${replies.map(reply => renderCommentItem(rowId, columnKey, reply, true)).join("")}
-        </div>`;
-    }
-
-    function bindCommentThreadEvents(rowId, columnKey){
-      if(isEditor()){
-        const composerBtn = document.getElementById("submitRootCommentBtn");
-        if(composerBtn){
-          composerBtn.addEventListener("click", async () => {
-            const textarea = document.getElementById("rootCommentText");
-            const text = textarea ? textarea.value.trim() : "";
-            if(!text){ alert("Escribe un comentario antes de publicar."); return; }
-            const ok = await addComment(rowId, columnKey, text, null);
-            if(!ok) return;
-            renderTable();
-            openCommentThread(rowId, columnKey, commentThreadPopup.getBoundingClientRect(), false);
-          });
-        }
-
-        commentThreadPopup.querySelectorAll("[data-reply-comment]").forEach(btn => btn.addEventListener("click", () => {
-          commentThreadPopup.querySelectorAll("[data-reply-box]").forEach(box => box.classList.add("hidden"));
-          const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.replyComment}"]`);
-          if(box){ box.classList.remove("hidden"); const ta = box.querySelector("textarea"); if(ta) ta.focus(); }
-        }));
-        commentThreadPopup.querySelectorAll("[data-cancel-reply]").forEach(btn => btn.addEventListener("click", () => {
-          const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.cancelReply}"]`);
-          if(box){ box.classList.add("hidden"); const ta = box.querySelector("textarea"); if(ta) ta.value = ""; }
-        }));
-        commentThreadPopup.querySelectorAll("[data-submit-reply]").forEach(btn => btn.addEventListener("click", async () => {
-          const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.submitReply}"]`);
-          const ta = box?.querySelector("textarea");
-          const text = ta?.value?.trim() || "";
-          if(!text){ alert("Escribe una respuesta antes de publicar."); return; }
-          const ok = await addComment(rowId, columnKey, text, btn.dataset.submitReply);
-          if(!ok) return;
-          renderTable();
-          openCommentThread(rowId, columnKey, commentThreadPopup.getBoundingClientRect(), false);
-        }));
-        commentThreadPopup.querySelectorAll("[data-delete-comment]").forEach(btn => btn.addEventListener("click", async () => {
-          if(!confirm("¿Eliminar este comentario y sus respuestas?")) return;
-          const ok = await deleteComment(rowId, columnKey, btn.dataset.deleteComment);
-          if(!ok) return;
-          renderTable();
-          openCommentThread(rowId, columnKey, commentThreadPopup.getBoundingClientRect(), false);
-        }));
-      }
-    }
-
-    function openCommentThread(rowId, columnKey, rectLike, focusComposer=false){
-      const row = getAllRows().find(r => r._id === rowId);
-      if(!row) return;
-      activeCommentTarget = { key:`${rowId}__${columnKey}`, rowId, columnKey };
-      const rect = rectLike instanceof DOMRect ? rectLike : rectLike;
-      const topLevels = getTopLevelComments(rowId, columnKey);
-      const allComments = getCommentsForTarget(rowId, columnKey);
-      commentThreadPopup.style.left = `${Math.max(8, (rect.left || 20) - 60)}px`;
-      commentThreadPopup.style.top = `${Math.max(8, (rect.top || 20) + (rect.height || 0) + 8)}px`;
-      commentThreadPopup.innerHTML = `
-        <div class="commentThreadHead">
-          <strong>${escapeHtml(getCellLabel(row, columnKey))}</strong>
-          <span>Fila ${escapeHtml(String(row._excelRowNumber || "—"))} · ${escapeHtml(activeSheetName || "")} · ${allComments.length} comentario(s)</span>
-        </div>
-        <div class="commentThreadBody">
-          ${topLevels.length ? topLevels.map(item => renderCommentItem(rowId, columnKey, item, false)).join("") : `<div class="commentEmpty">Todavía no hay comentarios en esta celda.</div>`}
-        </div>
-        <div class="commentComposer">
-          ${isEditor() ? `
-            <label for="rootCommentText">${allComments.length ? "Agregar comentario" : "Nuevo comentario"}</label>
-            <textarea id="rootCommentText" placeholder="Escribe aquí tu comentario..."></textarea>
-            <div class="commentComposerActions">
-              <div class="commentComposerHint">Perfil con edición: ${escapeHtml(userDisplayName())}. Puedes comentar, responder y eliminar.</div>
-              <button class="miniBtn" type="button" id="submitRootCommentBtn">Publicar</button>
-            </div>
-          ` : `
-            <div class="commentComposerHint">Perfil de solo lectura: ${escapeHtml(userDisplayName())}. Puedes revisar la conversación, pero no modificarla.</div>
-          `}
-        </div>`;
-      commentThreadPopup.classList.add("show");
-      bindCommentThreadEvents(rowId, columnKey);
-      if(focusComposer && isEditor()){
-        const ta = document.getElementById("rootCommentText");
-        if(ta) setTimeout(() => ta.focus(), 40);
-      }
     }
 
     function renderDetailValue(header, value){
-      if (isDocRowValue(value) && value.url) { const encoded = encodeURIComponent(JSON.stringify(value)); return `<span class="docLink" data-doc="${encoded}">${escapeHtml(safe(value.text || value.display || "Abrir"))}</span>`; }
-      if (isStatusLikeHeader(header)) return `<span class="chip ${chipClassFromValue(value)}">${escapeHtml(safe(value))}</span>`;
-      return escapeHtml(safe(value));
+      if (isDocRowValue(value) && value.url) { const encoded = encodeURIComponent(JSON.stringify(value)); return `<span class="docLink" data-doc="${encoded}">${safe(value.text || value.display || "Abrir")}</span>`; }
+      if (isStatusLikeHeader(header)) return `<span class="chip ${chipClassFromValue(value)}">${safe(value)}</span>`;
+      return safe(value);
     }
 
     function renderEmptyDetail(){ detailTitle.textContent = "Selecciona una operación"; detailSub.textContent = isMobileLayout() ? "Haz clic en una fila para ver el detalle abajo." : "Haz clic en una fila para cargar el detalle. Luego abre este panel con la flecha."; detailBody.innerHTML = `<div class="emptyState"><strong>Sin selección</strong>El detalle de la operación aparecerá aquí.</div>`; }
@@ -1498,9 +1144,9 @@
       detailSub.textContent = `${dispatchHeader || "Despacho"}: ${safe(row.values[dispatchHeader])} · ${statusHeader || "Estado"}: ${safe(row.values[statusHeader])} · Documentos: ${countDocs(row)}`;
       const docs = getDocumentValues(row);
       const viewerHtml = `<div class="viewerBlock" id="docViewer">--</div>`;
-      const docsHtml = `<section class="detailGroup"><div class="detailGroupTitle">Documentos detectados en la fila</div><div class="detailGrid">${docs.length ? `<div class="docsList">${docs.map(d => `<button class="docBtn" data-doc="${encodeURIComponent(JSON.stringify(d.value))}">${escapeHtml(d.header)} · ${escapeHtml(safe(d.value.text || "Abrir documento"))}</button>`).join("")}</div>` : `<div class="detailItem"><label>Documentos</label><div>No hay documentos asociados en esta fila.</div></div>`}</div></section>`;
+      const docsHtml = `<section class="detailGroup"><div class="detailGroupTitle">Documentos detectados en la fila</div><div class="detailGrid">${docs.length ? `<div class="docsList">${docs.map(d => `<button class="docBtn" data-doc="${encodeURIComponent(JSON.stringify(d.value))}">${d.header} · ${safe(d.value.text || "Abrir documento")}</button>`).join("")}</div>` : `<div class="detailItem"><label>Documentos</label><div>No hay documentos asociados en esta fila.</div></div>`}</div></section>`;
       const visibleFields = sheet.headers.filter(header => { const value = row.values[header]; if (isDocRowValue(value)) return true; return !isMissingValue(value); });
-      const allFieldsHtml = `<section class="detailGroup"><div class="detailGroupTitle">Detalle completo · ${escapeHtml(sheet.name)}</div><div class="detailGrid">${visibleFields.map(header => `<div class="detailItem"><label>${escapeHtml(header)}</label><div>${renderDetailValue(header, row.values[header])}</div></div>`).join("")}</div></section>`;
+      const allFieldsHtml = `<section class="detailGroup"><div class="detailGroupTitle">Detalle completo · ${sheet.name}</div><div class="detailGrid">${visibleFields.map(header => `<div class="detailItem"><label>${header}</label><div>${renderDetailValue(header, row.values[header])}</div></div>`).join("")}</div></section>`;
       detailBody.innerHTML = viewerHtml + docsHtml + allFieldsHtml;
       detailBody.querySelectorAll(".docBtn").forEach(btn => btn.addEventListener("click", () => openDocument(JSON.parse(decodeURIComponent(btn.dataset.doc)))));
       detailBody.querySelectorAll(".docLink").forEach(el => el.addEventListener("click", () => openDocument(JSON.parse(decodeURIComponent(el.dataset.doc)))));
@@ -1511,14 +1157,14 @@
       if (!doc || !doc.url) { if (viewer) viewer.innerHTML = "Este documento no tiene URL disponible."; return; }
       const url = doc.url;
       const text = safe(doc.text || doc.display || "Documento");
-      if (viewer) viewer.innerHTML = `<div><strong>${escapeHtml(text)}</strong></div><div style="margin-top:8px;">Este documento se abre en nueva pestaña.</div><div style="margin-top:10px;"><a href="${url}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>`;
+      if (viewer) viewer.innerHTML = `<div><strong>${text}</strong></div><div style="margin-top:8px;">Este documento se abre en nueva pestaña.</div><div style="margin-top:10px;"><a href="${url}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>`;
       window.open(url, "_blank", "noopener,noreferrer");
     }
 
     function updateStats(visibleRows){
       const category = getActiveCategory();
       const activeFile = getActiveFile();
-      statProfile.textContent = currentUserSession?.label || currentUserSession?.user || "—";
+      const sheet = getActiveSheet();
       statTransport.textContent = category?.label || "—";
       statCompany.textContent = activeFile?.companyName || "—";
       statTotal.textContent = getAllRows().length;
@@ -1532,7 +1178,7 @@
         const item = categoryStore[cat.key];
         const count = item?.files?.length || 0;
         const sheetCount = (item?.files || []).reduce((acc, f) => acc + (f.sheets?.length || 0), 0);
-        return `<div class="dashboardCard"><div><div class="dashboardTop"><div class="dashboardTitle">${escapeHtml(cat.label)}</div><div class="dashboardNumber">${sheetCount}</div></div><div class="dashboardMeta">${count === 0 ? "No hay empresas cargadas." : `${count} empresa(s) con ${sheetCount} hoja(s) clasificadas en ${cat.label.toLowerCase()}.`}</div><div class="dashboardFileList">${count === 0 ? `<div class="dashboardEmptyText">Sin archivos para mostrar.</div>` : item.files.map(fileObj => `<button class="dashboardFileLink" type="button" data-category="${escapeHtml(cat.key)}" data-file="${encodeURIComponent(fileObj.file)}">${escapeHtml(fileObj.companyName)} · ${escapeHtml(fileObj.sheets.map(s => s.name).join(", "))}</button>`).join("")}</div></div><div class="dashboardFooter">${count === 0 ? "Sin información" : "Haz clic en una empresa para abrirla"}</div></div>`;
+        return `<div class="dashboardCard"><div><div class="dashboardTop"><div class="dashboardTitle">${cat.label}</div><div class="dashboardNumber">${sheetCount}</div></div><div class="dashboardMeta">${count === 0 ? "No hay empresas cargadas." : `${count} empresa(s) con ${sheetCount} hoja(s) clasificadas en ${cat.label.toLowerCase()}.`}</div><div class="dashboardFileList">${count === 0 ? `<div class="dashboardEmptyText">Sin archivos para mostrar.</div>` : item.files.map(fileObj => `<button class="dashboardFileLink" type="button" data-category="${cat.key}" data-file="${encodeURIComponent(fileObj.file)}">${fileObj.companyName} · ${fileObj.sheets.map(s => s.name).join(", ")}</button>`).join("")}</div></div><div class="dashboardFooter">${count === 0 ? "Sin información" : "Haz clic en una empresa para abrirla"}</div></div>`;
       }).join("");
       dashboardGrid.querySelectorAll(".dashboardFileLink").forEach(btn => btn.addEventListener("click", () => goToDataView(btn.dataset.category, decodeURIComponent(btn.dataset.file))));
     }
@@ -1546,16 +1192,14 @@
       activeFiltersEl.classList.add("hidden");
       backHomeBtn.classList.add("hidden");
       viewLabel.textContent = "Inicio";
-      statProfile.textContent = currentUserSession?.label || currentUserSession?.user || "—"; statTransport.textContent = "—"; statCompany.textContent = "—"; statTotal.textContent = "0"; statVisible.textContent = "0"; statDocs.textContent = "0"; sheetInfo.textContent = "";
+      statTransport.textContent = "—"; statCompany.textContent = "—"; statTotal.textContent = "0"; statVisible.textContent = "0"; statDocs.textContent = "0"; sheetInfo.textContent = "";
       updateActionButtonsState();
       renderHomeDashboard();
       renderEmptyDetail();
       closePopups();
-      closeCommentOverlays();
-      updateCommentNavigator();
     }
 
-    async function goToDataView(categoryKey, fileKey){
+    function goToDataView(categoryKey, fileKey){
       const category = categoryStore[categoryKey];
       if (!category || !category.files.length) return;
       const fileObj = category.files.find(f => f.file === fileKey);
@@ -1570,7 +1214,6 @@
       toolbar.classList.remove("hidden");
       backHomeBtn.classList.remove("hidden");
       viewLabel.textContent = `${category.label} · ${fileObj.companyName}`;
-      await loadCommentsFromSupabaseForActiveSheet();
       renderAll();
     }
 
@@ -1620,23 +1263,30 @@
       renderSheetTabs();
       renderTable();
       if (sidebarOpen || isMobileLayout()) renderDetail(); else renderEmptyDetail();
-      updateCommentNavigator();
     }
 
     loginForm.addEventListener("submit", e => {
       e.preventDefault();
       const user = loginUser.value.trim().toUpperCase();
       const pass = loginPass.value.trim();
-      const auth = findAuth(user, pass);
-      if (auth) {
-        currentUserSession = { ...auth };
+      const auth = getStoredAuth();
+      if (user === auth.user && pass === auth.pass) {
         loginError.textContent = "";
-        statProfile.textContent = currentUserSession?.label || currentUserSession?.user || "—";
         loginScreen.classList.add("hidden");
         app.classList.remove("hidden");
         goToHomeView();
       } else loginError.textContent = "Usuario o contraseña incorrectos.";
     });
+
+    openRegisterBtn.addEventListener("click", () => openAuthModal(false));
+    changeCredentialsBtn.addEventListener("click", () => openAuthModal(true));
+    saveCredentialsBtn.addEventListener("click", saveCredentialsFromModal);
+    closeAuthModalBtn.addEventListener("click", closeAuthModal);
+    authModal.addEventListener("click", e => { if (e.target === authModal) closeAuthModal(); });
+    [registerUser, registerPass, registerPass2].forEach(el => el.addEventListener("keydown", e => {
+      if (e.key === "Enter") { e.preventDefault(); saveCredentialsFromModal(); }
+      if (e.key === "Escape") closeAuthModal();
+    }));
 
     searchInput.addEventListener("input", () => { currentSearch = searchInput.value.trim().toLowerCase(); selectedId = null; renderTable(); if (sidebarOpen || isMobileLayout()) renderDetail(); });
     backHomeBtn.addEventListener("click", () => goToHomeView());
@@ -1645,14 +1295,8 @@
     clearFiltersBtn.addEventListener("click", () => { currentColumnFilters = {}; selectedId = null; renderTable(); renderSummary(); renderDetail(); });
     clearSelectionBtn.addEventListener("click", () => { clearAllSelections(); renderTable(); renderSummary(); renderDetail(); });
     exportSelectionBtn.addEventListener("click", exportCurrentSelection);
-    commentNavigatorBtn.addEventListener("click", goToNextComment);
     window.addEventListener("resize", () => { if (currentView !== "data") return; const shouldBeOpen = isMobileLayout() ? true : sidebarOpen; setSidebarOpen(shouldBeOpen); renderAll(); });
-    document.addEventListener("click", e => {
-      if (!e.target.closest(".popup") && !e.target.closest("[data-filter]") && !e.target.closest("[data-comment-toggle]")) {
-        closePopups();
-        closeCommentOverlays();
-      }
-    });
+    document.addEventListener("click", e => { if (!e.target.closest(".popup") && !e.target.closest("[data-filter]")) closePopups(); });
 
     refreshDataBtn.addEventListener("click", async () => {
       try {
@@ -1669,7 +1313,6 @@
               const fileObj = category.files.find(f => f.file === activeFileKey);
               const sheetStillExists = fileObj?.sheets?.some(s => s.name === activeSheetName);
               if (!sheetStillExists) activeSheetName = fileObj?.sheets?.[0]?.name || null;
-              await loadCommentsFromSupabaseForActiveSheet();
               renderAll();
             }
           }
@@ -1677,14 +1320,12 @@
       } catch (err) { console.error(err); alert("No se pudieron recargar los datos."); }
     });
 
-    loginUser.value = "";
-    loginPass.value = "";
+    loginUser.value = getStoredAuth().user;
 
-    Promise.all([loadData(), updateExchangeRates()]).then(() => { setSidebarOpen(isMobileLayout()); updateActionButtonsState(); updateCommentNavigator(); }).catch(err => {
+    Promise.all([loadData(), updateExchangeRates()]).then(() => { setSidebarOpen(isMobileLayout()); updateActionButtonsState(); }).catch(err => {
       console.error(err);
-      document.body.innerHTML = `<div style="padding:32px;font-family:Arial,Helvetica,sans-serif;"><h2 style="margin:0 0 10px;">Error al cargar la demo</h2><p style="color:#666;">${escapeHtml(err.message)}</p></div>`;
+      document.body.innerHTML = `<div style="padding:32px;font-family:Arial,Helvetica,sans-serif;"><h2 style="margin:0 0 10px;">Error al cargar la demo</h2><p style="color:#666;">${err.message}</p></div>`;
     });
   </script>
-
 </body>
 </html>

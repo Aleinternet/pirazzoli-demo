@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -6,7 +6,6 @@
   <title>Pirazzoli | Seguimiento de Importaciones</title>
 
   <script type="text/javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root{
@@ -258,12 +257,12 @@
     .cellWrapWithComment{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
     .cellContentWrap{min-width:0;flex:1}
     .rowNumberContent{display:flex;align-items:center;justify-content:center;gap:6px}
-    .commentedCell{box-shadow:inset 0 0 0 2px rgba(21,115,71,.16)}
+    .commentedCell{box-shadow:inset 0 0 0 2px rgba(17,119,191,.16)}
     .commentTargetPulse{animation:commentPulse 1.2s ease}
     @keyframes commentPulse{
-      0%{box-shadow:inset 0 0 0 0 rgba(21,115,71,.05), 0 0 0 0 rgba(21,115,71,.25)}
-      40%{box-shadow:inset 0 0 0 2px rgba(21,115,71,.14), 0 0 0 8px rgba(21,115,71,.18)}
-      100%{box-shadow:inset 0 0 0 2px rgba(21,115,71,.14), 0 0 0 0 rgba(21,115,71,0)}
+      0%{box-shadow:inset 0 0 0 0 rgba(17,119,191,.05), 0 0 0 0 rgba(17,119,191,.25)}
+      40%{box-shadow:inset 0 0 0 2px rgba(17,119,191,.14), 0 0 0 8px rgba(17,119,191,.18)}
+      100%{box-shadow:inset 0 0 0 2px rgba(17,119,191,.14), 0 0 0 0 rgba(17,119,191,0)}
     }
     .commentMenu{min-width:220px;max-width:260px}
     .commentMenu .miniBtn{width:100%;justify-content:flex-start;text-align:left}
@@ -419,9 +418,7 @@
       PIRAZZOLI: { user: "PIRAZZOLI", pass: "654321", role: "editor", label: "Pirazzoli" },
       CIVI: { user: "CIVI", pass: "123456", role: "viewer", label: "CIVI" }
     };
-    const SUPABASE_URL = "https://gafuzrktthzbsijoqxlc.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_y27OkYFc-SbK1yCCwuSQ6g_SaM_h9Uf";
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const COMMENT_STORAGE_KEY = "pirazzoliComments_v1";
     const CATEGORY_DEFS = [
       { key: "terrestre", label: "Terrestre" },
       { key: "aereo", label: "Aéreo" },
@@ -445,7 +442,7 @@
     let selectedId = null;
     let sidebarOpen = false;
     let currentUserSession = null;
-    let commentStore = {};
+    let commentStore = loadCommentStore();
     let activeCommentTarget = null;
     let commentNavigatorIndex = -1;
 
@@ -514,39 +511,19 @@
     function isEditor(){ return currentUserSession?.role === "editor"; }
     function userDisplayName(){ return currentUserSession?.label || currentUserSession?.user || "Usuario"; }
 
-    async function loadCommentsFromSupabaseForActiveSheet(){
-      if(!activeFileKey || !activeSheetName){
-        commentStore = {};
-        updateCommentNavigator();
-        return;
-      }
-      const { data, error } = await supabaseClient
-        .from("cell_comments")
-        .select("id, file_key, sheet_name, row_id, column_key, parent_id, author_user, author_label, author_role, body, created_at")
-        .eq("file_key", activeFileKey)
-        .eq("sheet_name", activeSheetName)
-        .order("created_at", { ascending:true });
-      if(error){
-        console.error("Error cargando comentarios:", error);
-        commentStore = {};
-        updateCommentNavigator();
-        return;
-      }
-      commentStore = {};
-      (data || []).forEach(item => {
-        const key = `${item.file_key}__${item.sheet_name}__${item.row_id}__${item.column_key}`;
-        if(!Array.isArray(commentStore[key])) commentStore[key] = [];
-        commentStore[key].push({
-          id: item.id,
-          parentId: item.parent_id,
-          text: item.body,
-          authorUser: item.author_user,
-          authorLabel: item.author_label,
-          authorRole: item.author_role,
-          createdAt: item.created_at
-        });
-      });
-      updateCommentNavigator();
+    function loadCommentStore(){
+      try{
+        const raw = localStorage.getItem(COMMENT_STORAGE_KEY);
+        if(!raw) return {};
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === "object" ? parsed : {};
+      }catch(_){ return {}; }
+    }
+    function saveCommentStore(){
+      localStorage.setItem(COMMENT_STORAGE_KEY, JSON.stringify(commentStore));
+    }
+    function generateId(prefix="c"){
+      return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,10)}`;
     }
     function getSheetCommentKeyParts(rowId, columnKey){
       return `${activeFileKey || ""}__${activeSheetName || ""}__${rowId || ""}__${columnKey || ""}`;
@@ -566,38 +543,40 @@
     function getCommentCountForTarget(rowId, columnKey){
       return getCommentsForTarget(rowId, columnKey).length;
     }
-    async function addComment(rowId, columnKey, text, parentId=null){
+    function addComment(rowId, columnKey, text, parentId=null){
       const clean = String(text || "").trim();
       if(!clean) return false;
-      const payload = {
-        file_key: activeFileKey,
-        sheet_name: activeSheetName,
-        row_id: rowId,
-        column_key: columnKey,
-        parent_id: parentId || null,
-        author_user: currentUserSession?.user || "",
-        author_label: currentUserSession?.label || currentUserSession?.user || "",
-        author_role: currentUserSession?.role || "",
-        body: clean
-      };
-      const { error } = await supabaseClient.from("cell_comments").insert(payload);
-      if(error){
-        console.error("Error al guardar comentario:", error);
-        alert("No se pudo guardar el comentario.");
-        return false;
-      }
-      await loadCommentsFromSupabaseForActiveSheet();
+      const key = getSheetCommentKeyParts(rowId, columnKey);
+      if(!Array.isArray(commentStore[key])) commentStore[key] = [];
+      commentStore[key].push({
+        id: generateId("cm"),
+        parentId: parentId || null,
+        text: clean,
+        authorUser: currentUserSession?.user || "",
+        authorLabel: currentUserSession?.label || currentUserSession?.user || "",
+        createdAt: new Date().toISOString()
+      });
+      saveCommentStore();
       return true;
     }
-    async function deleteComment(rowId, columnKey, commentId){
-      const { error } = await supabaseClient.from("cell_comments").delete().eq("id", commentId);
-      if(error){
-        console.error("Error al eliminar comentario:", error);
-        alert("No se pudo eliminar el comentario.");
-        return false;
+    function deleteComment(rowId, columnKey, commentId){
+      const key = getSheetCommentKeyParts(rowId, columnKey);
+      const existing = Array.isArray(commentStore[key]) ? commentStore[key] : [];
+      if(!existing.length) return;
+      const idsToDelete = new Set([commentId]);
+      let changed = true;
+      while(changed){
+        changed = false;
+        existing.forEach(item => {
+          if(item.parentId && idsToDelete.has(item.parentId) && !idsToDelete.has(item.id)){
+            idsToDelete.add(item.id);
+            changed = true;
+          }
+        });
       }
-      await loadCommentsFromSupabaseForActiveSheet();
-      return true;
+      commentStore[key] = existing.filter(item => !idsToDelete.has(item.id));
+      if(!commentStore[key].length) delete commentStore[key];
+      saveCommentStore();
     }
 
     function currentSheetCommentTargets(){
@@ -1074,7 +1053,7 @@
       const sheets = activeFile?.sheets || [];
       columnTabs.innerHTML = sheets.length ? sheets.map(sheet => `<button class="columnTab ${sheet.name === activeSheetName ? "active" : ""}" data-sheet="${escapeHtml(sheet.name)}">${escapeHtml(sheet.name)}</button>`).join("") : `<div class="emptyState" style="padding:12px 0 16px;text-align:left;">No hay hojas disponibles.</div>`;
       columnTabs.querySelectorAll("[data-sheet]").forEach(btn => {
-        btn.addEventListener("click", async () => {
+        btn.addEventListener("click", () => {
           activeSheetName = btn.dataset.sheet;
           currentSort = { key:null, direction:0 };
           currentColumnFilters = {};
@@ -1084,7 +1063,6 @@
           selectedId = null;
           commentNavigatorIndex = -1;
           closeCommentOverlays();
-          await loadCommentsFromSupabaseForActiveSheet();
           renderAll();
         });
       });
@@ -1402,14 +1380,13 @@
       if(isEditor()){
         const composerBtn = document.getElementById("submitRootCommentBtn");
         if(composerBtn){
-          composerBtn.addEventListener("click", async () => {
+          composerBtn.addEventListener("click", () => {
             const textarea = document.getElementById("rootCommentText");
             const text = textarea ? textarea.value.trim() : "";
             if(!text){ alert("Escribe un comentario antes de publicar."); return; }
-            const ok = await addComment(rowId, columnKey, text, null);
-            if(!ok) return;
-            renderTable();
+            addComment(rowId, columnKey, text, null);
             openCommentThread(rowId, columnKey, commentThreadPopup.getBoundingClientRect(), false);
+            renderTable();
           });
         }
 
@@ -1422,22 +1399,20 @@
           const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.cancelReply}"]`);
           if(box){ box.classList.add("hidden"); const ta = box.querySelector("textarea"); if(ta) ta.value = ""; }
         }));
-        commentThreadPopup.querySelectorAll("[data-submit-reply]").forEach(btn => btn.addEventListener("click", async () => {
+        commentThreadPopup.querySelectorAll("[data-submit-reply]").forEach(btn => btn.addEventListener("click", () => {
           const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.submitReply}"]`);
           const ta = box?.querySelector("textarea");
           const text = ta?.value?.trim() || "";
           if(!text){ alert("Escribe una respuesta antes de publicar."); return; }
-          const ok = await addComment(rowId, columnKey, text, btn.dataset.submitReply);
-          if(!ok) return;
-          renderTable();
+          addComment(rowId, columnKey, text, btn.dataset.submitReply);
           openCommentThread(rowId, columnKey, commentThreadPopup.getBoundingClientRect(), false);
+          renderTable();
         }));
-        commentThreadPopup.querySelectorAll("[data-delete-comment]").forEach(btn => btn.addEventListener("click", async () => {
+        commentThreadPopup.querySelectorAll("[data-delete-comment]").forEach(btn => btn.addEventListener("click", () => {
           if(!confirm("¿Eliminar este comentario y sus respuestas?")) return;
-          const ok = await deleteComment(rowId, columnKey, btn.dataset.deleteComment);
-          if(!ok) return;
-          renderTable();
+          deleteComment(rowId, columnKey, btn.dataset.deleteComment);
           openCommentThread(rowId, columnKey, commentThreadPopup.getBoundingClientRect(), false);
+          renderTable();
         }));
       }
     }
@@ -1555,7 +1530,7 @@
       updateCommentNavigator();
     }
 
-    async function goToDataView(categoryKey, fileKey){
+    function goToDataView(categoryKey, fileKey){
       const category = categoryStore[categoryKey];
       if (!category || !category.files.length) return;
       const fileObj = category.files.find(f => f.file === fileKey);
@@ -1570,7 +1545,6 @@
       toolbar.classList.remove("hidden");
       backHomeBtn.classList.remove("hidden");
       viewLabel.textContent = `${category.label} · ${fileObj.companyName}`;
-      await loadCommentsFromSupabaseForActiveSheet();
       renderAll();
     }
 
@@ -1669,7 +1643,6 @@
               const fileObj = category.files.find(f => f.file === activeFileKey);
               const sheetStillExists = fileObj?.sheets?.some(s => s.name === activeSheetName);
               if (!sheetStillExists) activeSheetName = fileObj?.sheets?.[0]?.name || null;
-              await loadCommentsFromSupabaseForActiveSheet();
               renderAll();
             }
           }
