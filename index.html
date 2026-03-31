@@ -1683,7 +1683,7 @@
         fxUf.textContent = "Cargando…";
         fxUsd.className = "fxLoading";
         fxUf.className = "fxLoading";
-        document.getElementById("fxUpdatedText").textContent = "Actualizando indicadores...";
+        document.getElementById("fxUpdatedText").textContent = "Actualizando indicadores....";
         const [ufRes, usdRes] = await Promise.all([
           fetch("https://mindicador.cl/api/uf", { cache: "no-store" }),
           fetch("https://mindicador.cl/api/dolar", { cache: "no-store" })
