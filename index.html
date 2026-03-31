@@ -1015,21 +1015,6 @@
       });
     }
 
-    async function loadData(){
-      const filesToTry = await resolveExcelFiles();
-      const loaded = [];
-      for (const fileName of filesToTry) { try { loaded.push(await loadWorkbookFromFile(`./excels/${fileName}`)); } catch(_) {} }
-      allLoadedFiles = loaded;
-      rebuildCategoryStore();
-      const firstAvailableCategory = CATEGORY_DEFS.find(cat => (categoryStore[cat.key]?.files.length || 0) > 0);
-      activeCategoryKey = firstAvailableCategory ? firstAvailableCategory.key : CATEGORY_DEFS[0].key;
-      const firstActiveCategory = getActiveCategory();
-      const firstFile = firstActiveCategory?.files?.[0] || null;
-      activeFileKey = firstFile?.file || null;
-      activeSheetName = firstFile?.sheets?.[0]?.name || null;
-      updateCommentNavigator();
-    }
-
     function resetDataViewState(){
       currentSort = { key:null, direction:0 };
       currentSearch = "";
