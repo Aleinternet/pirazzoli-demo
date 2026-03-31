@@ -412,10 +412,7 @@
         <div class="fxCard"><strong>USD</strong><span id="fxUsd" class="fxLoading">Cargando…</span><span class="fxValue">CLP</span></div>
         <div class="fxCard"><strong>UF</strong><span id="fxUf" class="fxLoading">Cargando…</span><span class="fxValue">CLP</span></div>
       </div>
-      <div class="fxUpdate" id="fxUpdatedAt">
-        <div id="fxUpdatedText">Actualización pendiente</div>
-        <div id="excelUpdatedAt" style="margin-top:2px;">Excel: actualización pendiente</div>
-      </div>
+      <div class="fxUpdate" id="fxUpdatedAt">Actualización pendiente</div>
       <div></div>
       <button class="refreshBtn" id="refreshDataBtn" type="button">Actualizar</button>
     </section>
@@ -562,7 +559,6 @@
     const fxUsd = document.getElementById("fxUsd");
     const fxUf = document.getElementById("fxUf");
     const fxUpdatedAt = document.getElementById("fxUpdatedAt");
-    const excelUpdatedAt = document.getElementById("excelUpdatedAt");
     const commentMenu = document.getElementById("commentMenu");
     const commentThreadPopup = document.getElementById("commentThreadPopup");
     const commentNavigatorBtn = document.getElementById("commentNavigatorBtn");
@@ -582,17 +578,6 @@
     function shouldHideSheet(sheetName){ const s = normalize(sheetName); return s === "MATRIZ DATOS" || s === "HOJA1"; }
     function formatDate(date){ if (!(date instanceof Date) || isNaN(date)) return ""; const dd = String(date.getDate()).padStart(2, "0"); const mm = String(date.getMonth() + 1).padStart(2, "0"); const yy = date.getFullYear(); return `${dd}/${mm}/${yy}`; }
     function formatDateTime(date){ if (!(date instanceof Date) || isNaN(date)) return "—"; return date.toLocaleString("es-CL", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" }); }
-    function formatDateTimeFull(date){
-      if (!(date instanceof Date) || isNaN(date)) return "—";
-      return date.toLocaleString("es-CL", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      });
-    }
     function parseExcelDateSerial(serial){ const parsed = XLSX.SSF.parse_date_code(serial); if (!parsed) return null; return new Date(parsed.y, parsed.m - 1, parsed.d); }
     function isEditor(){ return currentUserSession?.role === "editor"; }
     function userDisplayName(){ return currentUserSession?.label || currentUserSession?.user || "Usuario"; }
@@ -957,38 +942,57 @@
       return { name: sheetName, headers, headerMeta, rows, transportKey: detectTransportKey(sheetName), companyName };
     }
 
-    async function loadData(){
-      const res = await fetch(`/api/sharepoint-data?v=${Date.now()}`, { cache: "no-store" });
-      if (!res.ok) throw new Error("No se pudieron cargar los datos desde SharePoint.");
-      const payload = await res.json();
-      if (!payload?.ok) throw new Error(payload?.error || "Respuesta inválida de SharePoint.");
+    async function fetchArrayBuffer(url){ const res = await fetch(url + `?v=${Date.now()}`, { cache: "no-store" }); if (!res.ok) throw new Error(`No se pudo cargar ${url}`); return await res.arrayBuffer(); }
 
-      allLoadedFiles = Array.isArray(payload.files) ? payload.files : [];
-      rebuildCategoryStore();
-
-      const firstAvailableCategory = CATEGORY_DEFS.find(cat => (categoryStore[cat.key]?.files.length || 0) > 0);
-      activeCategoryKey = firstAvailableCategory ? firstAvailableCategory.key : CATEGORY_DEFS[0].key;
-
-      const firstActiveCategory = getActiveCategory();
-      const firstFile = firstActiveCategory?.files?.[0] || null;
-      activeFileKey = firstFile?.file || null;
-      activeSheetName = firstFile?.sheets?.[0]?.name || null;
-
-      if (payload?.lastModified) {
-        excelUpdatedAt.textContent = `Excel: actualizado al ${formatDateTimeFull(new Date(payload.lastModified))}`;
-      } else {
-        excelUpdatedAt.textContent = "Excel: actualización no disponible";
-      }
-
-      updateCommentNavigator();
+    async function getManifestConfig(){
+      try {
+        const res = await fetch("./data/manifest.json?v=" + Date.now(), { cache: "no-store" });
+        if (!res.ok) throw new Error("manifest no encontrado");
+        return await res.json();
+      } catch(_) { return null; }
     }
-    
 
-    
+    async function getFilesFromExcelsDirectory(){
+      try {
+        const res = await fetch("./excels/", { cache: "no-store" });
+        if (!res.ok) return [];
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const links = [...doc.querySelectorAll("a")].map(a => (a.getAttribute("href") || "").trim());
+        return [...new Set(links.filter(href => /\.(xlsx|xlsm|xls)$/i.test(href)).map(href => href.split("/").pop()))];
+      } catch(_) { return []; }
+    }
 
-    
+    function getManifestFiles(manifest){
+      const files = new Set();
+      if (Array.isArray(manifest?.files)) manifest.files.forEach(f => files.add(String(f).trim()));
+      CATEGORY_DEFS.forEach(cat => {
+        const value = manifest?.[cat.key];
+        if (Array.isArray(value)) value.forEach(f => files.add(String(f).trim()));
+        else if (typeof value === "string" && value.trim()) files.add(value.trim());
+      });
+      return [...files].filter(Boolean);
+    }
 
-    
+    async function resolveExcelFiles(){
+      const manifestRaw = await getManifestConfig();
+      const manifestFiles = getManifestFiles(manifestRaw);
+      if (manifestFiles.length) return manifestFiles;
+      const directoryFiles = await getFilesFromExcelsDirectory();
+      if (directoryFiles.length) return directoryFiles;
+      return FALLBACK_FILES;
+    }
+
+    async function loadWorkbookFromFile(path){
+      const data = await fetchArrayBuffer(path);
+      const workbook = XLSX.read(data, { type: "array", cellDates: true, cellStyles: true });
+      const fileName = path.split("/").pop();
+      const baseName = getFileBaseName(fileName);
+      const companyName = prettifyCompanyName(baseName);
+      const visibleSheetNames = workbook.SheetNames.filter(name => !shouldHideSheet(name));
+      return { file: fileName, baseName, companyName, sheets: visibleSheetNames.map(name => parseSheet(workbook, name, fileName, companyName)) };
+    }
+
     function rebuildCategoryStore(){
       categoryStore = {};
       CATEGORY_DEFS.forEach(cat => { categoryStore[cat.key] = { key: cat.key, label: cat.label, files: [] }; });
@@ -1170,7 +1174,7 @@
       if (!sheet || !selectedSummaryHeader) {
         summaryTitle.textContent = "Resumen ejecutivo";
         filterSummaryText.textContent = "Selecciona una o más columnas para visualizar su resumen ejecutivo. Puedes hacer clic en el texto del encabezado para cambiar el resumen sin seleccionar la columna.";
-        summaryCards.innerHTML = "";
+        summaryCards.innerHTML = `<div class="summaryCard"><strong>Sin columna activa</strong><span>Selecciona el texto de un encabezado para ver su distribución de valores.</span></div>`;
         return;
       }
       const rows = getFilteredRows();
@@ -1700,14 +1704,14 @@
         fxUf.className = "";
         fxUsd.className = "";
         const latestDate = new Date(Math.max(new Date(ufItem.fecha).getTime(), new Date(usdItem.fecha).getTime()));
-        document.getElementById("fxUpdatedText").textContent = `Fuente: API pública de mindicador.cl · actualizado visible al ${formatDateTime(latestDate)}`;
+        fxUpdatedAt.textContent = `Fuente: API pública de mindicador.cl · actualizado visible al ${formatDateTime(latestDate)}`;
       } catch (err) {
         console.error(err);
         fxUsd.textContent = "No disponible";
         fxUf.textContent = "No disponible";
         fxUsd.className = "fxError";
         fxUf.className = "fxError";
-        document.getElementById("fxUpdatedText").textContent = "No se pudieron obtener UF y USD desde la API pública.";
+        fxUpdatedAt.textContent = "No se pudieron obtener UF y USD desde la API pública.";
       }
     }
 
@@ -1753,39 +1757,16 @@
 
     refreshDataBtn.addEventListener("click", async () => {
       try {
-        refreshDataBtn.disabled = true;
-
-        const refreshRes = await fetch("/api/refresh-sharepoint", {
-          method: "POST"
-        });
-
-        const refreshJson = await refreshRes.json();
-
-        if (!refreshRes.ok || !refreshJson.ok) {
-          throw new Error(refreshJson.error || "No se pudo actualizar el Excel desde SharePoint.");
-        }
-
-        if (refreshJson?.result?.last_modified) {
-          excelUpdatedAt.textContent = `Excel: actualizado al ${formatDateTimeFull(new Date(refreshJson.result.last_modified))}`;
-        } else {
-          excelUpdatedAt.textContent = "Excel: actualizado recién";
-        }
-
         await Promise.all([loadData(), updateExchangeRates()]);
-
-        if (currentView === "home") {
-          renderHomeDashboard();
-        } else {
+        if (currentView === "home") renderHomeDashboard();
+        else {
           const category = getActiveCategory();
           const activeFile = getActiveFile();
-
-          if (!category || !activeFile) {
-            goToHomeView();
-          } else {
+          if (!category || !activeFile) goToHomeView();
+          else {
             const stillExists = category.files.some(f => f.file === activeFileKey);
-            if (!stillExists) {
-              goToHomeView();
-            } else {
+            if (!stillExists) goToHomeView();
+            else {
               const fileObj = category.files.find(f => f.file === activeFileKey);
               const sheetStillExists = fileObj?.sheets?.some(s => s.name === activeSheetName);
               if (!sheetStillExists) activeSheetName = fileObj?.sheets?.[0]?.name || null;
@@ -1794,41 +1775,16 @@
             }
           }
         }
-      } catch (err) {
-        console.error(err);
-        alert("No se pudieron recargar los datos desde SharePoint.");
-      } finally {
-        refreshDataBtn.disabled = false;
-      }
+      } catch (err) { console.error(err); alert("No se pudieron recargar los datos."); }
     });
 
     loginUser.value = "";
     loginPass.value = "";
 
-   (async () => {
-    try {
-      const initRefreshRes = await fetch("/api/refresh-sharepoint", { method: "POST" });
-      const initRefreshJson = await initRefreshRes.json().catch(() => null);
-
-      if (initRefreshJson?.ok && initRefreshJson?.result?.last_modified) {
-        excelUpdatedAt.textContent = `Excel: actualizado al ${formatDateTimeFull(new Date(initRefreshJson.result.last_modified))}`;
-      } else {
-        excelUpdatedAt.textContent = "Excel: actualización no disponible";
-      }
-    } catch (e) {
-      console.warn("No se pudo refrescar SharePoint al iniciar:", e);
-      excelUpdatedAt.textContent = "Excel: no se pudo actualizar";
-    }
-
-      Promise.all([loadData(), updateExchangeRates()]).then(() => {
-        setSidebarOpen(isMobileLayout());
-        updateActionButtonsState();
-        updateCommentNavigator();
-      }).catch(err => {
-        console.error(err);
-        document.body.innerHTML = `<div style="padding:32px;font-family:Arial,Helvetica,sans-serif;"><h2 style="margin:0 0 10px;">Error al cargar la demo</h2><p style="color:#666;">${escapeHtml(err.message)}</p></div>`;
-      });
-    })();
+    Promise.all([loadData(), updateExchangeRates()]).then(() => { setSidebarOpen(isMobileLayout()); updateActionButtonsState(); updateCommentNavigator(); }).catch(err => {
+      console.error(err);
+      document.body.innerHTML = `<div style="padding:32px;font-family:Arial,Helvetica,sans-serif;"><h2 style="margin:0 0 10px;">Error al cargar la demo</h2><p style="color:#666;">${escapeHtml(err.message)}</p></div>`;
+    });
   </script>
 
 </body>

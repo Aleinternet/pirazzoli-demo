@@ -1,0 +1,3 @@
+credenciales.env
+.venv/
+__pycache__/
