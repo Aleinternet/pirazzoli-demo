@@ -1,6 +1,5 @@
 import os
 import io
-import json
 import requests
 from flask import Flask, jsonify
 from openpyxl import load_workbook
@@ -46,12 +45,10 @@ def prettify_company_name(file_name: str):
     base = file_name.rsplit(".", 1)[0]
     base = base.replace("_", " ").replace("-", " ").strip()
     lowered = base.lower()
-
     for prefix in ["piloto datos ", "datos ", "piloto "]:
         if lowered.startswith(prefix):
             base = base[len(prefix):].strip()
             break
-
     return base.title() if base else "Empresa"
 
 
@@ -217,8 +214,8 @@ def parse_workbook_to_payload(content: bytes):
     return files
 
 
-@app.route("/api/sharepoint-data", methods=["GET"])
-def sharepoint_data():
+@app.route("/api", methods=["GET"])
+def api_root():
     try:
         content, last_modified = fetch_excel_bytes()
         files = parse_workbook_to_payload(content)
