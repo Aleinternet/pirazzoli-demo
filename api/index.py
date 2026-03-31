@@ -108,9 +108,13 @@ def fetch_excel_bytes():
         token
     ).get("value", [])
 
+    available_root_items = [i.get("name") for i in children]
+
     target_file = next((i for i in children if i.get("name") == TARGET_FILE_NAME), None)
     if not target_file:
-        raise RuntimeError(f"No se encontró el archivo '{TARGET_FILE_NAME}' en la raíz del drive.")
+        raise RuntimeError(
+            f"No se encontró el archivo '{TARGET_FILE_NAME}' en la raíz del drive. Elementos en raíz: {available_root_items}"
+        )
 
     file_id = target_file["id"]
     last_modified = target_file.get("lastModifiedDateTime")
