@@ -577,7 +577,22 @@
     function looksLikeUrl(v){ const s = String(v || "").trim(); return /^https?:\/\//i.test(s) || /^www\./i.test(s); }
     function toUrl(v){ const s = String(v || "").trim(); if (!s) return ""; if (/^https?:\/\//i.test(s)) return s; if (/^www\./i.test(s)) return "https://" + s; return s; }
     function getFileBaseName(name){ return String(name || "").replace(/\.(xlsx|xlsm|xls)$/i, ""); }
-    function prettifyCompanyName(baseName){ return String(baseName || "").replace(/[_-]+/g, " ").trim(); }
+
+
+    function prettifyCompanyName(baseName){
+      const clean = String(baseName || "")
+        .replace(/\.(xlsx|xlsm|xls)$/i, "")
+        .replace(/^piloto[_\-\s]*datos[_\-\s]*/i, "")
+        .replace(/^datos[_\-\s]*/i, "")
+        .replace(/^piloto[_\-\s]*/i, "")
+        .replace(/[_-]+/g, " ")
+        .trim();
+
+      if (!clean) return "Empresa";
+      return clean.replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+
     function detectTransportKey(sheetName){ const s = normalize(sheetName); if (s.includes("TERR")) return "terrestre"; if (s.includes("AERE")) return "aereo"; if (s.includes("MAR")) return "maritimo"; return null; }
     function shouldHideSheet(sheetName){ const s = normalize(sheetName); return s === "MATRIZ DATOS" || s === "HOJA1"; }
     function formatDate(date){ if (!(date instanceof Date) || isNaN(date)) return ""; const dd = String(date.getDate()).padStart(2, "0"); const mm = String(date.getMonth() + 1).padStart(2, "0"); const yy = date.getFullYear(); return `${dd}/${mm}/${yy}`; }
@@ -1755,22 +1770,6 @@
       try {
         refreshDataBtn.disabled = true;
 
-        const refreshRes = await fetch("/api/refresh-sharepoint", {
-          method: "POST"
-        });
-
-        const refreshJson = await refreshRes.json();
-
-        if (!refreshRes.ok || !refreshJson.ok) {
-          throw new Error(refreshJson.error || "No se pudo actualizar el Excel desde SharePoint.");
-        }
-
-        if (refreshJson?.result?.last_modified) {
-          excelUpdatedAt.textContent = `Excel: actualizado al ${formatDateTimeFull(new Date(refreshJson.result.last_modified))}`;
-        } else {
-          excelUpdatedAt.textContent = "Excel: actualizado recién";
-        }
-
         await Promise.all([loadData(), updateExchangeRates()]);
 
         if (currentView === "home") {
@@ -1806,20 +1805,6 @@
     loginPass.value = "";
 
    (async () => {
-    try {
-      const initRefreshRes = await fetch("/api/refresh-sharepoint", { method: "POST" });
-      const initRefreshJson = await initRefreshRes.json().catch(() => null);
-
-      if (initRefreshJson?.ok && initRefreshJson?.result?.last_modified) {
-        excelUpdatedAt.textContent = `Excel: actualizado al ${formatDateTimeFull(new Date(initRefreshJson.result.last_modified))}`;
-      } else {
-        excelUpdatedAt.textContent = "Excel: actualización no disponible";
-      }
-    } catch (e) {
-      console.warn("No se pudo refrescar SharePoint al iniciar:", e);
-      excelUpdatedAt.textContent = "Excel: no se pudo actualizar";
-    }
-
       Promise.all([loadData(), updateExchangeRates()]).then(() => {
         setSidebarOpen(isMobileLayout());
         updateActionButtonsState();
