@@ -973,7 +973,7 @@
     }
 
     async function loadData(){
-      const res = await fetch(`/api/sharepoint-data?v=${Date.now()}`, { cache: "no-store" });
+      const res = await fetch(`/api?v=${Date.now()}`, { cache: "no-store" })
       if (!res.ok) throw new Error("No se pudieron cargar los datos desde SharePoint.");
       const payload = await res.json();
       if (!payload?.ok) throw new Error(payload?.error || "Respuesta inválida de SharePoint.");
@@ -1027,7 +1027,7 @@
       commentNavigatorIndex = -1;
       closeCommentOverlays();
     }
-    
+
 
     function getAllRows(){ const sheet = getActiveSheet(); return sheet ? sheet.rows : []; }
 
