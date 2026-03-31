@@ -93,9 +93,13 @@ def fetch_excel_bytes():
         token
     ).get("value", [])
 
+    available_drive_names = [d.get("name") for d in drives]
+
     target_drive = next((d for d in drives if d.get("name") == TARGET_DRIVE_NAME), None)
     if not target_drive:
-        raise RuntimeError(f"No se encontró el drive '{TARGET_DRIVE_NAME}'")
+        raise RuntimeError(
+            f"No se encontró el drive '{TARGET_DRIVE_NAME}'. Disponibles: {available_drive_names}"
+        )
 
     drive_id = target_drive["id"]
 
