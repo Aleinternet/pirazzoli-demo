@@ -162,14 +162,74 @@
 
     .tableWrap{min-height:0;overflow:auto;background:#fff}
     table{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px}
-    thead th{position:sticky;top:0;z-index:20;background:#f5f9fd;color:#29445d;border-bottom:1px solid var(--line);border-right:1px solid #e8eef4;text-align:left;padding:6px 7px;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 1px 0 #e8eef4}
+    thead th{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:#f5f9fd;
+      color:#29445d;
+      border-bottom:1px solid var(--line);
+      border-right:1px solid #e8eef4;
+      text-align:left;
+      padding:6px 7px;
+      font-size:10px;
+      font-weight:900;
+      white-space:normal;
+      box-shadow:0 1px 0 #e8eef4;
+      vertical-align:top;
+    }
+    .thInner{
+      display:flex;
+      align-items:flex-start;
+      gap:6px;
+      min-height:18px;
+      max-width:100%;
+    }
+
+    .thSelectWrap{
+      display:flex;
+      align-items:flex-start;
+      gap:6px;
+      min-width:0;
+      flex:1;
+    }
+
+    .thLabel{
+      display:inline-flex;
+      align-items:flex-start;
+      gap:6px;
+      min-width:0;
+      flex:1;
+    }
+
+    .thLabelText{
+      display:block;
+      white-space:normal;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      line-height:1.15;
+      max-width:100%;
+    }
+
+    .sortBtn,.filterBtn{
+      width:18px;
+      min-width:18px;
+      height:18px;
+      border:1px solid #cfe0ef;
+      border-radius:5px;
+      background:#fff;
+      color:#4d6580;
+      font-size:9px;
+      line-height:1;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
     
-    .thInner{display:flex;align-items:center;gap:5px;min-height:18px;max-width:100%}
-    .thSelectWrap{display:flex;align-items:center;gap:6px;min-width:0;flex:1}
-    .thLabel{display:inline-flex;align-items:center;gap:6px;min-width:0}
-    .thLabelText{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.15}
     .colLetter{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:18px;padding:0 6px;border-radius:999px;background:#e7f2fb;color:#0a5488;font-size:9px;font-weight:900;line-height:1;border:1px solid #c7dff0;flex-shrink:0}
-    .sortBtn,.filterBtn{width:18px;height:18px;border:1px solid #cfe0ef;border-radius:5px;background:#fff;color:#4d6580;font-size:9px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+    
     .sortBtn.active,.filterBtn.active{background:#dff0fb;border-color:#81b7db;color:#0a5488;font-weight:900}
 
     tbody td{border-bottom:1px solid var(--line-soft);border-right:1px solid #f2f5f8;padding:5px 7px;vertical-align:middle;white-space:nowrap;background:#fff;font-size:10.5px;line-height:1.2}
@@ -1013,13 +1073,17 @@
       return { name: sheetName, headers, headerMeta, rows, transportKey: detectTransportKey(sheetName), companyName };
     }
 
-    async function loadData(){
+    async function loadData(forceRefresh = false){
       const prevCategoryKey = activeCategoryKey;
       const prevFileKey = activeFileKey;
       const prevSheetName = activeSheetName;
       const wasInDataView = currentView === "data";
 
-      const res = await fetch(`/api?v=${Date.now()}`, { cache: "no-store" });
+      const url = forceRefresh
+        ? `/api?refresh=1&t=${Date.now()}`
+        : `/api?v=${Date.now()}`;
+
+      const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) throw new Error("No se pudieron cargar los datos desde SharePoint.");
       const payload = await res.json();
       if (!payload?.ok) throw new Error(payload?.error || "Respuesta inválida de SharePoint.");
@@ -1156,33 +1220,69 @@
     }
 
     function estimateColumnWidth(header, rows){
-      const vals = rows.slice(0, 1000).map(row => {
+      const vals = rows.slice(0, 1200).map(row => {
         const v = row.values[header];
         return isDocRowValue(v) ? safe(v.text || v.url) : safe(v);
       });
 
-      const allTexts = [header, ...vals.map(v => String(v))];
-      const maxLen = Math.max(...allTexts.map(t => t.length));
-      const hasLongText = isLikelyLongText(header);
+      const headerText = String(header || "");
+      const longestCellText = vals.reduce((max, txt) => {
+        const s = String(txt || "");
+        return s.length > max.length ? s : max;
+      }, "");
 
-      let base;
+      const longestText = longestCellText.length > headerText.length ? longestCellText : headerText;
+
+      const hasLongHeader = headerText.length >= 18;
+      const hasLongValues = longestCellText.length >= 22;
+      const hasLongText = isLikelyLongText(header) || hasLongHeader || hasLongValues;
+
+      // ancho real de texto aprox
+      const textPx = Math.ceil(longestText.length * 7.1);
+
+      // espacio fijo del header:
+      // checkbox columna + gap + letra columna + gaps + botón ordenar + botón filtrar + paddings internos
+      const headerControlsPx = 14 + 6 + 28 + 6 + 18 + 5 + 18 + 20;
+
+      // margen visual de seguridad
+      const safetyPx = 18;
+
+      let width = textPx + headerControlsPx + safetyPx;
+
+      // si el header es largo, permitimos partirlo en 2 líneas y no crecer infinito
       if (hasLongText) {
-        base = maxLen * 7.6 + 26;
-      } else {
-        base = maxLen * 7.0 + 22;
+        const twoLineHeaderTextPx = Math.ceil((headerText.length * 7.1) / 2);
+        const minHeaderWidth = twoLineHeaderTextPx + headerControlsPx + safetyPx;
+        width = Math.max(width, minHeaderWidth);
       }
 
-      return Math.min(900, Math.max(58, Math.ceil(base)));
+      // columnas muy cortas igual necesitan espacio para los controles
+      width = Math.max(width, 108);
+
+      // columnas de texto largo sí pueden crecer más
+      width = Math.min(width, hasLongText ? 520 : 320);
+
+      return width;
     }
 
     function applyDynamicColumnWidths(orderedHeaders){
       const rows = getAllRows();
       const widths = {};
-      orderedHeaders.forEach(h => widths[h] = estimateColumnWidth(h, rows));
+
+      orderedHeaders.forEach(header => {
+        widths[header] = estimateColumnWidth(header, rows);
+      });
+
       const refHeader = orderedHeaders[0];
       const dispatchHeader = orderedHeaders[1];
-      if (refHeader) document.documentElement.style.setProperty('--sticky-1-w', `${widths[refHeader]}px`);
-      if (dispatchHeader) document.documentElement.style.setProperty('--sticky-2-w', `${widths[dispatchHeader]}px`);
+
+      if (refHeader) {
+        document.documentElement.style.setProperty('--sticky-1-w', `${widths[refHeader]}px`);
+      }
+      if (dispatchHeader) {
+        document.documentElement.style.setProperty('--sticky-2-w', `${widths[dispatchHeader]}px`);
+      }
+
       return widths;
     }
 
@@ -1840,7 +1940,7 @@
       try {
         refreshDataBtn.disabled = true;
 
-        await Promise.all([loadData(), updateExchangeRates()]);
+        await Promise.all([loadData(true), updateExchangeRates()]);
 
         if (currentView === "home") {
           renderHomeDashboard();
