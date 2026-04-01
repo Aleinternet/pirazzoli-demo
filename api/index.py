@@ -28,7 +28,7 @@ API_CACHE = {
     "last_build_ts": 0,
     "last_modified": None,
 }
-CACHE_SECONDS = 1800
+CACHE_SECONDS = 14400
 
 PDF_DATE_CACHE = {}
 CMF_RATE_CACHE = {}
