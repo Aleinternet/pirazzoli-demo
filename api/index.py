@@ -782,6 +782,15 @@ def parse_workbook_to_payload(content: bytes, token: str, run_audit: bool = Fals
                 except Exception as e:
                     print(f"[AUDIT] Error eliminando snapshot: {e}")
 
+        files[0]["sheets"].append({
+            "name": sheet_name,
+            "headers": headers,
+            "headerMeta": header_meta,
+            "rows": rows,
+            "transportKey": transport_key,
+            "operationType": operation_type,
+            "companyName": company_name
+        })
 
     return files
 
