@@ -782,42 +782,6 @@ def parse_workbook_to_payload(content: bytes, token: str, run_audit: bool = Fals
                 except Exception as e:
                     print(f"[AUDIT] Error eliminando snapshot: {e}")
 
-        deleted_identities = set(previous_snapshots.keys()) - current_identities
-
-        for deleted_identity in deleted_identities:
-            previous = previous_snapshots[deleted_identity]
-            try:
-                insert_audit_log(
-                    file_key=file_name,
-                    sheet_name=sheet_name,
-                    row_identity=deleted_identity,
-                    excel_row_number=previous.get("excel_row_number"),
-                    event_type="deleted",
-                    summary="Fila eliminada del Excel",
-                    diff=[]
-                )
-            except Exception as e:
-                print(f"[AUDIT] Error guardando deleted: {e}")
-
-            try:
-                delete_snapshot(
-                    file_key=file_name,
-                    sheet_name=sheet_name,
-                    row_identity=deleted_identity
-                )
-            except Exception as e:
-                print(f"[AUDIT] Error eliminando snapshot: {e}")
-
-
-        files[0]["sheets"].append({
-            "name": sheet_name,
-            "headers": headers,
-            "headerMeta": header_meta,
-            "rows": rows,
-            "transportKey": transport_key,
-            "operationType": operation_type,
-            "companyName": company_name
-        })
 
     return files
 
