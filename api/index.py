@@ -2,6 +2,7 @@ import os
 import io
 import re
 import base64
+import json
 import requests
 from datetime import datetime, date
 from flask import Flask, jsonify, request
@@ -20,6 +21,8 @@ SHAREPOINT_SITE_PATH = os.getenv("SHAREPOINT_SITE_PATH")
 TARGET_DRIVE_NAME = os.getenv("TARGET_DRIVE_NAME", "Documentos")
 TARGET_FILE_NAME = os.getenv("TARGET_FILE_NAME", "piloto_datos_minerva.xlsx")
 CMF_API_KEY = os.getenv("CMF_API_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 
 
@@ -161,6 +164,141 @@ def format_clp_dollar(value_float):
     text = f"{value_float:,.2f}"
     text = text.replace(",", "X").replace(".", ",").replace("X", ".")
     return text
+
+def canonicalize_value(value):
+    if isinstance(value, dict):
+        return {
+            "text": normalize_text(value.get("text")),
+            "url": normalize_text(value.get("url")),
+            "tooltip": normalize_text(value.get("tooltip")),
+        }
+    if value is None:
+        return ""
+    return normalize_text(value)
+
+
+def build_row_identity(file_name, sheet_name, values, headers):
+    ref_header = next(
+        (h for h in headers if "REFERENCIA CLIENTE" in normalize_header(h)),
+        headers[0] if headers else ""
+    )
+    dispatch_header = next(
+        (h for h in headers if "NUMERO DE DESPACHO" in normalize_header(h) or normalize_header(h) == "DESPACHO"),
+        headers[1] if len(headers) > 1 else ""
+    )
+
+    ref_val = canonicalize_value(values.get(ref_header, ""))
+    dispatch_val = canonicalize_value(values.get(dispatch_header, ""))
+
+    if isinstance(ref_val, dict):
+        ref_val = ref_val.get("text", "")
+    if isinstance(dispatch_val, dict):
+        dispatch_val = dispatch_val.get("text", "")
+
+    return "|".join([
+        normalize_text(file_name),
+        normalize_text(sheet_name),
+        normalize_text(ref_val),
+        normalize_text(dispatch_val),
+    ])
+
+
+def normalize_row_data_for_compare(row_data):
+    normalized = {}
+    for key, value in (row_data or {}).items():
+        normalized[key] = canonicalize_value(value)
+    return normalized
+
+
+def diff_row_values(old_values, new_values):
+    changes = []
+    all_keys = sorted(set(old_values.keys()) | set(new_values.keys()))
+
+    for key in all_keys:
+        old_val = old_values.get(key)
+        new_val = new_values.get(key)
+
+        if old_val != new_val:
+            changes.append({
+                "column": key,
+                "old": old_val,
+                "new": new_val
+            })
+
+    return changes
+
+
+def supabase_headers():
+    return {
+        "apikey": SUPABASE_SERVICE_ROLE_KEY,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
+
+
+def fetch_existing_snapshots(file_key, sheet_name):
+    if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
+        raise RuntimeError("Faltan SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY")
+
+    url = (
+        f"{SUPABASE_URL}/rest/v1/row_snapshot"
+        f"?file_key=eq.{requests.utils.quote(file_key)}"
+        f"&sheet_name=eq.{requests.utils.quote(sheet_name)}"
+    )
+    res = requests.get(url, headers=supabase_headers(), timeout=60)
+    res.raise_for_status()
+
+    items = res.json() or []
+    return {
+        item["row_identity"]: item
+        for item in items
+    }
+
+
+def upsert_snapshot(file_key, sheet_name, row_identity, excel_row_number, row_data):
+    url = f"{SUPABASE_URL}/rest/v1/row_snapshot"
+    payload = [{
+        "file_key": file_key,
+        "sheet_name": sheet_name,
+        "row_identity": row_identity,
+        "excel_row_number": excel_row_number,
+        "row_data": row_data,
+        "last_seen_at": datetime.utcnow().isoformat()
+    }]
+    headers = supabase_headers()
+    headers["Prefer"] = "resolution=merge-duplicates"
+
+    res = requests.post(url, headers=headers, data=json.dumps(payload), timeout=60)
+    res.raise_for_status()
+
+
+def delete_snapshot(file_key, sheet_name, row_identity):
+    url = (
+        f"{SUPABASE_URL}/rest/v1/row_snapshot"
+        f"?file_key=eq.{requests.utils.quote(file_key)}"
+        f"&sheet_name=eq.{requests.utils.quote(sheet_name)}"
+        f"&row_identity=eq.{requests.utils.quote(row_identity)}"
+    )
+    res = requests.delete(url, headers=supabase_headers(), timeout=60)
+    res.raise_for_status()
+
+
+def insert_audit_log(file_key, sheet_name, row_identity, excel_row_number, event_type, summary, diff=None, changed_by="system", changed_by_label="Sistema"):
+    url = f"{SUPABASE_URL}/rest/v1/row_audit_log"
+    payload = [{
+        "file_key": file_key,
+        "sheet_name": sheet_name,
+        "row_identity": row_identity,
+        "excel_row_number": excel_row_number,
+        "event_type": event_type,
+        "changed_by": changed_by,
+        "changed_by_label": changed_by_label,
+        "summary": summary,
+        "diff": diff or []
+    }]
+    res = requests.post(url, headers=supabase_headers(), data=json.dumps(payload), timeout=60)
+    res.raise_for_status()
 
 
 def parse_cmf_value(raw):
@@ -496,6 +634,7 @@ def parse_workbook_to_payload(content: bytes, token: str):
 
             ref_header = next((h for h in headers if "REFERENCIA CLIENTE" in h.upper()), headers[0] if headers else "")
             dispatch_header = next((h for h in headers if "NUMERO DE DESPACHO" in h.upper() or h.upper() == "DESPACHO"), headers[1] if len(headers) > 1 else "")
+
             base_id = "|".join([
                 file_name,
                 sheet_name,
@@ -504,8 +643,11 @@ def parse_workbook_to_payload(content: bytes, token: str):
                 str(row_idx)
             ])
 
+            row_identity = build_row_identity(file_name, sheet_name, values, headers)
+
             rows.append({
                 "_id": base_id,
+                "_rowIdentity": row_identity,
                 "_sheet": sheet_name,
                 "_file": file_name,
                 "_company": company_name,
@@ -514,6 +656,121 @@ def parse_workbook_to_payload(content: bytes, token: str):
             })
 
         rows = enrich_exchange_rate_columns(rows, headers, token)
+
+        try:
+            previous_snapshots = fetch_existing_snapshots(file_name, sheet_name)
+        except Exception as e:
+            previous_snapshots = {}
+            print(f"[AUDIT] No se pudieron cargar snapshots previos de {sheet_name}: {e}")
+
+        current_identities = set()
+
+        for row in rows:
+            row_identity = row["_rowIdentity"]
+            current_identities.add(row_identity)
+
+            current_row_number = row["_excelRowNumber"]
+            current_row_data = normalize_row_data_for_compare(row["values"])
+
+            previous = previous_snapshots.get(row_identity)
+
+            if not previous:
+                try:
+                    insert_audit_log(
+                        file_key=file_name,
+                        sheet_name=sheet_name,
+                        row_identity=row_identity,
+                        excel_row_number=current_row_number,
+                        event_type="created",
+                        summary="Fila creada desde el Excel",
+                        diff=[]
+                    )
+                except Exception as e:
+                    print(f"[AUDIT] Error guardando created: {e}")
+
+                try:
+                    upsert_snapshot(
+                        file_key=file_name,
+                        sheet_name=sheet_name,
+                        row_identity=row_identity,
+                        excel_row_number=current_row_number,
+                        row_data=current_row_data
+                    )
+                except Exception as e:
+                    print(f"[AUDIT] Error guardando snapshot nuevo: {e}")
+
+                continue
+
+            old_row_number = previous.get("excel_row_number")
+            old_row_data = normalize_row_data_for_compare(previous.get("row_data") or {})
+            changes = diff_row_values(old_row_data, current_row_data)
+
+            if changes:
+                try:
+                    insert_audit_log(
+                        file_key=file_name,
+                        sheet_name=sheet_name,
+                        row_identity=row_identity,
+                        excel_row_number=current_row_number,
+                        event_type="updated",
+                        summary=f"Se modificaron {len(changes)} campo(s)",
+                        diff=changes
+                    )
+                except Exception as e:
+                    print(f"[AUDIT] Error guardando updated: {e}")
+
+            elif old_row_number != current_row_number:
+                try:
+                    insert_audit_log(
+                        file_key=file_name,
+                        sheet_name=sheet_name,
+                        row_identity=row_identity,
+                        excel_row_number=current_row_number,
+                        event_type="moved",
+                        summary=f"La fila cambió de posición: {old_row_number} → {current_row_number}",
+                        diff=[]
+                    )
+                except Exception as e:
+                    print(f"[AUDIT] Error guardando moved: {e}")
+
+            try:
+                upsert_snapshot(
+                    file_key=file_name,
+                    sheet_name=sheet_name,
+                    row_identity=row_identity,
+                    excel_row_number=current_row_number,
+                    row_data=current_row_data
+                )
+            except Exception as e:
+                print(f"[AUDIT] Error actualizando snapshot: {e}")
+
+        deleted_identities = set(previous_snapshots.keys()) - current_identities
+
+        for deleted_identity in deleted_identities:
+            previous = previous_snapshots[deleted_identity]
+            try:
+                insert_audit_log(
+                    file_key=file_name,
+                    sheet_name=sheet_name,
+                    row_identity=deleted_identity,
+                    excel_row_number=previous.get("excel_row_number"),
+                    event_type="deleted",
+                    summary="Fila eliminada del Excel",
+                    diff=[]
+                )
+            except Exception as e:
+                print(f"[AUDIT] Error guardando deleted: {e}")
+
+            try:
+                delete_snapshot(
+                    file_key=file_name,
+                    sheet_name=sheet_name,
+                    row_identity=deleted_identity
+                )
+            except Exception as e:
+                print(f"[AUDIT] Error eliminando snapshot: {e}")
+
+
         files[0]["sheets"].append({
             "name": sheet_name,
             "headers": headers,
@@ -532,6 +789,42 @@ def api_root():
     try:
         force_refresh = str(request.args.get("refresh", "")).lower() in {"1", "true", "yes"}
         return jsonify(build_payload(force_refresh=force_refresh))
+    except Exception as e:
+        return jsonify({
+            "ok": False,
+            "error": str(e)
+        }), 500
+
+
+@app.route("/api/row-history", methods=["GET"])
+def api_row_history():
+    try:
+        file_key = request.args.get("file_key", "").strip()
+        sheet_name = request.args.get("sheet_name", "").strip()
+        row_identity = request.args.get("row_identity", "").strip()
+
+        if not file_key or not sheet_name or not row_identity:
+            return jsonify({
+                "ok": False,
+                "error": "Faltan parámetros obligatorios."
+            }), 400
+
+        url = (
+            f"{SUPABASE_URL}/rest/v1/row_audit_log"
+            f"?file_key=eq.{requests.utils.quote(file_key)}"
+            f"&sheet_name=eq.{requests.utils.quote(sheet_name)}"
+            f"&row_identity=eq.{requests.utils.quote(row_identity)}"
+            f"&order=changed_at.desc"
+        )
+
+        res = requests.get(url, headers=supabase_headers(), timeout=60)
+        res.raise_for_status()
+
+        return jsonify({
+            "ok": True,
+            "items": res.json() or []
+        })
+
     except Exception as e:
         return jsonify({
             "ok": False,

@@ -748,87 +748,6 @@
       }
     }
 
-    async function openRowHistoryPopup(row, x, y){
-      closeCommentOverlays();
-
-      commentThreadPopup.innerHTML = `
-        <div class="commentThreadHead">
-          <strong>Historial de fila</strong>
-          <span>Fila ${escapeHtml(String(row._excelRowNumber || "—"))} · ${escapeHtml(row._sheet || "")}</span>
-        </div>
-        <div class="commentThreadBody">
-          <div class="commentEmpty">Cargando historial...</div>
-        </div>
-      `;
-
-      commentThreadPopup.classList.add("show");
-      commentThreadPopup.style.left = `${Math.max(12, x)}px`;
-      commentThreadPopup.style.top = `${Math.max(12, y)}px`;
-
-      try {
-        const items = await fetchRowHistory(row);
-
-        const body = commentThreadPopup.querySelector(".commentThreadBody");
-
-        if(!items.length){
-          body.innerHTML = `<div class="commentEmpty">Esta fila aún no tiene historial registrado.</div>`;
-          return;
-        }
-
-        body.innerHTML = items.map(item => {
-          const diff = Array.isArray(item.diff) ? item.diff : [];
-
-          const diffHtml = diff.length
-            ? `<div style="margin-top:8px;display:grid;gap:6px;">
-                ${diff.map(change => `
-                  <div style="font-size:11px;line-height:1.45;border:1px solid #e7eef5;border-radius:10px;padding:8px;background:#fbfdff;">
-                    <div><strong>${escapeHtml(change.column || "Columna")}</strong></div>
-                    <div style="margin-top:4px;color:#61758b;">Antes: ${escapeHtml(JSON.stringify(change.old ?? ""))}</div>
-                    <div style="margin-top:2px;color:#18324a;">Ahora: ${escapeHtml(JSON.stringify(change.new ?? ""))}</div>
-                  </div>
-                `).join("")}
-              </div>`
-            : "";
-
-          return `
-            <div class="commentItem">
-              <div class="commentMeta">
-                <div class="commentAuthor">${escapeHtml(item.changed_by_label || item.changed_by || "Sistema")}</div>
-                <div class="commentDate">${escapeHtml(formatDateTime(new Date(item.changed_at)))}</div>
-              </div>
-              <div class="commentText">
-                <strong>${escapeHtml(item.event_type || "")}</strong><br>
-                ${escapeHtml(item.summary || "")}
-              </div>
-              ${diffHtml}
-            </div>
-          `;
-        }).join("");
-
-      } catch(err){
-        const body = commentThreadPopup.querySelector(".commentThreadBody");
-        body.innerHTML = `<div class="commentEmpty">Error al cargar historial: ${escapeHtml(err.message)}</div>`;
-      }
-    }
-
-
-    async function fetchRowHistory(row){
-      const params = new URLSearchParams({
-        file_key: row._file || "",
-        sheet_name: row._sheet || "",
-        row_identity: row._rowIdentity || ""
-      });
-
-      const res = await fetch(`/api/row-history?${params.toString()}`, { cache: "no-store" });
-      const data = await res.json();
-
-      if(!res.ok || !data.ok){
-        throw new Error(data?.error || "No se pudo cargar el historial.");
-      }
-
-      return Array.isArray(data.items) ? data.items : [];
-    }
-
     async function loadCommentsFromSupabaseForActiveSheet(){
       if(!activeFileKey || !activeSheetName){
         commentStore = {};
@@ -1664,16 +1583,7 @@
 
         return `<tr class="rowClickable ${selectedClass}" data-id="${encodeURIComponent(row._id)}">
           <td class="rowCheckCell"><input class="rowCheck" type="checkbox" data-row-check="${encodeURIComponent(row._id)}" ${selectedRowIds.has(row._id) ? "checked" : ""}></td>
-          <td 
-            class="rowNumberCell ${rowNumberClasses}" 
-            data-comment-cell="${encodeURIComponent(row._id)}__${encodeURIComponent(SPECIAL_ROW_NUMBER_KEY)}"
-            data-row-history="${encodeURIComponent(row._id)}"
-          >
-            <div class="rowNumberContent">
-              <span>${row._excelRowNumber || "—"}</span>
-              ${rowNumberCommentBtn}
-            </div>
-          </td>
+          <td class="rowNumberCell ${rowNumberClasses}" data-comment-cell="${encodeURIComponent(row._id)}__${encodeURIComponent(SPECIAL_ROW_NUMBER_KEY)}"><div class="rowNumberContent"><span>${row._excelRowNumber || "—"}</span>${rowNumberCommentBtn}</div></td>
           ${cells}
         </tr>`;
       }).join("");
@@ -1717,25 +1627,12 @@
 
       tableBody.querySelectorAll("td[data-comment-cell]").forEach(td => {
         td.addEventListener("contextmenu", e => {
-          if (td.hasAttribute("data-row-history")) return;
           if(!isEditor()) return;
           e.preventDefault();
           const parts = td.dataset.commentCell.split("__");
           const rowId = decodeURIComponent(parts[0]);
           const columnKey = decodeURIComponent(parts[1]);
           openCommentMenu(rowId, columnKey, e.clientX, e.clientY);
-        });
-      });
-
-      tableBody.querySelectorAll("td[data-row-history]").forEach(td => {
-        td.addEventListener("contextmenu", async e => {
-          e.preventDefault();
-
-          const rowId = decodeURIComponent(td.dataset.rowHistory);
-          const row = getAllRows().find(r => r._id === rowId);
-          if(!row) return;
-
-          await openRowHistoryPopup(row, e.clientX, e.clientY);
         });
       });
 
