@@ -195,24 +195,23 @@
     }
 
     .thLabel{
-      display:inline-flex;
+      display:flex;
       align-items:flex-start;
       gap:6px;
       min-width:0;
-      flex:1;
+      flex:1 1 auto;
     }
 
     .thLabelText{
-      display:-webkit-box;
-      -webkit-box-orient:vertical;
-      -webkit-line-clamp:2;
-      line-clamp:2;
-      overflow:hidden;
+      display:block;
+      flex:1 1 auto;
+      min-width:0;
       white-space:normal;
+      overflow:visible;
       overflow-wrap:anywhere;
       word-break:break-word;
       line-height:1.15;
-      max-width:100%;
+      max-width:none;
     }
 
     .sortBtn,.filterBtn{
@@ -611,6 +610,38 @@
     let commentStore = {};
     let activeCommentTarget = null;
     let commentNavigatorIndex = -1;
+    let initialDataPromise = null;
+
+    function ensureInitialData(){
+      if (!initialDataPromise) {
+        initialDataPromise = Promise.all([loadData(), updateExchangeRates()]);
+      }
+      return initialDataPromise;
+    }
+
+    function renderLoadingHome(){
+      currentView = "home";
+      homeView.classList.remove("hidden");
+      content.classList.add("hidden");
+      toolbar.classList.add("hidden");
+      summaryBar.classList.add("hidden");
+      activeFiltersEl.classList.add("hidden");
+      backHomeBtn.classList.add("hidden");
+      viewLabel.textContent = "Cargando información...";
+      dashboardGrid.innerHTML = `
+        <div class="dashboardCard">
+          <div>
+            <div class="dashboardTop">
+              <div class="dashboardTitle">Cargando hojas...</div>
+              <div class="dashboardNumber">…</div>
+            </div>
+            <div class="dashboardMeta">
+              Estamos preparando los archivos más recientes desde SharePoint.
+            </div>
+          </div>
+          <div class="dashboardFooter">Un momento por favor</div>
+        </div>`;
+    }
 
     const loginScreen = document.getElementById("loginScreen");
     const profileStatBox = document.getElementById("profileStatBox");
@@ -1223,61 +1254,65 @@
       return [...fixedHeaders, ...otherHeaders];
     }
 
+    const measureCanvas = document.createElement("canvas");
+    const measureCtx = measureCanvas.getContext("2d");
+
+    function measureTextPx(text, font){
+      if (!measureCtx) return String(text || "").length * 7;
+      measureCtx.font = font;
+      return Math.ceil(measureCtx.measureText(String(text || "")).width);
+    }
+
     function estimateColumnWidth(header, rows){
-      const vals = rows.slice(0, 1500).map(row => {
+      const values = rows.slice(0, 1500).map(row => {
         const v = row.values[header];
         return isDocRowValue(v) ? safe(v.text || v.url) : safe(v);
       });
 
       const headerText = String(header || "").trim();
-      const longestCellText = vals.reduce((max, txt) => {
+      const longestCellText = values.reduce((max, txt) => {
         const s = String(txt || "").trim();
         return s.length > max.length ? s : max;
       }, "");
 
-      const maxCellLen = longestCellText.length;
-      const headerLen = headerText.length;
+      const controlsPx = 98; // checkbox + letra + sort + filter + paddings
+      const headerFont = "900 10px Arial";
+      const cellFont = "400 10.5px Arial";
 
-      // Espacio fijo real del encabezado:
-      // checkbox columna + gap + letra columna + gap + sort + gap + filter + paddings
-      const controlsPx = 92;
+      const headerOneLinePx = measureTextPx(headerText, headerFont);
+      const words = headerText.split(/\s+/).filter(Boolean);
+      const longestWordPx = words.length
+        ? Math.max(...words.map(w => measureTextPx(w, headerFont)))
+        : headerOneLinePx;
 
-      // Ancho según datos
-      let dataWidth = Math.ceil(maxCellLen * 7.0) + 18;
+      const cellPx = measureTextPx(longestCellText, cellFont);
 
-      // Ancho según header:
-      // si el título es largo, lo tratamos como de 2 líneas
-      let headerWidth;
-      if (headerLen >= 18) {
-        headerWidth = Math.ceil((headerLen * 7.0) / 2) + 14;
+      // Queremos que el header quepa en hasta 2 líneas, pero sin cortar palabras
+      const headerTwoLinePx = Math.max(
+        Math.ceil(headerOneLinePx / 2),
+        longestWordPx
+      );
+
+      // Mínimo absoluto para que el nombre de la columna se vea completo
+      const minHeaderWidth = headerTwoLinePx + controlsPx + 18;
+
+      // Lo que pidan los datos
+      const minCellWidth = cellPx + 22;
+
+      let width = Math.max(minHeaderWidth, minCellWidth, 132);
+
+      // compactar un poco solo si tanto header como celdas son realmente cortos
+      if (longestCellText.length <= 10 && headerText.length <= 16) {
+        width = Math.min(Math.max(width, minHeaderWidth), 185);
+      } else if (longestCellText.length <= 14 && headerText.length <= 22) {
+        width = Math.min(Math.max(width, minHeaderWidth), 230);
+      } else if (isLikelyLongText(header) || longestCellText.length >= 28 || headerText.length >= 34) {
+        width = Math.min(Math.max(width, minHeaderWidth), 420);
       } else {
-        headerWidth = Math.ceil(headerLen * 7.0) + 14;
+        width = Math.min(Math.max(width, minHeaderWidth), 300);
       }
 
-      // base final: debe alcanzar para los datos y para el header visible
-      let width = Math.max(dataWidth, headerWidth + controlsPx);
-
-      // columnas numéricas o de códigos cortos: más compactas
-      if (!isLikelyLongText(header) && maxCellLen <= 12) {
-        width = Math.min(width, 170);
-      }
-
-      // headers largos no deben inflar tanto el ancho
-      if (headerLen >= 26 && maxCellLen <= 14) {
-        width = Math.min(width, 210);
-      }
-
-      // columnas de texto largo sí pueden crecer más
-      if (isLikelyLongText(header) || maxCellLen >= 28) {
-        width = Math.min(Math.max(width, 180), 360);
-      } else {
-        width = Math.min(width, 240);
-      }
-
-      // mínimo visual para que no colapse con controles
-      width = Math.max(width, 112);
-
-      return width;
+      return Math.ceil(width);
     }
 
     function applyDynamicColumnWidths(orderedHeaders){
@@ -1913,25 +1948,28 @@
       const pass = loginPass.value.trim();
       const auth = findAuth(user, pass);
 
-      if (auth) {
-        currentUserSession = { ...auth };
-        loginError.textContent = "";
-        statProfile.textContent = currentUserSession?.label || currentUserSession?.user || "—";
-        updateProfileBadge();
-
-        loginSubmitBtn.disabled = true;
-        try {
-          if (!allLoadedFiles.length) {
-            await loadData();
-          }
-          loginScreen.classList.add("hidden");
-          app.classList.remove("hidden");
-          goToHomeView();
-        } finally {
-          loginSubmitBtn.disabled = false;
-        }
-      } else {
+      if (!auth) {
         loginError.textContent = "Usuario o contraseña incorrectos.";
+        return;
+      }
+
+      currentUserSession = { ...auth };
+      loginError.textContent = "";
+      statProfile.textContent = currentUserSession?.label || currentUserSession?.user || "—";
+      updateProfileBadge();
+
+      loginSubmitBtn.disabled = true;
+
+      try {
+        await ensureInitialData();
+        loginScreen.classList.add("hidden");
+        app.classList.remove("hidden");
+        goToHomeView();
+      } catch (err) {
+        console.error(err);
+        document.body.innerHTML = `<div style="padding:32px;font-family:Arial,Helvetica,sans-serif;"><h2 style="margin:0 0 10px;">Error al cargar la demo</h2><p style="color:#666;">${escapeHtml(err.message)}</p></div>`;
+      } finally {
+        loginSubmitBtn.disabled = false;
       }
     });
 
@@ -1990,7 +2028,7 @@
     loginPass.value = "";
 
    (async () => {
-      Promise.all([loadData(), updateExchangeRates()]).then(async () => {
+      ensureInitialData().then(async () => {
         setSidebarOpen(isMobileLayout());
         updateActionButtonsState();
         updateCommentNavigator();
