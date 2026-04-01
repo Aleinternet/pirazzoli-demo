@@ -7,6 +7,8 @@ from datetime import datetime, date
 from flask import Flask, jsonify
 from openpyxl import load_workbook
 from pypdf import PdfReader
+import unicodedata
+import time
 
 app = Flask(__name__)
 
@@ -19,6 +21,40 @@ TARGET_DRIVE_NAME = os.getenv("TARGET_DRIVE_NAME", "Documentos")
 TARGET_FILE_NAME = os.getenv("TARGET_FILE_NAME", "piloto_datos_minerva.xlsx")
 CMF_API_KEY = os.getenv("CMF_API_KEY")
 
+
+
+API_CACHE = {
+    "payload": None,
+    "last_build_ts": 0,
+    "last_modified": None,
+}
+CACHE_SECONDS = 300
+
+def build_payload(force_refresh=False):
+    now = time.time()
+
+    if (
+        not force_refresh
+        and API_CACHE["payload"] is not None
+        and (now - API_CACHE["last_build_ts"]) < CACHE_SECONDS
+    ):
+        return API_CACHE["payload"]
+
+    token = get_token()
+    content, last_modified = fetch_excel_bytes(token)
+    files = parse_workbook_to_payload(content, token)
+
+    payload = {
+        "ok": True,
+        "source": "sharepoint",
+        "lastModified": last_modified,
+        "files": files
+    }
+
+    API_CACHE["payload"] = payload
+    API_CACHE["last_build_ts"] = now
+    API_CACHE["last_modified"] = last_modified
+    return payload
 
 def normalize_text(value):
     if value is None:
@@ -56,8 +92,13 @@ def prettify_company_name(file_name: str):
             break
     return base.title() if base else "Empresa"
 
+
+
 def normalize_header(value):
-    return normalize_text(value).upper()
+    text = normalize_text(value)
+    text = unicodedata.normalize("NFD", text)
+    text = "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
+    return text.upper()
 
 
 def is_blank_tc_value(value):
@@ -82,6 +123,15 @@ def parse_excel_like_date(value):
     text = str(value).strip()
     if not text:
         return None
+
+    # toma solo la parte fecha si viene con hora
+    match = re.search(r"(\d{1,2}[/-]\d{1,2}[/-]\d{4})", text)
+    if match:
+        date_part = match.group(1).replace("-", "/")
+        try:
+            return datetime.strptime(date_part, "%d/%m/%Y").date()
+        except Exception:
+            pass
 
     patterns = [
         "%d-%m-%Y %H:%M:%S",
@@ -477,15 +527,8 @@ def parse_workbook_to_payload(content: bytes, token: str):
 @app.route("/api", methods=["GET"])
 def api_root():
     try:
-        token = get_token()
-        content, last_modified = fetch_excel_bytes()
-        files = parse_workbook_to_payload(content, token)
-        return jsonify({
-            "ok": True,
-            "source": "sharepoint",
-            "lastModified": last_modified,
-            "files": files
-        })
+        force_refresh = str(request.args.get("refresh", "")).lower() in {"1", "true", "yes"}
+        return jsonify(build_payload(force_refresh=force_refresh))
     except Exception as e:
         return jsonify({
             "ok": False,

@@ -1792,19 +1792,32 @@
       updateCommentNavigator();
     }
 
-    loginForm.addEventListener("submit", e => {
+    loginForm.addEventListener("submit", async e => {
       e.preventDefault();
       const user = loginUser.value.trim().toUpperCase();
       const pass = loginPass.value.trim();
       const auth = findAuth(user, pass);
+
       if (auth) {
         currentUserSession = { ...auth };
         loginError.textContent = "";
         statProfile.textContent = currentUserSession?.label || currentUserSession?.user || "—";
-        loginScreen.classList.add("hidden");
-        app.classList.remove("hidden");
-        goToHomeView();
-      } else loginError.textContent = "Usuario o contraseña incorrectos.";
+        updateProfileBadge();
+
+        loginSubmitBtn.disabled = true;
+        try {
+          if (!allLoadedFiles.length) {
+            await loadData();
+          }
+          loginScreen.classList.add("hidden");
+          app.classList.remove("hidden");
+          goToHomeView();
+        } finally {
+          loginSubmitBtn.disabled = false;
+        }
+      } else {
+        loginError.textContent = "Usuario o contraseña incorrectos.";
+      }
     });
 
     searchInput.addEventListener("input", () => { currentSearch = searchInput.value.trim().toLowerCase(); selectedId = null; renderTable(); if (sidebarOpen || isMobileLayout()) renderDetail(); });
@@ -1862,15 +1875,27 @@
     loginPass.value = "";
 
    (async () => {
-      Promise.all([loadData(), updateExchangeRates()]).then(() => {
+      Promise.all([loadData(), updateExchangeRates()]).then(async () => {
         setSidebarOpen(isMobileLayout());
         updateActionButtonsState();
         updateCommentNavigator();
+
+        if (currentUserSession) {
+          if (currentView === "home") {
+            renderHomeDashboard();
+          } else {
+            await loadCommentsFromSupabaseForActiveSheet();
+            renderAll();
+          }
+        }
       }).catch(err => {
         console.error(err);
         document.body.innerHTML = `<div style="padding:32px;font-family:Arial,Helvetica,sans-serif;"><h2 style="margin:0 0 10px;">Error al cargar la demo</h2><p style="color:#666;">${escapeHtml(err.message)}</p></div>`;
       });
     })();
+
+
+
   </script>
 
 </body>
