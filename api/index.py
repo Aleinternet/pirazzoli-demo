@@ -28,7 +28,10 @@ API_CACHE = {
     "last_build_ts": 0,
     "last_modified": None,
 }
-CACHE_SECONDS = 300
+CACHE_SECONDS = 1800
+
+PDF_DATE_CACHE = {}
+CMF_RATE_CACHE = {}
 
 def build_payload(force_refresh=False):
     now = time.time()
@@ -370,8 +373,8 @@ def enrich_exchange_rate_columns(rows, headers, token):
     if not hdr_tc_legalizacion and not hdr_tc_liberacion:
         return rows
 
-    pdf_date_cache = {}
-    cmf_cache = {}
+    pdf_date_cache = PDF_DATE_CACHE
+    cmf_cache = CMF_RATE_CACHE
 
     for row in rows:
         values = row["values"]
