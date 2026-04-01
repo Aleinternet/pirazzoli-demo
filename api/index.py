@@ -1,8 +1,12 @@
 import os
 import io
+import re
+import base64
 import requests
+from datetime import datetime, date
 from flask import Flask, jsonify
 from openpyxl import load_workbook
+from pypdf import PdfReader
 
 app = Flask(__name__)
 
@@ -13,6 +17,7 @@ SHAREPOINT_HOSTNAME = os.getenv("SHAREPOINT_HOSTNAME")
 SHAREPOINT_SITE_PATH = os.getenv("SHAREPOINT_SITE_PATH")
 TARGET_DRIVE_NAME = os.getenv("TARGET_DRIVE_NAME", "Documentos")
 TARGET_FILE_NAME = os.getenv("TARGET_FILE_NAME", "piloto_datos_minerva.xlsx")
+CMF_API_KEY = os.getenv("CMF_API_KEY")
 
 
 def normalize_text(value):
@@ -51,6 +56,184 @@ def prettify_company_name(file_name: str):
             break
     return base.title() if base else "Empresa"
 
+def normalize_header(value):
+    return normalize_text(value).upper()
+
+
+def is_blank_tc_value(value):
+    if value is None:
+        return True
+    if isinstance(value, (int, float)):
+        return float(value) == 0.0
+    text = normalize_text(value)
+    return text in {"", "-", "—", "0", "0.0", "0,0", "0,00"}
+
+
+def parse_excel_like_date(value):
+    if value is None:
+        return None
+
+    if isinstance(value, datetime):
+        return value.date()
+
+    if isinstance(value, date):
+        return value
+
+    text = str(value).strip()
+    if not text:
+        return None
+
+    patterns = [
+        "%d-%m-%Y %H:%M:%S",
+        "%d-%m-%Y %H:%M",
+        "%d-%m-%Y",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d",
+        "%d/%m/%Y %H:%M:%S",
+        "%d/%m/%Y %H:%M",
+        "%d/%m/%Y",
+    ]
+
+    for fmt in patterns:
+        try:
+            return datetime.strptime(text, fmt).date()
+        except Exception:
+            pass
+
+    return None
+
+
+def format_clp_dollar(value_float):
+    text = f"{value_float:,.2f}"
+    text = text.replace(",", "X").replace(".", ",").replace("X", ".")
+    return text
+
+
+def parse_cmf_value(raw):
+    if raw is None:
+        return None
+    text = str(raw).strip()
+    if not text:
+        return None
+    return float(text.replace(".", "").replace(",", "."))
+
+
+def get_share_token_from_url(share_url: str):
+    encoded = base64.b64encode(share_url.encode("utf-8")).decode("utf-8")
+    encoded = encoded.rstrip("=").replace("/", "_").replace("+", "-")
+    return f"u!{encoded}"
+
+
+def download_shared_pdf_bytes(share_url: str, token: str):
+    share_token = get_share_token_from_url(share_url)
+
+    meta_url = f"https://graph.microsoft.com/v1.0/shares/{share_token}/driveItem"
+    headers = {"Authorization": f"Bearer {token}"}
+    meta_res = requests.get(meta_url, headers=headers, timeout=60)
+    meta_res.raise_for_status()
+    meta = meta_res.json()
+
+    download_url = meta.get("@microsoft.graph.downloadUrl")
+    if download_url:
+        file_res = requests.get(download_url, timeout=120)
+        file_res.raise_for_status()
+        return file_res.content
+
+    item_id = meta.get("id")
+    parent_ref = meta.get("parentReference", {})
+    drive_id = parent_ref.get("driveId")
+    if not drive_id or not item_id:
+        raise RuntimeError("No se pudo resolver el PDF compartido desde SharePoint.")
+
+    content_url = f"https://graph.microsoft.com/v1.0/drives/{drive_id}/items/{item_id}/content"
+    file_res = requests.get(content_url, headers=headers, timeout=120)
+    file_res.raise_for_status()
+    return file_res.content
+
+
+def extract_fecha_pago_from_pdf_bytes(pdf_bytes: bytes):
+    reader = PdfReader(io.BytesIO(pdf_bytes))
+    text = "\n".join((page.extract_text() or "") for page in reader.pages)
+
+    match = re.search(r"Fecha\s+Pago\s+(\d{2}-\d{2}-\d{4})(?:\s+\d{2}:\d{2}:\d{2})?", text, re.IGNORECASE)
+    if not match:
+        return None
+
+    try:
+        return datetime.strptime(match.group(1), "%d-%m-%Y").date()
+    except Exception:
+        return None
+
+
+def fetch_cmf_dollar_for_date(target_date: date, cmf_cache: dict):
+    if target_date is None:
+        return None
+
+    cache_key = target_date.isoformat()
+    if cache_key in cmf_cache:
+        return cmf_cache[cache_key]
+
+    if not CMF_API_KEY:
+        cmf_cache[cache_key] = None
+        return None
+
+    headers = {"User-Agent": "PirazzoliDemo/1.0"}
+
+    # intento exacto
+    exact_url = (
+        f"https://api.cmfchile.cl/api-sbifv3/recursos_api/dolar/"
+        f"{target_date.year}/{target_date.month:02d}/dias/{target_date.day:02d}"
+        f"?apikey={CMF_API_KEY}&formato=json"
+    )
+    exact_res = requests.get(exact_url, headers=headers, timeout=60)
+
+    if exact_res.ok:
+        data = exact_res.json()
+        dolares = data.get("Dolares", []) or data.get("Dolar", [])
+        if dolares:
+            value = parse_cmf_value(dolares[0].get("Valor"))
+            if value is not None:
+                formatted = format_clp_dollar(value)
+                cmf_cache[cache_key] = formatted
+                return formatted
+
+    # fallback: fecha anterior disponible
+    prev_url = (
+        f"https://api.cmfchile.cl/api-sbifv3/recursos_api/dolar/anteriores/"
+        f"{target_date.year}/{target_date.month:02d}/dias/{target_date.day:02d}"
+        f"?apikey={CMF_API_KEY}&formato=json"
+    )
+    prev_res = requests.get(prev_url, headers=headers, timeout=60)
+    prev_res.raise_for_status()
+    data = prev_res.json()
+    dolares = data.get("Dolares", []) or data.get("Dolar", [])
+
+    best_date = None
+    best_value = None
+
+    for item in dolares:
+        fecha_txt = item.get("Fecha")
+        valor_txt = item.get("Valor")
+        if not fecha_txt:
+            continue
+        try:
+            item_date = datetime.strptime(fecha_txt, "%Y-%m-%d").date()
+        except Exception:
+            continue
+
+        if item_date <= target_date:
+            if best_date is None or item_date > best_date:
+                best_date = item_date
+                best_value = parse_cmf_value(valor_txt)
+
+    if best_value is None:
+        cmf_cache[cache_key] = None
+        return None
+
+    formatted = format_clp_dollar(best_value)
+    cmf_cache[cache_key] = formatted
+    return formatted
 
 def get_token():
     url = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
@@ -79,8 +262,8 @@ def graph_get_bytes(url, token):
     return res.content
 
 
-def fetch_excel_bytes():
-    token = get_token()
+def fetch_excel_bytes(token=None):
+    token = token or get_token()
 
     site = graph_get(
         f"https://graph.microsoft.com/v1.0/sites/{SHAREPOINT_HOSTNAME}:{SHAREPOINT_SITE_PATH}",
@@ -126,8 +309,68 @@ def fetch_excel_bytes():
 
     return content, last_modified
 
+def enrich_exchange_rate_columns(rows, headers, token):
+    normalized_map = {normalize_header(h): h for h in headers}
 
-def parse_workbook_to_payload(content: bytes):
+    hdr_pago_tgr = next((h for n, h in normalized_map.items() if "COMPROBANTE PAGO TGR" in n), None)
+    hdr_fecha_liberacion = next((h for n, h in normalized_map.items() if "FECHA DE LIBERACION" in n), None)
+    hdr_tc_legalizacion = next((h for n, h in normalized_map.items() if "T/C DOLAR LEGALIZACION" in n), None)
+    hdr_tc_liberacion = next((h for n, h in normalized_map.items() if "T/C LIBERACION CARGA" in n), None)
+
+    if not hdr_tc_legalizacion and not hdr_tc_liberacion:
+        return rows
+
+    pdf_date_cache = {}
+    cmf_cache = {}
+
+    for row in rows:
+        values = row["values"]
+
+        # AK - T/C DOLAR legalizacion
+        if hdr_tc_legalizacion and is_blank_tc_value(values.get(hdr_tc_legalizacion)):
+            source_date = None
+
+            pago_val = values.get(hdr_pago_tgr) if hdr_pago_tgr else None
+
+            # 1) primero intenta usar la fecha visible en AF
+            if isinstance(pago_val, dict):
+                source_date = parse_excel_like_date(pago_val.get("text"))
+            else:
+                source_date = parse_excel_like_date(pago_val)
+
+            # 2) si no hay fecha visible, intenta leer el PDF
+            if source_date is None and isinstance(pago_val, dict) and pago_val.get("url"):
+                pdf_url = pago_val["url"]
+
+                if pdf_url in pdf_date_cache:
+                    source_date = pdf_date_cache[pdf_url]
+                else:
+                    try:
+                        pdf_bytes = download_shared_pdf_bytes(pdf_url, token)
+                        source_date = extract_fecha_pago_from_pdf_bytes(pdf_bytes)
+                    except Exception:
+                        source_date = None
+
+                    pdf_date_cache[pdf_url] = source_date
+
+            if source_date is not None:
+                dolar_val = fetch_cmf_dollar_for_date(source_date, cmf_cache)
+                if dolar_val is not None:
+                    values[hdr_tc_legalizacion] = dolar_val
+
+        # AL - T/C liberacion carga
+        if hdr_tc_liberacion and is_blank_tc_value(values.get(hdr_tc_liberacion)):
+            liberacion_val = values.get(hdr_fecha_liberacion) if hdr_fecha_liberacion else None
+            source_date = parse_excel_like_date(liberacion_val)
+
+            if source_date is not None:
+                dolar_val = fetch_cmf_dollar_for_date(source_date, cmf_cache)
+                if dolar_val is not None:
+                    values[hdr_tc_liberacion] = dolar_val
+
+    return rows
+
+def parse_workbook_to_payload(content: bytes, token: str):
     wb_values = load_workbook(io.BytesIO(content), data_only=True)
     wb_raw = load_workbook(io.BytesIO(content), data_only=False)
 
@@ -217,6 +460,7 @@ def parse_workbook_to_payload(content: bytes):
                 "values": values
             })
 
+        rows = enrich_exchange_rate_columns(rows, headers, token)
         files[0]["sheets"].append({
             "name": sheet_name,
             "headers": headers,
@@ -233,8 +477,9 @@ def parse_workbook_to_payload(content: bytes):
 @app.route("/api", methods=["GET"])
 def api_root():
     try:
+        token = get_token()
         content, last_modified = fetch_excel_bytes()
-        files = parse_workbook_to_payload(content)
+        files = parse_workbook_to_payload(content, token)
         return jsonify({
             "ok": True,
             "source": "sharepoint",

@@ -1160,10 +1160,19 @@
         const v = row.values[header];
         return isDocRowValue(v) ? safe(v.text || v.url) : safe(v);
       });
-      const maxLen = Math.max(header.length, ...vals.map(v => String(v).length));
+
+      const allTexts = [header, ...vals.map(v => String(v))];
+      const maxLen = Math.max(...allTexts.map(t => t.length));
       const hasLongText = isLikelyLongText(header);
-      const base = hasLongText ? (maxLen * 8.8 + 44) : (maxLen * 8.2 + 34);
-      return Math.min(1400, Math.max(130, Math.ceil(base)));
+
+      let base;
+      if (hasLongText) {
+        base = maxLen * 7.6 + 26;
+      } else {
+        base = maxLen * 7.0 + 22;
+      }
+
+      return Math.min(900, Math.max(58, Math.ceil(base)));
     }
 
     function applyDynamicColumnWidths(orderedHeaders){
