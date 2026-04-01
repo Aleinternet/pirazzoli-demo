@@ -128,7 +128,9 @@ def fetch_excel_bytes():
 
 
 def parse_workbook_to_payload(content: bytes):
-    wb = load_workbook(io.BytesIO(content), data_only=False)
+    wb_values = load_workbook(io.BytesIO(content), data_only=True)
+    wb_raw = load_workbook(io.BytesIO(content), data_only=False)
+
     file_name = TARGET_FILE_NAME
     company_name = prettify_company_name(file_name)
 
@@ -139,8 +141,9 @@ def parse_workbook_to_payload(content: bytes):
         "sheets": []
     }]
 
-    for sheet_name in wb.sheetnames:
-        ws = wb[sheet_name]
+    for sheet_name in wb_values.sheetnames:
+        ws_values = wb_values[sheet_name]
+        ws_raw = wb_raw[sheet_name]
 
         if sheet_name.strip().upper() in {"MATRIZ DATOS", "HOJA1"}:
             continue
@@ -152,7 +155,7 @@ def parse_workbook_to_payload(content: bytes):
         header_meta = []
         visible_columns = []
 
-        for col_idx, cell in enumerate(ws[1], start=1):
+        for col_idx, cell in enumerate(ws_values[1], start=1):
             header = normalize_text(cell.value)
             if not header:
                 header = f"Columna {col_idx}"
@@ -165,24 +168,29 @@ def parse_workbook_to_payload(content: bytes):
             visible_columns.append((col_idx, header, cell.column_letter))
 
         rows = []
-        for row_idx in range(2, ws.max_row + 1):
+        for row_idx in range(2, ws_values.max_row + 1):
             values = {}
             has_any = False
 
             for col_idx, header, _letter in visible_columns:
-                cell = ws.cell(row=row_idx, column=col_idx)
-                raw = cell.value
+                cell_value = ws_values.cell(row=row_idx, column=col_idx)
+                cell_raw = ws_raw.cell(row=row_idx, column=col_idx)
 
-                if cell.hyperlink and cell.hyperlink.target:
-                    text = normalize_text(raw) or header
+                raw_display = cell_value.value
+                text = normalize_text(raw_display)
+
+                hyperlink = None
+                if cell_raw.hyperlink and cell_raw.hyperlink.target:
+                    hyperlink = cell_raw.hyperlink.target
+
+                if hyperlink:
                     values[header] = {
-                        "text": text,
-                        "url": cell.hyperlink.target,
+                        "text": text or header,
+                        "url": hyperlink,
                         "tooltip": ""
                     }
                     has_any = True
                 else:
-                    text = normalize_text(raw)
                     values[header] = text
                     if text not in ("", "-", "—"):
                         has_any = True
