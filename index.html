@@ -203,7 +203,11 @@
     }
 
     .thLabelText{
-      display:block;
+      display:-webkit-box;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp:2;
+      line-clamp:2;
+      overflow:hidden;
       white-space:normal;
       overflow-wrap:anywhere;
       word-break:break-word;
@@ -1220,47 +1224,58 @@
     }
 
     function estimateColumnWidth(header, rows){
-      const vals = rows.slice(0, 1200).map(row => {
+      const vals = rows.slice(0, 1500).map(row => {
         const v = row.values[header];
         return isDocRowValue(v) ? safe(v.text || v.url) : safe(v);
       });
 
-      const headerText = String(header || "");
+      const headerText = String(header || "").trim();
       const longestCellText = vals.reduce((max, txt) => {
-        const s = String(txt || "");
+        const s = String(txt || "").trim();
         return s.length > max.length ? s : max;
       }, "");
 
-      const longestText = longestCellText.length > headerText.length ? longestCellText : headerText;
+      const maxCellLen = longestCellText.length;
+      const headerLen = headerText.length;
 
-      const hasLongHeader = headerText.length >= 18;
-      const hasLongValues = longestCellText.length >= 22;
-      const hasLongText = isLikelyLongText(header) || hasLongHeader || hasLongValues;
+      // Espacio fijo real del encabezado:
+      // checkbox columna + gap + letra columna + gap + sort + gap + filter + paddings
+      const controlsPx = 92;
 
-      // ancho real de texto aprox
-      const textPx = Math.ceil(longestText.length * 7.1);
+      // Ancho según datos
+      let dataWidth = Math.ceil(maxCellLen * 7.0) + 18;
 
-      // espacio fijo del header:
-      // checkbox columna + gap + letra columna + gaps + botón ordenar + botón filtrar + paddings internos
-      const headerControlsPx = 14 + 6 + 28 + 6 + 18 + 5 + 18 + 20;
-
-      // margen visual de seguridad
-      const safetyPx = 18;
-
-      let width = textPx + headerControlsPx + safetyPx;
-
-      // si el header es largo, permitimos partirlo en 2 líneas y no crecer infinito
-      if (hasLongText) {
-        const twoLineHeaderTextPx = Math.ceil((headerText.length * 7.1) / 2);
-        const minHeaderWidth = twoLineHeaderTextPx + headerControlsPx + safetyPx;
-        width = Math.max(width, minHeaderWidth);
+      // Ancho según header:
+      // si el título es largo, lo tratamos como de 2 líneas
+      let headerWidth;
+      if (headerLen >= 18) {
+        headerWidth = Math.ceil((headerLen * 7.0) / 2) + 14;
+      } else {
+        headerWidth = Math.ceil(headerLen * 7.0) + 14;
       }
 
-      // columnas muy cortas igual necesitan espacio para los controles
-      width = Math.max(width, 108);
+      // base final: debe alcanzar para los datos y para el header visible
+      let width = Math.max(dataWidth, headerWidth + controlsPx);
+
+      // columnas numéricas o de códigos cortos: más compactas
+      if (!isLikelyLongText(header) && maxCellLen <= 12) {
+        width = Math.min(width, 170);
+      }
+
+      // headers largos no deben inflar tanto el ancho
+      if (headerLen >= 26 && maxCellLen <= 14) {
+        width = Math.min(width, 210);
+      }
 
       // columnas de texto largo sí pueden crecer más
-      width = Math.min(width, hasLongText ? 520 : 320);
+      if (isLikelyLongText(header) || maxCellLen >= 28) {
+        width = Math.min(Math.max(width, 180), 360);
+      } else {
+        width = Math.min(width, 240);
+      }
+
+      // mínimo visual para que no colapse con controles
+      width = Math.max(width, 112);
 
       return width;
     }
