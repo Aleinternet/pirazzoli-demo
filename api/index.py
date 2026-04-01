@@ -48,7 +48,7 @@ def build_payload(force_refresh=False):
 
     token = get_token()
     content, last_modified = fetch_excel_bytes(token)
-    files = parse_workbook_to_payload(content, token)
+    files = parse_workbook_to_payload(content, token, run_audit=force_refresh)
 
     payload = {
         "ok": True,
@@ -177,7 +177,7 @@ def canonicalize_value(value):
     return normalize_text(value)
 
 
-def build_row_identity(file_name, sheet_name, values, headers):
+def build_row_identity(file_name, sheet_name, values, headers, row_idx):
     ref_header = next(
         (h for h in headers if "REFERENCIA CLIENTE" in normalize_header(h)),
         headers[0] if headers else ""
@@ -195,11 +195,22 @@ def build_row_identity(file_name, sheet_name, values, headers):
     if isinstance(dispatch_val, dict):
         dispatch_val = dispatch_val.get("text", "")
 
+    ref_val = normalize_text(ref_val)
+    dispatch_val = normalize_text(dispatch_val)
+
+    # Si faltan los identificadores principales, usamos fallback con fila Excel
+    if not ref_val and not dispatch_val:
+        return "|".join([
+            normalize_text(file_name),
+            normalize_text(sheet_name),
+            f"ROW-{row_idx}"
+        ])
+
     return "|".join([
         normalize_text(file_name),
         normalize_text(sheet_name),
-        normalize_text(ref_val),
-        normalize_text(dispatch_val),
+        ref_val,
+        dispatch_val,
     ])
 
 
@@ -561,7 +572,7 @@ def enrich_exchange_rate_columns(rows, headers, token):
 
     return rows
 
-def parse_workbook_to_payload(content: bytes, token: str):
+def parse_workbook_to_payload(content: bytes, token: str, run_audit: bool = False):
     wb_values = load_workbook(io.BytesIO(content), data_only=True)
     wb_raw = load_workbook(io.BytesIO(content), data_only=False)
 
@@ -643,7 +654,7 @@ def parse_workbook_to_payload(content: bytes, token: str):
                 str(row_idx)
             ])
 
-            row_identity = build_row_identity(file_name, sheet_name, values, headers)
+            row_identity = build_row_identity(file_name, sheet_name, values, headers, row_idx)
 
             rows.append({
                 "_id": base_id,
@@ -657,36 +668,82 @@ def parse_workbook_to_payload(content: bytes, token: str):
 
         rows = enrich_exchange_rate_columns(rows, headers, token)
 
-        try:
-            previous_snapshots = fetch_existing_snapshots(file_name, sheet_name)
-        except Exception as e:
-            previous_snapshots = {}
-            print(f"[AUDIT] No se pudieron cargar snapshots previos de {sheet_name}: {e}")
+        if run_audit:
+            try:
+                previous_snapshots = fetch_existing_snapshots(file_name, sheet_name)
+            except Exception as e:
+                previous_snapshots = {}
+                print(f"[AUDIT] No se pudieron cargar snapshots previos de {sheet_name}: {e}")
 
-        current_identities = set()
+            current_identities = set()
 
-        for row in rows:
-            row_identity = row["_rowIdentity"]
-            current_identities.add(row_identity)
+            for row in rows:
+                row_identity = row["_rowIdentity"]
+                current_identities.add(row_identity)
 
-            current_row_number = row["_excelRowNumber"]
-            current_row_data = normalize_row_data_for_compare(row["values"])
+                current_row_number = row["_excelRowNumber"]
+                current_row_data = normalize_row_data_for_compare(row["values"])
 
-            previous = previous_snapshots.get(row_identity)
+                previous = previous_snapshots.get(row_identity)
 
-            if not previous:
-                try:
-                    insert_audit_log(
-                        file_key=file_name,
-                        sheet_name=sheet_name,
-                        row_identity=row_identity,
-                        excel_row_number=current_row_number,
-                        event_type="created",
-                        summary="Fila creada desde el Excel",
-                        diff=[]
-                    )
-                except Exception as e:
-                    print(f"[AUDIT] Error guardando created: {e}")
+                if not previous:
+                    try:
+                        insert_audit_log(
+                            file_key=file_name,
+                            sheet_name=sheet_name,
+                            row_identity=row_identity,
+                            excel_row_number=current_row_number,
+                            event_type="created",
+                            summary="Fila creada desde el Excel",
+                            diff=[]
+                        )
+                    except Exception as e:
+                        print(f"[AUDIT] Error guardando created: {e}")
+
+                    try:
+                        upsert_snapshot(
+                            file_key=file_name,
+                            sheet_name=sheet_name,
+                            row_identity=row_identity,
+                            excel_row_number=current_row_number,
+                            row_data=current_row_data
+                        )
+                    except Exception as e:
+                        print(f"[AUDIT] Error guardando snapshot nuevo: {e}")
+
+                    continue
+
+                old_row_number = previous.get("excel_row_number")
+                old_row_data = normalize_row_data_for_compare(previous.get("row_data") or {})
+                changes = diff_row_values(old_row_data, current_row_data)
+
+                if changes:
+                    try:
+                        insert_audit_log(
+                            file_key=file_name,
+                            sheet_name=sheet_name,
+                            row_identity=row_identity,
+                            excel_row_number=current_row_number,
+                            event_type="updated",
+                            summary=f"Se modificaron {len(changes)} campo(s)",
+                            diff=changes
+                        )
+                    except Exception as e:
+                        print(f"[AUDIT] Error guardando updated: {e}")
+
+                elif old_row_number != current_row_number:
+                    try:
+                        insert_audit_log(
+                            file_key=file_name,
+                            sheet_name=sheet_name,
+                            row_identity=row_identity,
+                            excel_row_number=current_row_number,
+                            event_type="moved",
+                            summary=f"La fila cambió de posición: {old_row_number} → {current_row_number}",
+                            diff=[]
+                        )
+                    except Exception as e:
+                        print(f"[AUDIT] Error guardando moved: {e}")
 
                 try:
                     upsert_snapshot(
@@ -697,52 +754,33 @@ def parse_workbook_to_payload(content: bytes, token: str):
                         row_data=current_row_data
                     )
                 except Exception as e:
-                    print(f"[AUDIT] Error guardando snapshot nuevo: {e}")
+                    print(f"[AUDIT] Error actualizando snapshot: {e}")
 
-                continue
+            deleted_identities = set(previous_snapshots.keys()) - current_identities
 
-            old_row_number = previous.get("excel_row_number")
-            old_row_data = normalize_row_data_for_compare(previous.get("row_data") or {})
-            changes = diff_row_values(old_row_data, current_row_data)
-
-            if changes:
+            for deleted_identity in deleted_identities:
+                previous = previous_snapshots[deleted_identity]
                 try:
                     insert_audit_log(
                         file_key=file_name,
                         sheet_name=sheet_name,
-                        row_identity=row_identity,
-                        excel_row_number=current_row_number,
-                        event_type="updated",
-                        summary=f"Se modificaron {len(changes)} campo(s)",
-                        diff=changes
-                    )
-                except Exception as e:
-                    print(f"[AUDIT] Error guardando updated: {e}")
-
-            elif old_row_number != current_row_number:
-                try:
-                    insert_audit_log(
-                        file_key=file_name,
-                        sheet_name=sheet_name,
-                        row_identity=row_identity,
-                        excel_row_number=current_row_number,
-                        event_type="moved",
-                        summary=f"La fila cambió de posición: {old_row_number} → {current_row_number}",
+                        row_identity=deleted_identity,
+                        excel_row_number=previous.get("excel_row_number"),
+                        event_type="deleted",
+                        summary="Fila eliminada del Excel",
                         diff=[]
                     )
                 except Exception as e:
-                    print(f"[AUDIT] Error guardando moved: {e}")
+                    print(f"[AUDIT] Error guardando deleted: {e}")
 
-            try:
-                upsert_snapshot(
-                    file_key=file_name,
-                    sheet_name=sheet_name,
-                    row_identity=row_identity,
-                    excel_row_number=current_row_number,
-                    row_data=current_row_data
-                )
-            except Exception as e:
-                print(f"[AUDIT] Error actualizando snapshot: {e}")
+                try:
+                    delete_snapshot(
+                        file_key=file_name,
+                        sheet_name=sheet_name,
+                        row_identity=deleted_identity
+                    )
+                except Exception as e:
+                    print(f"[AUDIT] Error eliminando snapshot: {e}")
 
         deleted_identities = set(previous_snapshots.keys()) - current_identities
 
