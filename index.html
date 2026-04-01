@@ -82,6 +82,34 @@
     .topStats{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
     .miniStat{border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 12px;font-size:12px;color:var(--muted);white-space:nowrap}
     .miniStat strong{color:var(--text);margin-left:6px}
+    .profileStat{
+        margin-left:auto;
+        margin-right:auto;
+        min-width:140px;
+        justify-content:center;
+        text-align:center;
+        font-weight:900;
+      }
+
+      .profileStat.profile-pirazzoli{
+        background:#f3e8ff;
+        border-color:#d8b4fe;
+        color:#7c3aed;
+      }
+
+      .profileStat.profile-pirazzoli strong{
+        color:#6d28d9;
+      }
+
+      .profileStat.profile-civi{
+        background:#fef3c7;
+        border-color:#fcd34d;
+        color:#92400e;
+      }
+
+      .profileStat.profile-civi strong{
+        color:#92400e;
+      }
 
     .utilityBar{background:#fff;border-bottom:1px solid var(--line);padding:8px 16px;display:grid;grid-template-columns:auto 1fr auto auto auto;gap:10px;align-items:center}
     .utilityLeft{display:flex;align-items:center;gap:10px;min-width:0}
@@ -388,12 +416,12 @@
       <div class="brandWrap">
         <div class="logoBox">P</div>
         <div class="brandText">
-          <strong>Seguimiento de Importaciones</strong>
-          <span>Pirazzoli · Demo operativa basada en Excel</span>
+          <strong>Trazabilidad</strong>
+          <span>Pirazzoli - Agencia de Aduanas</span>
         </div>
       </div>
       <div class="topStats">
-        <div class="miniStat">Perfil <strong id="statProfile">—</strong></div>
+        <div class="miniStat profileStat" id="profileStatBox">Perfil <strong id="statProfile">—</strong></div>
         <div class="miniStat">Tipo activo <strong id="statTransport">—</strong></div>
         <div class="miniStat">Empresa <strong id="statCompany">—</strong></div>
         <div class="miniStat">Registros <strong id="statTotal">0</strong></div>
@@ -424,7 +452,7 @@
       <div class="searchWrap"><input id="searchInput" type="text" placeholder="Buscar por cualquier columna de la hoja activa..." /></div>
       <div class="toolbarActions">
         <button class="softBtn" id="clearSelectionBtn" type="button">Deseleccionar</button>
-        <button class="softBtn primary" id="exportSelectionBtn" type="button">Descargar Excel</button>
+        <button class="softBtn" id="exportSelectionBtn" type="button">Descargar Excel</button>
       </div>
       <div class="toolbarInfo" id="sheetInfo">Sin archivo cargado</div>
     </section>
@@ -521,6 +549,7 @@
     let commentNavigatorIndex = -1;
 
     const loginScreen = document.getElementById("loginScreen");
+    const profileStatBox = document.getElementById("profileStatBox");
     const app = document.getElementById("app");
     const loginForm = document.getElementById("loginForm");
     const loginUser = document.getElementById("loginUser");
@@ -611,6 +640,18 @@
     function parseExcelDateSerial(serial){ const parsed = XLSX.SSF.parse_date_code(serial); if (!parsed) return null; return new Date(parsed.y, parsed.m - 1, parsed.d); }
     function isEditor(){ return currentUserSession?.role === "editor"; }
     function userDisplayName(){ return currentUserSession?.label || currentUserSession?.user || "Usuario"; }
+
+    function updateProfileBadge(){
+      if (!profileStatBox) return;
+      profileStatBox.classList.remove("profile-pirazzoli", "profile-civi");
+
+      const user = String(currentUserSession?.user || "").toUpperCase();
+      if (user === "PIRAZZOLI") {
+        profileStatBox.classList.add("profile-pirazzoli");
+      } else if (user === "CIVI") {
+        profileStatBox.classList.add("profile-civi");
+      }
+    }
 
     async function loadCommentsFromSupabaseForActiveSheet(){
       if(!activeFileKey || !activeSheetName){
@@ -973,7 +1014,12 @@
     }
 
     async function loadData(){
-      const res = await fetch(`/api?v=${Date.now()}`, { cache: "no-store" })
+      const prevCategoryKey = activeCategoryKey;
+      const prevFileKey = activeFileKey;
+      const prevSheetName = activeSheetName;
+      const wasInDataView = currentView === "data";
+
+      const res = await fetch(`/api?v=${Date.now()}`, { cache: "no-store" });
       if (!res.ok) throw new Error("No se pudieron cargar los datos desde SharePoint.");
       const payload = await res.json();
       if (!payload?.ok) throw new Error(payload?.error || "Respuesta inválida de SharePoint.");
@@ -982,12 +1028,24 @@
       rebuildCategoryStore();
 
       const firstAvailableCategory = CATEGORY_DEFS.find(cat => (categoryStore[cat.key]?.files.length || 0) > 0);
-      activeCategoryKey = firstAvailableCategory ? firstAvailableCategory.key : CATEGORY_DEFS[0].key;
+      const fallbackCategoryKey = firstAvailableCategory ? firstAvailableCategory.key : CATEGORY_DEFS[0].key;
 
-      const firstActiveCategory = getActiveCategory();
-      const firstFile = firstActiveCategory?.files?.[0] || null;
-      activeFileKey = firstFile?.file || null;
-      activeSheetName = firstFile?.sheets?.[0]?.name || null;
+      if (wasInDataView && prevCategoryKey && categoryStore[prevCategoryKey]?.files?.length) {
+        activeCategoryKey = prevCategoryKey;
+      } else {
+        activeCategoryKey = fallbackCategoryKey;
+      }
+
+      const activeCategory = getActiveCategory();
+      const preservedFile = activeCategory?.files?.find(f => f.file === prevFileKey) || null;
+      const fallbackFile = activeCategory?.files?.[0] || null;
+      const selectedFile = preservedFile || fallbackFile;
+
+      activeFileKey = selectedFile?.file || null;
+
+      const preservedSheet = selectedFile?.sheets?.find(s => s.name === prevSheetName) || null;
+      const fallbackSheet = selectedFile?.sheets?.[0] || null;
+      activeSheetName = (preservedSheet || fallbackSheet)?.name || null;
 
       if (payload?.lastModified) {
         excelUpdatedAt.textContent = `Excel: actualizado al ${formatDateTimeFull(new Date(payload.lastModified))}`;
@@ -1129,9 +1187,12 @@
 
     function updateActionButtonsState(){
       const hasSelection = selectedRowIds.size > 0 || selectedColumnHeaders.size > 0 || !!selectedId || !!selectedSummaryHeader;
+      const hasExportSelection = selectedRowIds.size > 0 || selectedColumnHeaders.size > 0;
       const hasFilters = !!currentSearch || Object.values(currentColumnFilters).some(set => set instanceof Set && set.size > 0);
+
       clearSelectionBtn.disabled = !hasSelection;
       clearFiltersBtn.disabled = !hasFilters;
+      exportSelectionBtn.disabled = !hasExportSelection;
     }
 
     function renderSheetTabs(){
@@ -1617,6 +1678,7 @@
       const category = getActiveCategory();
       const activeFile = getActiveFile();
       statProfile.textContent = currentUserSession?.label || currentUserSession?.user || "—";
+      updateProfileBadge();
       statTransport.textContent = category?.label || "—";
       statCompany.textContent = activeFile?.companyName || "—";
       statTotal.textContent = getAllRows().length;
