@@ -1343,17 +1343,21 @@
         const row = getAllRows().find(r => r._id === rowId);
         if(!row) return;
 
+        const remembered = getRememberedCommentPopupPosition({ left: 120, top: 120 });
+
         closeCommentOverlays();
 
-        const targetSelector = `[data-comment-cell="${encodeURIComponent(rowId)}__${encodeURIComponent(targetColumnKey)}"]`;
-        const targetEl = document.querySelector(targetSelector);
-
-        if(targetEl){
-          const rect = targetEl.getBoundingClientRect();
-          openCommentThread(rowId, targetColumnKey, rect, true);
-        } else {
-          openCommentThread(rowId, targetColumnKey, { left: 120, top: 120, width: 0, height: 0 }, true);
-        }
+        openCommentThread(
+          rowId,
+          targetColumnKey,
+          {
+            left: remembered.left + 40,
+            top: remembered.top + 20,
+            width: 0,
+            height: 0
+          },
+          true
+        );
       }));
 
       commentThreadPopup.querySelectorAll("[data-delete-comment]").forEach(btn => btn.addEventListener("click", async () => {
@@ -2448,7 +2452,7 @@
       });
     }
 
-    function renderCommentItem(rowId, columnKey, item, isReply=false){
+    function renderCommentItem(rowId, columnKey, item, isReply=false, allowInlineReply=false){
       const replies = getReplies(rowId, columnKey, item.id);
       const canEdit = canComment();
       const canDelete = canDeleteComments();
@@ -2475,7 +2479,15 @@
             </div>`
           : "";
 
-      const replyBoxHtml = "";
+      const replyBoxHtml = (!item.isDeleted && canEdit && allowInlineReply)
+      ? `<div class="commentInlineReply hidden" data-reply-box="${escapeHtml(item.id)}">
+          <textarea placeholder="Escribe una respuesta..."></textarea>
+          <div class="commentInlineReplyActions">
+            <button class="miniBtn secondary" type="button" data-cancel-reply="${escapeHtml(item.id)}">Cancelar</button>
+            <button class="miniBtn primary" type="button" data-submit-reply="${escapeHtml(item.id)}" disabled>Publicar respuesta</button>
+          </div>
+        </div>`
+      : "";
 
       return `
         <div class="commentItem ${isReply ? "commentItemReply" : ""}" data-comment-item="${escapeHtml(item.id)}">
@@ -2595,8 +2607,7 @@
           <span>Fila ${escapeHtml(String(row._excelRowNumber || "—"))} · ${escapeHtml(activeSheetName || "")} · ${allComments.length} comentario(s)</span>
         </div>
         <div class="commentThreadBody">
-          ${topLevels.length ? topLevels.map(item => renderCommentItem(rowId, columnKey, item, false)).join("") : `<div class="commentEmpty">Todavía no hay comentarios en esta celda.</div>`}
-        </div>
+          ${topLevels.length ? topLevels.map(item => renderCommentItem(rowId, columnKey, item, false, true)).join("") : `<div class="commentEmpty">Todavía no hay comentarios en esta celda.</div>`} </div>
         <div class="commentComposer">
           ${canComment() ? `
             <label for="rootCommentText">${allComments.length ? "Agregar comentario" : "Nuevo comentario"}</label>
