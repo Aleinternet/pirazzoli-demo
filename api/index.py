@@ -47,19 +47,33 @@ def build_payload(force_refresh=False):
         return API_CACHE["payload"]
 
     token = get_token()
-    content, last_modified = fetch_excel_bytes(token)
-    files = parse_workbook_to_payload(content, token, run_audit=force_refresh)
+    excel_files = fetch_excel_files(token)
+
+    files = []
+    last_modified_values = []
+
+    for item in excel_files:
+        parsed = parse_workbook_to_payload(
+            item["content"],
+            token,
+            file_name=item["file_name"],
+            run_audit=force_refresh
+        )
+        files.extend(parsed)
+
+        if item.get("last_modified"):
+            last_modified_values.append(item["last_modified"])
 
     payload = {
         "ok": True,
         "source": "sharepoint",
-        "lastModified": last_modified,
+        "lastModified": max(last_modified_values) if last_modified_values else None,
         "files": files
     }
 
     API_CACHE["payload"] = payload
     API_CACHE["last_build_ts"] = now
-    API_CACHE["last_modified"] = last_modified
+    API_CACHE["last_modified"] = payload["lastModified"]
     return payload
 
 def normalize_text(value):
@@ -585,11 +599,10 @@ def enrich_exchange_rate_columns(rows, headers, token):
 
     return rows
 
-def parse_workbook_to_payload(content: bytes, token: str, run_audit: bool = False):
+def parse_workbook_to_payload(content: bytes, token: str, file_name: str, run_audit: bool = False):
     wb_values = load_workbook(io.BytesIO(content), data_only=True)
     wb_raw = load_workbook(io.BytesIO(content), data_only=False)
 
-    file_name = TARGET_FILE_NAME
     company_name = prettify_company_name(file_name)
 
     files = [{

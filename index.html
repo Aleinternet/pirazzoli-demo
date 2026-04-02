@@ -430,11 +430,10 @@
     .commentMenu .miniBtn{width:100%;justify-content:flex-start;text-align:left}
 
     .commentThreadPopup{
-      min-width:360px;
-      max-width:420px;
       width:min(420px, calc(100vw - 24px));
-      max-height:min(86vh, 760px);
-      min-height:220px;
+      max-width:calc(100vw - 24px);
+      min-width:min(360px, calc(100vw - 24px));
+      max-height:calc(100vh - 24px);
       padding:0;
       overflow:hidden;
       display:flex;
@@ -459,7 +458,7 @@
 
     .commentThreadBody{
       flex:1 1 auto;
-      min-height:120px;
+      min-height:0;
       min-width:0;
       overflow-y:auto;
       overflow-x:hidden;
@@ -663,10 +662,10 @@
     }
 
     .rowLogPopup{
-      width:min(1120px, calc(100vw - 24px));
-      max-width:min(1120px, calc(100vw - 24px));
-      min-width:min(820px, calc(100vw - 24px));
-      max-height:min(86vh, 760px);
+      width:auto;
+      max-width:calc(100vw - 24px);
+      min-width:min(420px, calc(100vw - 24px));
+      max-height:calc(100vh - 24px);
       padding:0;
       overflow:hidden;
       display:flex;
@@ -682,20 +681,21 @@
     }
 
     .rowLogScroller{
-      display:flex;
+      display:inline-flex;
       gap:14px;
-      align-items:stretch;
+      align-items:flex-start;
       overflow-x:auto;
       overflow-y:hidden;
       padding:14px;
-      min-height:100%;
+      width:max-content;
+      min-width:100%;
     }
 
     .rowLogColumn{
-      width:320px;
-      min-width:320px;
-      max-width:320px;
-      height:min(68vh, 640px);
+      width:min(360px, calc(100vw - 56px));
+      min-width:min(360px, calc(100vw - 56px));
+      max-width:min(360px, calc(100vw - 56px));
+      max-height:calc(100vh - 180px);
       display:flex;
       flex-direction:column;
       background:#fff;
@@ -799,17 +799,21 @@
         width:calc(100vw - 16px);
         max-width:calc(100vw - 16px);
         min-width:0;
-        max-height:82vh;
+        max-height:calc(100vh - 16px);
       }
 
       .rowLogPopup{
-        max-height:82vh;
+        width:calc(100vw - 16px);
+        max-width:calc(100vw - 16px);
+        min-width:0;
+        max-height:calc(100vh - 16px);
       }
 
       .rowLogColumn{
-        width:min(88vw, 320px);
-        min-width:min(88vw, 320px);
-        height:66vh;
+        width:min(88vw, 340px);
+        min-width:min(88vw, 340px);
+        max-width:min(88vw, 340px);
+        max-height:calc(100vh - 210px);
       }
 
 
@@ -958,6 +962,10 @@
       { key: "terrestre", label: "Terrestre" },
       { key: "aereo", label: "Aéreo" },
       { key: "maritimo", label: "Marítimo" }
+    ];
+    const OPERATION_DEFS = [
+      { key: "importacion", label: "Importaciones" },
+      { key: "exportacion", label: "Exportaciones" }
     ];
     const FALLBACK_FILES = ["minerva.xlsx", "Minerva.xlsx", "terrestre.xlsx", "aereo.xlsx", "maritimo.xlsx"];
     const SPECIAL_ROW_NUMBER_KEY = "__ROWNUM__";
@@ -1327,6 +1335,7 @@
         const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.replyComment}"]`);
         if(box){
           box.classList.remove("hidden");
+          box.scrollIntoView({ behavior:"smooth", block:"nearest" });
           const ta = box.querySelector("textarea");
           if(ta) ta.focus();
         }
@@ -1856,6 +1865,30 @@
           if (filteredSheets.length) categoryStore[cat.key].files.push({ file: fileObj.file, baseName: fileObj.baseName, companyName: fileObj.companyName, sheets: filteredSheets });
         });
       });
+    }
+
+    function buildOperationStore(){
+      const store = {
+        importacion: [],
+        exportacion: []
+      };
+
+      allLoadedFiles.forEach(fileObj => {
+        (fileObj.sheets || []).forEach(sheet => {
+          const op = sheet.operationType || "importacion";
+          if (!store[op]) store[op] = [];
+
+          store[op].push({
+            file: fileObj.file,
+            companyName: fileObj.companyName,
+            sheetName: sheet.name,
+            transportKey: sheet.transportKey,
+            operationType: sheet.operationType
+          });
+        });
+      });
+
+      return store;
     }
 
     function resetDataViewState(){
@@ -2544,6 +2577,7 @@
           const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.replyComment}"]`);
           if(box){
             box.classList.remove("hidden");
+            box.scrollIntoView({ behavior:"smooth", block:"nearest" });
             const ta = box.querySelector("textarea");
             if(ta) ta.focus();
           }
@@ -2711,13 +2745,54 @@
     }
 
     function renderHomeDashboard(){
-      dashboardGrid.innerHTML = CATEGORY_DEFS.map(cat => {
-        const item = categoryStore[cat.key];
-        const count = item?.files?.length || 0;
-        const sheetCount = (item?.files || []).reduce((acc, f) => acc + (f.sheets?.length || 0), 0);
-        return `<div class="dashboardCard"><div><div class="dashboardTop"><div class="dashboardTitle">${escapeHtml(cat.label)}</div><div class="dashboardNumber">${sheetCount}</div></div><div class="dashboardMeta">${count === 0 ? "No hay empresas cargadas." : `${count} empresa(s) con ${sheetCount} hoja(s) clasificadas en ${cat.label.toLowerCase()}.`}</div><div class="dashboardFileList">${count === 0 ? `<div class="dashboardEmptyText">Sin archivos para mostrar.</div>` : item.files.map(fileObj => `<button class="dashboardFileLink" type="button" data-category="${escapeHtml(cat.key)}" data-file="${encodeURIComponent(fileObj.file)}">${escapeHtml(fileObj.companyName)} · ${escapeHtml(fileObj.sheets.map(s => s.name).join(", "))}</button>`).join("")}</div></div><div class="dashboardFooter">${count === 0 ? "Sin información" : "Haz clic en una empresa para abrirla"}</div></div>`;
+      const operationStore = buildOperationStore();
+
+      dashboardGrid.innerHTML = OPERATION_DEFS.map(op => {
+        const items = operationStore[op.key] || [];
+
+        return `
+          <div class="dashboardCard">
+            <div>
+              <div class="dashboardTop">
+                <div class="dashboardTitle">${escapeHtml(op.label)}</div>
+                <div class="dashboardNumber">${items.length}</div>
+              </div>
+              <div class="dashboardMeta">
+                ${
+                  items.length
+                    ? `${items.length} hoja(s) clasificadas como ${op.label.toLowerCase()}.`
+                    : `No hay hojas de ${op.label.toLowerCase()}.`
+                }
+              </div>
+              <div class="dashboardFileList">
+                ${
+                  items.length
+                    ? items.map(item => `
+                        <button
+                          class="dashboardFileLink"
+                          type="button"
+                          data-category="${escapeHtml(item.transportKey || "")}"
+                          data-file="${encodeURIComponent(item.file)}"
+                          data-sheet="${encodeURIComponent(item.sheetName)}"
+                        >
+                          ${escapeHtml(item.companyName)} · ${escapeHtml(item.sheetName)}
+                        </button>
+                      `).join("")
+                    : `<div class="dashboardEmptyText">Sin archivos para mostrar.</div>`
+                }
+              </div>
+            </div>
+            <div class="dashboardFooter">${escapeHtml(op.label)}</div>
+          </div>
+        `;
       }).join("");
-      dashboardGrid.querySelectorAll(".dashboardFileLink").forEach(btn => btn.addEventListener("click", () => goToDataView(btn.dataset.category, decodeURIComponent(btn.dataset.file))));
+
+      dashboardGrid.querySelectorAll(".dashboardFileLink").forEach(btn => btn.addEventListener("click", async () => {
+        const categoryKey = btn.dataset.category;
+        const fileKey = decodeURIComponent(btn.dataset.file);
+        const sheetName = decodeURIComponent(btn.dataset.sheet);
+        await goToDataView(categoryKey, fileKey, sheetName);
+      }));
     }
 
     function goToHomeView(){
@@ -2738,7 +2813,7 @@
       updateCommentNavigator();
     }
 
-    async function goToDataView(categoryKey, fileKey){
+    async function goToDataView(categoryKey, fileKey, preferredSheetName = null){
       const category = categoryStore[categoryKey];
       if (!category || !category.files.length) return;
       const fileObj = category.files.find(f => f.file === fileKey);
@@ -2746,7 +2821,9 @@
       currentView = "data";
       activeCategoryKey = categoryKey;
       activeFileKey = fileObj.file;
-      activeSheetName = fileObj.sheets[0]?.name || null;
+      activeSheetName = preferredSheetName && fileObj.sheets.some(s => s.name === preferredSheetName)
+      ? preferredSheetName
+      : (fileObj.sheets[0]?.name || null);
       resetDataViewState();
       homeView.classList.add("hidden");
       content.classList.remove("hidden");
