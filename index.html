@@ -108,13 +108,13 @@
       }
 
       .profileStat.profile-minerva{
-        background:#e8f0ff;
-        border-color:#9db8ff;
-        color:#1d4ed8;
+        background:#fff4e5;
+        border-color:#f7c58b;
+        color:#c76b00;
       }
 
       .profileStat.profile-minerva strong{
-        color:#1d4ed8;
+        color:#b85c00;
       }
     
       .profileStat.profile-civi strong{
@@ -2098,9 +2098,15 @@
         <th class="headCheckCell"><input class="masterCheck" id="masterCheck" type="checkbox"></th>
         
         <th class="headRowNumberCell">
-          <div class="thInner" style="justify-content:center;">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px 0;">
             <span>Fila</span>
-            <button class="sortBtn ${(!currentSort.key || currentSort.direction === 0) ? "active" : ""}" type="button" id="resetSortBtn" title="Restablecer orden">⟲</button>
+            <button
+              class="sortBtn ${(!currentSort.key || currentSort.direction === 0) ? "active" : ""}"
+              type="button"
+              id="resetSortBtn"
+              title="Restablecer orden"
+              aria-label="Restablecer orden"
+            >⟲</button>
           </div>
         </th>
 
@@ -2260,7 +2266,7 @@
       tableBody.querySelectorAll("td[data-comment-cell]").forEach(td => {
         td.addEventListener("contextmenu", e => {
           if (td.hasAttribute("data-row-history")) return;
-          if(!isEditor()) return;
+          if(!canComment()) return;
           e.preventDefault();
           const parts = td.dataset.commentCell.split("__");
           const rowId = decodeURIComponent(parts[0]);
@@ -2360,7 +2366,7 @@
     }
 
     function bindCommentThreadEvents(rowId, columnKey){
-      if(isEditor()){
+      if(canComment()){
         const composerBtn = document.getElementById("submitRootCommentBtn");
         const rootTextarea = document.getElementById("rootCommentText");
 
@@ -2507,7 +2513,7 @@
 
       bindCommentThreadEvents(rowId, columnKey);
 
-      if(focusComposer && isEditor()){
+      if(focusComposer && canComment()){
         const ta = document.getElementById("rootCommentText");
         if(ta) setTimeout(() => ta.focus(), 40);
       }
