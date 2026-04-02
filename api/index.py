@@ -159,6 +159,19 @@ def parse_excel_like_date(value):
 
     return None
 
+def format_excel_display_value(value):
+    if value is None:
+        return ""
+
+    if isinstance(value, datetime):
+        if value.hour == 0 and value.minute == 0 and value.second == 0:
+            return value.strftime("%d/%m/%Y")
+        return value.strftime("%d/%m/%Y %H:%M")
+
+    if isinstance(value, date):
+        return value.strftime("%d/%m/%Y")
+
+    return normalize_text(value)
 
 def format_clp_dollar(value_float):
     text = f"{value_float:,.2f}"
@@ -622,7 +635,7 @@ def parse_workbook_to_payload(content: bytes, token: str, run_audit: bool = Fals
                 cell_raw = ws_raw.cell(row=row_idx, column=col_idx)
 
                 raw_display = cell_value.value
-                text = normalize_text(raw_display)
+                text = format_excel_display_value(raw_display)
 
                 hyperlink = None
                 if cell_raw.hyperlink and cell_raw.hyperlink.target:

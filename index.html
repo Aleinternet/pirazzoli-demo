@@ -97,16 +97,26 @@
         color:#7c3aed;
       }
 
-      .profileStat.profile-pirazzoli strong{
-        color:#6d28d9;
-      }
-
       .profileStat.profile-civi{
         background:#fef3c7;
         border-color:#fcd34d;
         color:#92400e;
       }
 
+      .profileStat.profile-pirazzoli strong{
+        color:#6d28d9;
+      }
+
+      .profileStat.profile-minerva{
+        background:#e8f0ff;
+        border-color:#9db8ff;
+        color:#1d4ed8;
+      }
+
+      .profileStat.profile-minerva strong{
+        color:#1d4ed8;
+      }
+    
       .profileStat.profile-civi strong{
         color:#92400e;
       }
@@ -151,16 +161,46 @@
     .activeFilterChip{display:inline-flex;align-items:center;gap:8px;background:#eef7fd;color:#0a5488;border:1px solid #cfe0ee;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:800}
     .activeFilterChip button{border:0;background:transparent;color:#0a5488;cursor:pointer;font-weight:900;padding:0;font-size:12px}
 
-    .content{min-height:0;height:100%;display:grid;grid-template-columns:minmax(0,1fr) 0px;transition:grid-template-columns .26s ease;overflow:hidden;position:relative}
-    .content.sidebar-open{grid-template-columns:minmax(0,1fr) 380px}
-    .main{min-width:0;display:grid;grid-template-rows:auto 1fr;background:#fff;overflow:hidden;position:relative}
 
+    .content{
+      min-height:0;
+      height:100%;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 0px;
+      transition:grid-template-columns .26s ease;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .content.sidebar-open{
+      grid-template-columns:minmax(0,calc(100% - 380px)) 380px;
+    }
+
+    .main{
+      min-width:0;
+      width:100%;
+      display:grid;
+      grid-template-rows:auto 1fr;
+      background:#fff;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .tableWrap{
+      min-height:0;
+      width:100%;
+      overflow:auto;
+      background:#fff;
+    }
+    
     .columnTabsWrap{background:#fff;border-bottom:1px solid var(--line);padding:10px 16px 0;overflow:hidden;flex-shrink:0}
+    
+    
     .columnTabs{display:flex;gap:8px;overflow:auto;padding-bottom:10px}
     .columnTab{position:relative;border:1px solid #cfe0ee;border-bottom:1px solid transparent;background:linear-gradient(180deg,#ffffff 0%, #f7fbff 100%);color:#23415d;border-radius:12px 12px 0 0;padding:10px 14px;cursor:pointer;font-size:12px;font-weight:800;white-space:nowrap;box-shadow:inset 0 -1px 0 rgba(255,255,255,.75)}
     .columnTab.active{background:linear-gradient(135deg,var(--brand) 0%, var(--brand-3) 100%);border-color:var(--brand-3);border-bottom-color:transparent;color:#ffffff;box-shadow:0 10px 22px rgba(17,119,191,.18), inset 0 1px 0 rgba(255,255,255,.18);transform:translateY(-1px)}
 
-    .tableWrap{min-height:0;overflow:auto;background:#fff}
+    
     table{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px}
     thead th{
       position:sticky;
@@ -799,10 +839,15 @@
 
 
   <script>
+
+
     const FIXED_AUTH = {
       PIRAZZOLI: { user: "PIRAZZOLI", pass: "654321", role: "editor", label: "Pirazzoli" },
+      MINERVA: { user: "MINERVA", pass: "123456", role: "commenter", label: "Minerva" },
       CIVI: { user: "CIVI", pass: "123456", role: "viewer", label: "CIVI" }
     };
+
+
     const SUPABASE_URL = "https://gafuzrktthzbsijoqxlc.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_y27OkYFc-SbK1yCCwuSQ6g_SaM_h9Uf";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -955,16 +1000,24 @@
       });
     }
     function parseExcelDateSerial(serial){ const parsed = XLSX.SSF.parse_date_code(serial); if (!parsed) return null; return new Date(parsed.y, parsed.m - 1, parsed.d); }
+    
     function isEditor(){ return currentUserSession?.role === "editor"; }
+    function canComment(){ return currentUserSession?.role === "editor" || currentUserSession?.role === "commenter"; }
+    function canDeleteComments(){ return currentUserSession?.role === "editor"; }
+    
+    
     function userDisplayName(){ return currentUserSession?.label || currentUserSession?.user || "Usuario"; }
+
 
     function updateProfileBadge(){
       if (!profileStatBox) return;
-      profileStatBox.classList.remove("profile-pirazzoli", "profile-civi");
+      profileStatBox.classList.remove("profile-pirazzoli", "profile-minerva", "profile-civi");
 
       const user = String(currentUserSession?.user || "").toUpperCase();
       if (user === "PIRAZZOLI") {
         profileStatBox.classList.add("profile-pirazzoli");
+      } else if (user === "MINERVA") {
+        profileStatBox.classList.add("profile-minerva");
       } else if (user === "CIVI") {
         profileStatBox.classList.add("profile-civi");
       }
@@ -1153,7 +1206,7 @@
     }
 
     function bindCommentThreadEventsForRowLog(rowId, groups){
-      if(!isEditor()) return;
+      if(!canComment()) return;
 
       commentThreadPopup.querySelectorAll("[data-reply-comment]").forEach(btn => btn.addEventListener("click", () => {
         commentThreadPopup.querySelectorAll("[data-reply-box]").forEach(box => box.classList.add("hidden"));
@@ -1226,6 +1279,19 @@
         }
       }));
 
+      commentThreadPopup.querySelectorAll("[data-purge-comment]").forEach(btn => btn.addEventListener("click", async () => {
+        if(!confirm("¿Borrar definitivamente este registro de la bitácora?")) return;
+
+        const ok = await purgeComment(btn.dataset.purgeComment);
+        if(!ok) return;
+
+        renderTable();
+        const row = getAllRows().find(r => r._id === rowId);
+        if(row){
+          openRowCommentLogPopup(row, window.innerWidth / 2 - 200, 80);
+        }
+      }));
+
       commentThreadPopup.querySelectorAll("[data-reply-box]").forEach(box => {
         const ta = box.querySelector("textarea");
         const submitBtn = box.querySelector("[data-submit-reply]");
@@ -1270,6 +1336,8 @@
       await loadCommentsFromSupabaseForActiveSheet();
       return true;
     }
+
+
     async function deleteComment(rowId, columnKey, commentId){
       const payload = {
         is_deleted: true,
@@ -1295,6 +1363,29 @@
       if(!data || !data.length){
         console.error("No se actualizó ninguna fila al eliminar comentario.");
         alert("No se pudo eliminar el comentario. No se actualizó ninguna fila.");
+        return false;
+      }
+
+      await loadCommentsFromSupabaseForActiveSheet();
+      return true;
+    }
+
+    async function purgeComment(commentId){
+      const { error, data } = await supabaseClient
+        .from("cell_comments")
+        .delete()
+        .eq("id", commentId)
+        .select();
+
+      if(error){
+        console.error("Error al borrar definitivamente comentario:", error);
+        alert(`No se pudo borrar definitivamente el registro. Detalle: ${error.message || error.code || "sin detalle"}`);
+        return false;
+      }
+
+      if(!data || !data.length){
+        console.error("No se eliminó ninguna fila al purgar comentario.");
+        alert("No se pudo borrar definitivamente el registro.");
         return false;
       }
 
@@ -1703,10 +1794,21 @@
     }
     function getSortSymbol(key){ if (currentSort.key !== key || currentSort.direction === 0) return "↕"; return currentSort.direction === 1 ? "↑" : "↓"; }
 
+
     function setSidebarOpen(open){
       sidebarOpen = isMobileLayout() ? true : open;
       content.classList.toggle("sidebar-open", sidebarOpen);
-      if (sidebarToggle) { sidebarToggle.textContent = "▶"; sidebarToggle.title = "Ocultar panel"; }
+
+      if (sidebarToggle) {
+        sidebarToggle.textContent = "▶";
+        sidebarToggle.title = "Ocultar panel";
+      }
+
+      requestAnimationFrame(() => {
+        if(currentView === "data"){
+          renderTable();
+        }
+      });
     }
 
     function closePopups(){ filterPopup.classList.remove("show"); }
@@ -1994,7 +2096,15 @@
       const colWidths = applyDynamicColumnWidths(orderedHeaders);
       tableHead.innerHTML = `
         <th class="headCheckCell"><input class="masterCheck" id="masterCheck" type="checkbox"></th>
-        <th class="headRowNumberCell">Fila</th>
+        
+        <th class="headRowNumberCell">
+          <div class="thInner" style="justify-content:center;">
+            <span>Fila</span>
+            <button class="sortBtn ${(!currentSort.key || currentSort.direction === 0) ? "active" : ""}" type="button" id="resetSortBtn" title="Restablecer orden">⟲</button>
+          </div>
+        </th>
+
+
         ${orderedHeaders.map((header, index) => `
           <th style="min-width:${colWidths[header]}px;width:${colWidths[header]}px;max-width:${colWidths[header]}px" class="${index === 0 ? "stickyHead1" : ""} ${index === 1 ? "stickyHead2" : ""} ${selectedColumnHeaders.has(header) ? "selectedColumnHeader" : ""} ${selectedSummaryHeader === header ? "summaryHeaderActive" : ""}" data-header-cell="${encodeURIComponent(header)}">
             <div class="thInner">
@@ -2011,6 +2121,17 @@
           </th>`).join("")}`;
 
       tableHead.querySelectorAll("[data-sort]").forEach(btn => btn.addEventListener("click", e => { e.stopPropagation(); toggleSort(decodeURIComponent(btn.dataset.sort)); }));
+      
+      const resetSortBtn = document.getElementById("resetSortBtn");
+      if(resetSortBtn){
+        resetSortBtn.addEventListener("click", e => {
+          e.stopPropagation();
+          currentSort = { key:null, direction:0 };
+          renderTable();
+          renderSummary();
+        });
+      }
+      
       tableHead.querySelectorAll("[data-filter]").forEach(btn => btn.addEventListener("click", e => { e.stopPropagation(); openFilterPopup(decodeURIComponent(btn.dataset.filter), e.currentTarget); }));
       tableHead.querySelectorAll("[data-col-check]").forEach(chk => chk.addEventListener("click", e => {
         e.stopPropagation();
@@ -2189,7 +2310,8 @@
 
     function renderCommentItem(rowId, columnKey, item, isReply=false){
       const replies = getReplies(rowId, columnKey, item.id);
-      const canEdit = isEditor();
+      const canEdit = canComment();
+      const canDelete = canDeleteComments();
 
       const deletedMeta = item.isDeleted
         ? `
@@ -2205,9 +2327,13 @@
       const actionsHtml = (!item.isDeleted && canEdit)
         ? `<div class="commentActions">
             <button class="commentActionBtn" type="button" data-reply-comment="${escapeHtml(item.id)}">Responder</button>
-            <button class="commentActionBtn danger" type="button" data-delete-comment="${escapeHtml(item.id)}">Eliminar</button>
+            ${canDelete ? `<button class="commentActionBtn danger" type="button" data-delete-comment="${escapeHtml(item.id)}">Eliminar</button>` : ""}
           </div>`
-        : "";
+        : (item.isDeleted && canDelete)
+          ? `<div class="commentActions">
+              <button class="commentActionBtn danger" type="button" data-purge-comment="${escapeHtml(item.id)}">Borrar registro</button>
+            </div>`
+          : "";
 
       const replyBoxHtml = (!item.isDeleted && canEdit)
         ? `<div class="commentInlineReply hidden" data-reply-box="${escapeHtml(item.id)}">
@@ -2336,11 +2462,17 @@
           ${topLevels.length ? topLevels.map(item => renderCommentItem(rowId, columnKey, item, false)).join("") : `<div class="commentEmpty">Todavía no hay comentarios en esta celda.</div>`}
         </div>
         <div class="commentComposer">
-          ${isEditor() ? `
+          ${canComment() ? `
             <label for="rootCommentText">${allComments.length ? "Agregar comentario" : "Nuevo comentario"}</label>
             <textarea id="rootCommentText" placeholder="Escribe aquí tu comentario..."></textarea>
             <div class="commentComposerActions">
-              <div class="commentComposerHint">Perfil con edición: ${escapeHtml(userDisplayName())}. Puedes comentar, responder y eliminar.</div>
+              <div class="commentComposerHint">
+                ${
+                  canDeleteComments()
+                    ? `Perfil con edición completa: ${escapeHtml(userDisplayName())}. Puedes comentar, responder y eliminar.`
+                    : `Perfil con comentarios: ${escapeHtml(userDisplayName())}. Puedes comentar y responder, pero no eliminar.`
+                }
+              </div>
               <button class="miniBtn primary" type="button" id="submitRootCommentBtn" disabled>Publicar</button>
             </div>
           ` : `
