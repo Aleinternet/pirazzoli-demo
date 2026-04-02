@@ -433,12 +433,13 @@
       width:min(440px, calc(100vw - 24px));
       max-width:calc(100vw - 24px);
       min-width:min(360px, calc(100vw - 24px));
-      height:auto;
+      height:min(680px, calc(100vh - 24px));
       max-height:calc(100vh - 24px);
       padding:0;
       overflow:hidden;
       display:grid;
       grid-template-rows:auto minmax(0,1fr) auto;
+      border-radius:16px;
     }
 
 
@@ -663,46 +664,61 @@
     }
 
     .rowLogPopup{
-      width:auto;
+      width:min(1180px, calc(100vw - 24px));
       max-width:calc(100vw - 24px);
       min-width:min(420px, calc(100vw - 24px));
+      height:min(720px, calc(100vh - 24px));
       max-height:calc(100vh - 24px);
       padding:0;
       overflow:hidden;
-      display:flex;
-      flex-direction:column;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      border-radius:16px;
     }
 
     .rowLogOuter{
-      flex:1 1 auto;
       min-height:0;
       overflow-y:auto;
       overflow-x:auto;
       background:#f8fbff;
+      padding:12px;
+      overscroll-behavior:contain;
     }
 
     .rowLogScroller{
       display:flex;
       gap:14px;
-      align-items:flex-start;
-      padding:14px;
+      align-items:stretch;
       width:max-content;
       min-width:100%;
+      padding-bottom:2px;
     }
 
     .rowLogColumn{
-      width:min(360px, calc(100vw - 56px));
-      min-width:min(360px, calc(100vw - 56px));
-      max-width:min(360px, calc(100vw - 56px));
-      max-height:calc(100vh - 180px);
-      display:flex;
-      flex-direction:column;
+      width:min(360px, calc(100vw - 64px));
+      min-width:min(360px, calc(100vw - 64px));
+      max-width:min(360px, calc(100vw - 64px));
+      height:min(560px, calc(100vh - 180px));
+      max-height:min(560px, calc(100vh - 180px));
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
       background:#fff;
       border:1px solid #dbe7f0;
       border-radius:16px;
       box-shadow:0 10px 24px rgba(17,119,191,.08);
       overflow:hidden;
     }
+
+    .rowLogColumnBody{
+      min-height:0;
+      min-width:0;
+      overflow-y:auto;
+      overflow-x:hidden;
+      padding:12px 12px 18px;
+      background:#fbfdff;
+      overscroll-behavior:contain;
+    }
+
 
     .rowLogColumnHead{
       display:flex;
@@ -759,15 +775,7 @@
       font-weight:700;
     }
 
-    .rowLogColumnBody{
-      flex:1 1 auto;
-      min-height:0;
-      min-width:0;
-      overflow-y:auto;
-      overflow-x:hidden;
-      padding:12px;
-      background:#fbfdff;
-    }
+    
 
     .commentDeletedBox{
       border:1px dashed #d9dfe7;
@@ -790,21 +798,7 @@
     }
 
     @media (max-width:980px){
-      .rowLogPopup{
-        min-width:0;
-        width:calc(100vw - 16px);
-        max-width:calc(100vw - 16px);
-      }
-
-      .rowLogColumn{
-        width:min(88vw, 320px);
-        min-width:min(88vw, 320px);
-      }
-
-      .rowLogOuter{
-        max-height:78vh;
-      }
-
+      
       .commentThreadPopup{
         width:calc(100vw - 16px);
         max-width:calc(100vw - 16px);
@@ -816,17 +810,22 @@
         width:calc(100vw - 16px);
         max-width:calc(100vw - 16px);
         min-width:0;
+        height:calc(100vh - 16px);
         max-height:calc(100vh - 16px);
+      }
+
+      .rowLogOuter{
+        max-height:none;
+        padding:10px;
       }
 
       .rowLogColumn{
         width:min(88vw, 340px);
         min-width:min(88vw, 340px);
         max-width:min(88vw, 340px);
+        height:calc(100vh - 210px);
         max-height:calc(100vh - 210px);
       }
-
-
     }
 
   </style>
@@ -1359,6 +1358,12 @@
         return null;
       };
 
+      const keepRowLogInsideViewport = () => {
+        const remembered = getRememberedCommentPopupPosition({ left: 80, top: 80 });
+        positionPopupInViewport(commentThreadPopup, remembered.left, remembered.top);
+        rememberCommentPopupPosition();
+      };
+
       commentThreadPopup.querySelectorAll("[data-reply-box]").forEach(box => {
         const ta = box.querySelector("textarea");
         const submitBtn = box.querySelector("[data-submit-reply]");
@@ -1387,9 +1392,10 @@
 
             setTimeout(() => {
               box.scrollIntoView({ behavior:"smooth", block:"center", inline:"nearest" });
+              keepRowLogInsideViewport();
               const ta = box.querySelector("textarea");
               if(ta) ta.focus();
-            }, 20);
+            }, 30);
           }
         });
       });
@@ -1406,6 +1412,10 @@
             if(ta) ta.value = "";
             const submitBtn = box.querySelector("[data-submit-reply]");
             if(submitBtn) submitBtn.disabled = true;
+
+            setTimeout(() => {
+              keepRowLogInsideViewport();
+            }, 20);
           }
         });
       });
@@ -1424,8 +1434,13 @@
           const text = ta?.value?.trim() || "";
           if(!text) return;
 
+          btn.disabled = true;
+
           const ok = await addComment(rowId, columnKey, text, commentId);
-          if(!ok) return;
+          if(!ok){
+            btn.disabled = false;
+            return;
+          }
 
           rememberCommentPopupPosition();
           renderTable();
@@ -1483,12 +1498,6 @@
         });
       });
     }
-
-
-
-
-
-
 
 
     async function addComment(rowId, columnKey, text, parentId=null){
