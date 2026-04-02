@@ -1273,21 +1273,28 @@
     async function deleteComment(rowId, columnKey, commentId){
       const payload = {
         is_deleted: true,
-        body: null,
+        body: "",
         deleted_at: new Date().toISOString(),
         deleted_by_user: currentUserSession?.user || "",
         deleted_by_label: currentUserSession?.label || currentUserSession?.user || "",
         deleted_by_role: currentUserSession?.role || ""
       };
 
-      const { error } = await supabaseClient
+      const { error, data } = await supabaseClient
         .from("cell_comments")
         .update(payload)
-        .eq("id", commentId);
+        .eq("id", commentId)
+        .select();
 
       if(error){
         console.error("Error al eliminar comentario:", error);
-        alert("No se pudo eliminar el comentario.");
+        alert(`No se pudo eliminar el comentario. Detalle: ${error.message || error.code || "sin detalle"}`);
+        return false;
+      }
+
+      if(!data || !data.length){
+        console.error("No se actualizó ninguna fila al eliminar comentario.");
+        alert("No se pudo eliminar el comentario. No se actualizó ninguna fila.");
         return false;
       }
 
