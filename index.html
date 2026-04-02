@@ -1093,6 +1093,10 @@
       updateCommentNavigator();
     }
 
+    function getSheetCommentKeyParts(rowId, columnKey){
+      return `${activeFileKey || ""}__${activeSheetName || ""}__${rowId || ""}__${columnKey || ""}`;
+    }
+
     function getAllCommentsForTarget(rowId, columnKey){
       const key = getSheetCommentKeyParts(rowId, columnKey);
       const arr = Array.isArray(commentStore[key]) ? commentStore[key] : [];
