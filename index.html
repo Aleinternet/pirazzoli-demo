@@ -428,13 +428,19 @@
     }
     .commentMenu{min-width:220px;max-width:260px}
     .commentMenu .miniBtn{width:100%;justify-content:flex-start;text-align:left}
+
     .commentThreadPopup{
       min-width:360px;
       max-width:420px;
       width:min(420px, calc(100vw - 24px));
+      max-height:min(86vh, 760px);
       padding:0;
       overflow:hidden;
+      display:flex;
+      flex-direction:column;
     }
+
+
     .summaryHeaderActive{
       background:#e8f4fd !important;
       box-shadow:inset 0 0 0 1px #b9d7ef;
@@ -448,7 +454,17 @@
     .commentThreadHead{padding:12px 14px;border-bottom:1px solid var(--line);background:#f8fbff}
     .commentThreadHead strong{display:block;font-size:13px;color:#23415d}
     .commentThreadHead span{display:block;margin-top:4px;font-size:11px;color:var(--muted);line-height:1.4}
-    .commentThreadBody{max-height:420px;overflow:auto;padding:12px 12px 6px}
+
+
+    .commentThreadBody{max-height:420px;overflow:auto;padding:12px 12px 6px}.commentThreadBody{
+      flex:1 1 auto;
+      min-height:120px;
+      max-height:none;
+      overflow-y:auto;
+      overflow-x:hidden;
+      padding:12px 12px 6px;
+    }
+
     .commentEmpty{padding:18px 12px;text-align:center;color:var(--muted);font-size:12px}
     .commentItem{border:1px solid #e3edf5;border-radius:12px;background:#fff;padding:10px 10px 8px;margin-bottom:8px}
     .commentItemReply{margin-left:18px;background:#fbfdff}
@@ -478,14 +494,41 @@
     .commentText{font-size:12px;line-height:1.45;color:var(--text);white-space:pre-wrap;word-break:break-word}
     .commentActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
     .commentActionBtn{border:0;background:transparent;color:#0d67a7;font-size:11px;font-weight:800;cursor:pointer;padding:0}
-    .commentComposer{padding:12px;border-top:1px solid var(--line);background:#fff}
+
+
+    .commentComposer{
+      flex:0 0 auto;
+      padding:12px;
+      border-top:1px solid var(--line);
+      background:#fff;
+      position:sticky;
+      bottom:0;
+      z-index:2;
+      box-shadow:0 -8px 18px rgba(17,119,191,.06);
+    }
+
+
     .commentComposer label{display:block;font-size:11px;font-weight:900;color:#5a7086;margin-bottom:6px}
     .commentComposer textarea{width:100%;min-height:84px;max-height:180px;resize:vertical;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:12px;color:var(--text);outline:none}
     .commentComposer textarea:focus{border-color:#93c4e6;box-shadow:0 0 0 4px rgba(17,119,191,.10)}
     .commentComposerActions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
     .commentComposerHint{font-size:11px;color:var(--muted);line-height:1.4}
     .commentInlineReply{margin-top:8px;padding-top:8px;border-top:1px dashed #dbe7f0}
-    .commentInlineReply textarea{width:100%;min-height:66px;resize:vertical;border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit;font-size:12px}
+
+    
+    .commentInlineReply textarea{
+      width:100%;
+      min-height:66px;
+      max-height:140px;
+      resize:vertical;
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:8px;
+      font:inherit;
+      font-size:12px;
+    }
+    
     .commentInlineReplyActions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
 
     .commentActionBtn{
@@ -616,15 +659,16 @@
     }
 
     .rowLogOuter{
-      max-height:min(72vh, 680px);
-      overflow:auto;
+      max-height:min(78vh, 760px);
+      overflow-y:auto;
+      overflow-x:hidden;
       background:#f8fbff;
     }
 
     .rowLogScroller{
       display:flex;
       gap:14px;
-      align-items:flex-start;
+      align-items:stretch;
       overflow-x:auto;
       overflow-y:hidden;
       padding:14px;
@@ -635,6 +679,9 @@
       width:320px;
       min-width:320px;
       max-width:320px;
+      max-height:min(68vh, 720px);
+      display:flex;
+      flex-direction:column;
       background:#fff;
       border:1px solid #dbe7f0;
       border-radius:16px;
@@ -687,8 +734,10 @@
     }
 
     .rowLogColumnBody{
-      max-height:58vh;
-      overflow:auto;
+      flex:1 1 auto;
+      min-height:0;
+      overflow-y:auto;
+      overflow-x:hidden;
       padding:12px;
       background:#fbfdff;
     }
@@ -727,6 +776,17 @@
 
       .rowLogOuter{
         max-height:78vh;
+      }
+
+      .commentThreadPopup{
+        width:calc(100vw - 16px);
+        max-width:calc(100vw - 16px);
+        min-width:0;
+        max-height:82vh;
+      }
+
+      .rowLogColumn{
+        max-height:70vh;
       }
 
 
