@@ -450,6 +450,140 @@
     .commentInlineReply textarea{width:100%;min-height:66px;resize:vertical;border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit;font-size:12px}
     .commentInlineReplyActions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
 
+
+    .rowNumberCell.rowHasComments{
+      background:#fff8cc !important;
+      color:#8a6d1d;
+      box-shadow:inset 0 0 0 1px #f3e49a;
+    }
+
+    tbody tr:hover .rowNumberCell.rowHasComments{
+      background:#fff4b8 !important;
+    }
+
+    .rowLogPopup{
+      width:min(1120px, calc(100vw - 24px));
+      max-width:min(1120px, calc(100vw - 24px));
+      min-width:min(820px, calc(100vw - 24px));
+      padding:0;
+      overflow:hidden;
+    }
+
+    .rowLogOuter{
+      max-height:min(72vh, 680px);
+      overflow:auto;
+      background:#f8fbff;
+    }
+
+    .rowLogScroller{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      overflow-x:auto;
+      overflow-y:hidden;
+      padding:14px;
+      min-height:100%;
+    }
+
+    .rowLogColumn{
+      width:320px;
+      min-width:320px;
+      max-width:320px;
+      background:#fff;
+      border:1px solid #dbe7f0;
+      border-radius:16px;
+      box-shadow:0 10px 24px rgba(17,119,191,.08);
+      overflow:hidden;
+    }
+
+    .rowLogColumnHead{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border-bottom:1px solid #e6eef5;
+      background:linear-gradient(180deg,#ffffff 0%, #f5faff 100%);
+    }
+
+    .rowLogLetter{
+      width:28px;
+      height:28px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      font-size:11px;
+      font-weight:900;
+      color:#0a5488;
+      background:#e7f2fb;
+      border:1px solid #c7dff0;
+      flex-shrink:0;
+    }
+
+    .rowLogTitleWrap{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .rowLogTitleWrap strong{
+      font-size:12px;
+      color:#18324a;
+      line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .rowLogTitleWrap span{
+      margin-top:3px;
+      font-size:11px;
+      color:#61758b;
+    }
+
+    .rowLogColumnBody{
+      max-height:58vh;
+      overflow:auto;
+      padding:12px;
+      background:#fbfdff;
+    }
+
+    .commentDeletedBox{
+      border:1px dashed #d9dfe7;
+      background:#f8fafc;
+      border-radius:10px;
+      padding:9px 10px;
+    }
+
+    .commentDeletedTitle{
+      font-size:12px;
+      font-weight:900;
+      color:#667085;
+    }
+
+    .commentDeletedMeta{
+      margin-top:4px;
+      font-size:11px;
+      color:#7b8794;
+      line-height:1.45;
+    }
+
+    @media (max-width:980px){
+      .rowLogPopup{
+        min-width:0;
+        width:calc(100vw - 16px);
+        max-width:calc(100vw - 16px);
+      }
+
+      .rowLogColumn{
+        width:min(88vw, 320px);
+        min-width:min(88vw, 320px);
+      }
+
+      .rowLogOuter{
+        max-height:78vh;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -837,7 +971,7 @@
       }
       const { data, error } = await supabaseClient
         .from("cell_comments")
-        .select("id, file_key, sheet_name, row_id, column_key, parent_id, author_user, author_label, author_role, body, created_at")
+        .select("id, file_key, sheet_name, row_id, column_key, parent_id, author_user, author_label, author_role, body, created_at, is_deleted, deleted_at, deleted_by_user, deleted_by_label, deleted_by_role")
         .eq("file_key", activeFileKey)
         .eq("sheet_name", activeSheetName)
         .order("created_at", { ascending:true });
@@ -847,20 +981,21 @@
         updateCommentNavigator();
         return;
       }
-      commentStore = {};
-      (data || []).forEach(item => {
-        const key = `${item.file_key}__${item.sheet_name}__${item.row_id}__${item.column_key}`;
-        if(!Array.isArray(commentStore[key])) commentStore[key] = [];
-        commentStore[key].push({
-          id: item.id,
-          parentId: item.parent_id,
-          text: item.body,
-          authorUser: item.author_user,
-          authorLabel: item.author_label,
-          authorRole: item.author_role,
-          createdAt: item.created_at
-        });
+      commentStore[key].push({
+        id: item.id,
+        parentId: item.parent_id,
+        text: item.body,
+        authorUser: item.author_user,
+        authorLabel: item.author_label,
+        authorRole: item.author_role,
+        createdAt: item.created_at,
+        isDeleted: !!item.is_deleted,
+        deletedAt: item.deleted_at,
+        deletedByUser: item.deleted_by_user,
+        deletedByLabel: item.deleted_by_label,
+        deletedByRole: item.deleted_by_role
       });
+        
       updateCommentNavigator();
     }
     function getSheetCommentKeyParts(rowId, columnKey){
@@ -881,6 +1016,191 @@
     function getCommentCountForTarget(rowId, columnKey){
       return getCommentsForTarget(rowId, columnKey).length;
     }
+
+    function getOrderedRowCommentColumns(rowId){
+  const sheet = getActiveSheet();
+  if(!sheet) return [];
+
+  const orderedHeaders = getOrderedHeaders(sheet);
+  const allKeys = [SPECIAL_ROW_NUMBER_KEY, ...orderedHeaders];
+
+  return allKeys
+    .map(columnKey => ({
+      columnKey,
+      items: getCommentsForTarget(rowId, columnKey)
+    }))
+    .filter(group => group.items.length > 0);
+}
+
+function getRowCommentCount(rowId){
+  return getOrderedRowCommentColumns(rowId).reduce((acc, group) => acc + group.items.length, 0);
+}
+
+function rowHasAnyComments(rowId){
+  return getRowCommentCount(rowId) > 0;
+}
+
+function positionPopupInViewport(popupEl, preferredX, preferredY){
+  const margin = 12;
+
+  popupEl.style.left = `${margin}px`;
+  popupEl.style.top = `${margin}px`;
+  popupEl.classList.add("show");
+
+  const popupRect = popupEl.getBoundingClientRect();
+  const maxLeft = window.innerWidth - popupRect.width - margin;
+  const maxTop = window.innerHeight - popupRect.height - margin;
+
+  let left = preferredX;
+  let top = preferredY;
+
+  if (left > maxLeft) left = maxLeft;
+  if (left < margin) left = margin;
+
+  if (top > maxTop) top = maxTop;
+  if (top < margin) top = margin;
+
+  popupEl.style.left = `${left}px`;
+  popupEl.style.top = `${top}px`;
+}
+
+function renderRowLogColumn(row, columnKey, items){
+  const sheet = getActiveSheet();
+  const letter = columnKey === SPECIAL_ROW_NUMBER_KEY
+    ? "#"
+    : (getColumnLetter(sheet, columnKey) || "—");
+
+  const title = columnKey === SPECIAL_ROW_NUMBER_KEY
+    ? `Fila`
+    : `${columnKey}`;
+
+  const topLevel = items.filter(item => !item.parentId);
+
+  return `
+    <section class="rowLogColumn">
+      <div class="rowLogColumnHead">
+        <span class="rowLogLetter">${escapeHtml(letter)}</span>
+        <div class="rowLogTitleWrap">
+          <strong>${escapeHtml(title)}</strong>
+          <span>${items.length} comentario(s)</span>
+        </div>
+      </div>
+      <div class="rowLogColumnBody">
+        ${topLevel.map(item => renderCommentItem(row._id, columnKey, item, false)).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function openRowCommentLogPopup(row, x, y){
+  closeCommentOverlays();
+
+  const groups = getOrderedRowCommentColumns(row._id);
+
+  commentThreadPopup.innerHTML = `
+    <div class="commentThreadHead rowLogHead">
+      <strong>Bitácora de comentarios de la fila</strong>
+      <span>Fila ${escapeHtml(String(row._excelRowNumber || "—"))} · ${escapeHtml(row._sheet || "")} · ${groups.reduce((acc, g) => acc + g.items.length, 0)} comentario(s)</span>
+    </div>
+    <div class="rowLogOuter">
+      ${
+        groups.length
+          ? `<div class="rowLogScroller">
+              ${groups.map(group => renderRowLogColumn(row, group.columnKey, group.items)).join("")}
+            </div>`
+          : `<div class="commentEmpty">Esta fila aún no tiene comentarios.</div>`
+      }
+    </div>
+  `;
+
+  commentThreadPopup.classList.add("show");
+  commentThreadPopup.classList.add("rowLogPopup");
+  positionPopupInViewport(commentThreadPopup, x, y);
+
+  bindCommentThreadEventsForRowLog(row._id, groups);
+}
+
+function bindCommentThreadEventsForRowLog(rowId, groups){
+  if(!isEditor()) return;
+
+  commentThreadPopup.querySelectorAll("[data-reply-comment]").forEach(btn => btn.addEventListener("click", () => {
+    commentThreadPopup.querySelectorAll("[data-reply-box]").forEach(box => box.classList.add("hidden"));
+    const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.replyComment}"]`);
+    if(box){
+      box.classList.remove("hidden");
+      const ta = box.querySelector("textarea");
+      if(ta) ta.focus();
+    }
+  }));
+
+  commentThreadPopup.querySelectorAll("[data-cancel-reply]").forEach(btn => btn.addEventListener("click", () => {
+    const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.cancelReply}"]`);
+    if(box){
+      box.classList.add("hidden");
+      const ta = box.querySelector("textarea");
+      if(ta) ta.value = "";
+    }
+  }));
+
+  commentThreadPopup.querySelectorAll("[data-submit-reply]").forEach(btn => btn.addEventListener("click", async () => {
+    const commentId = btn.dataset.submitReply;
+    const box = commentThreadPopup.querySelector(`[data-reply-box="${commentId}"]`);
+    const ta = box?.querySelector("textarea");
+    const text = ta?.value?.trim() || "";
+    if(!text){
+      alert("Escribe una respuesta antes de publicar.");
+      return;
+    }
+
+    let targetColumnKey = null;
+    for (const group of groups) {
+      if (group.items.some(item => item.id === commentId)) {
+        targetColumnKey = group.columnKey;
+        break;
+      }
+    }
+    if(!targetColumnKey) return;
+
+    const ok = await addComment(rowId, targetColumnKey, text, commentId);
+    if(!ok) return;
+
+    renderTable();
+    const row = getAllRows().find(r => r._id === rowId);
+    if(row){
+      openRowCommentLogPopup(row, window.innerWidth / 2 - 200, 80);
+    }
+  }));
+
+  commentThreadPopup.querySelectorAll("[data-delete-comment]").forEach(btn => btn.addEventListener("click", async () => {
+    if(!confirm("¿Eliminar este comentario?")) return;
+
+    let targetColumnKey = null;
+    for (const group of groups) {
+      if (group.items.some(item => item.id === btn.dataset.deleteComment)) {
+        targetColumnKey = group.columnKey;
+        break;
+      }
+    }
+    if(!targetColumnKey) return;
+
+    const ok = await deleteComment(rowId, targetColumnKey, btn.dataset.deleteComment);
+    if(!ok) return;
+
+    renderTable();
+    const row = getAllRows().find(r => r._id === rowId);
+    if(row){
+      openRowCommentLogPopup(row, window.innerWidth / 2 - 200, 80);
+    }
+  }));
+}
+
+
+
+
+
+
+
+
     async function addComment(rowId, columnKey, text, parentId=null){
       const clean = String(text || "").trim();
       if(!clean) return false;
@@ -905,12 +1225,26 @@
       return true;
     }
     async function deleteComment(rowId, columnKey, commentId){
-      const { error } = await supabaseClient.from("cell_comments").delete().eq("id", commentId);
+      const payload = {
+        is_deleted: true,
+        body: null,
+        deleted_at: new Date().toISOString(),
+        deleted_by_user: currentUserSession?.user || "",
+        deleted_by_label: currentUserSession?.label || currentUserSession?.user || "",
+        deleted_by_role: currentUserSession?.role || ""
+      };
+
+      const { error } = await supabaseClient
+        .from("cell_comments")
+        .update(payload)
+        .eq("id", commentId);
+
       if(error){
         console.error("Error al eliminar comentario:", error);
         alert("No se pudo eliminar el comentario.");
         return false;
       }
+
       await loadCommentsFromSupabaseForActiveSheet();
       return true;
     }
@@ -1316,9 +1650,12 @@
     }
 
     function closePopups(){ filterPopup.classList.remove("show"); }
+
+
     function closeCommentOverlays(){
       commentMenu.classList.remove("show");
       commentThreadPopup.classList.remove("show");
+      commentThreadPopup.classList.remove("rowLogPopup");
       commentMenu.innerHTML = "";
       commentThreadPopup.innerHTML = "";
       activeCommentTarget = null;
@@ -1641,9 +1978,15 @@
 
       tableBody.innerHTML = visibleRows.map(row => {
         const selectedClass = row._id === selectedId ? "selected" : "";
-        const rowCommentCount = getCommentCountForTarget(row._id, SPECIAL_ROW_NUMBER_KEY);
-        const rowNumberCommentBtn = buildCommentButton(row._id, SPECIAL_ROW_NUMBER_KEY);
-        const rowNumberClasses = rowCommentCount ? "commentedCell" : "";
+
+        const rowCommentCount = getRowCommentCount(row._id);
+        const rowNumberCommentBtn = rowCommentCount
+          ? `<button class="commentIconBtn hasComments" type="button" title="${rowCommentCount} comentario(s) en la fila">✉</button>`
+          : "";
+        const rowNumberClasses = rowHasAnyComments(row._id) ? "rowHasComments" : "";
+
+
+
         const cells = orderedHeaders.map((header, index) => {
           const value = row.values[header];
           const stickyClass = index === 0 ? "stickyCol1" : index === 1 ? "stickyCol2" : "";
@@ -1692,6 +2035,8 @@
       });
 
       tableBody.querySelectorAll("[data-row-check]").forEach(chk => chk.addEventListener("click", e => { e.stopPropagation(); const id = decodeURIComponent(chk.dataset.rowCheck); chk.checked ? selectedRowIds.add(id) : selectedRowIds.delete(id); renderTable(); }));
+      
+      
       tableBody.querySelectorAll("tr.rowClickable").forEach(tr => tr.addEventListener("click", e => {
         if (e.target.matches("[data-row-check]") || e.target.closest("[data-row-check]") || e.target.matches(".docLink") || e.target.closest(".docLink") || e.target.closest("[data-comment-toggle]")) return;
         selectedId = decodeURIComponent(tr.dataset.id);
@@ -1728,14 +2073,14 @@
       });
 
       tableBody.querySelectorAll("td[data-row-history]").forEach(td => {
-        td.addEventListener("contextmenu", async e => {
+        td.addEventListener("contextmenu", e => {
           e.preventDefault();
 
           const rowId = decodeURIComponent(td.dataset.rowHistory);
           const row = getAllRows().find(r => r._id === rowId);
           if(!row) return;
 
-          await openRowHistoryPopup(row, e.clientX, e.clientY);
+          openRowCommentLogPopup(row, e.clientX + 8, e.clientY + 8);
         });
       });
 
@@ -1769,27 +2114,47 @@
     function renderCommentItem(rowId, columnKey, item, isReply=false){
       const replies = getReplies(rowId, columnKey, item.id);
       const canEdit = isEditor();
+
+      const deletedMeta = item.isDeleted
+        ? `
+          <div class="commentDeletedBox">
+            <div class="commentDeletedTitle">Comentario eliminado</div>
+            <div class="commentDeletedMeta">
+              Eliminado por ${escapeHtml(item.deletedByLabel || item.deletedByUser || "Usuario")} · ${escapeHtml(formatDateTime(new Date(item.deletedAt || item.createdAt)))}
+            </div>
+          </div>
+        `
+        : `<div class="commentText">${escapeHtml(item.text || "")}</div>`;
+
+      const actionsHtml = (!item.isDeleted && canEdit)
+        ? `<div class="commentActions">
+            <button class="commentActionBtn" type="button" data-reply-comment="${escapeHtml(item.id)}">Responder</button>
+            <button class="commentActionBtn" type="button" data-delete-comment="${escapeHtml(item.id)}">Eliminar</button>
+          </div>`
+        : "";
+
+      const replyBoxHtml = (!item.isDeleted && canEdit)
+        ? `<div class="commentInlineReply hidden" data-reply-box="${escapeHtml(item.id)}">
+            <textarea placeholder="Escribe una respuesta..."></textarea>
+            <div class="commentInlineReplyActions">
+              <button class="miniBtn" type="button" data-cancel-reply="${escapeHtml(item.id)}">Cancelar</button>
+              <button class="miniBtn" type="button" data-submit-reply="${escapeHtml(item.id)}">Publicar respuesta</button>
+            </div>
+          </div>`
+        : "";
+
       return `
         <div class="commentItem ${isReply ? "commentItemReply" : ""}" data-comment-item="${escapeHtml(item.id)}">
           <div class="commentMeta">
             <div class="commentAuthor">${escapeHtml(item.authorLabel || item.authorUser || "Usuario")}</div>
             <div class="commentDate">${escapeHtml(formatDateTime(new Date(item.createdAt)))}</div>
           </div>
-          <div class="commentText">${escapeHtml(item.text)}</div>
-          ${canEdit ? `<div class="commentActions">
-            <button class="commentActionBtn" type="button" data-reply-comment="${escapeHtml(item.id)}">Responder</button>
-            <button class="commentActionBtn" type="button" data-delete-comment="${escapeHtml(item.id)}">Eliminar</button>
-          </div>` : ""}
-          ${canEdit ? `
-            <div class="commentInlineReply hidden" data-reply-box="${escapeHtml(item.id)}">
-              <textarea placeholder="Escribe una respuesta..."></textarea>
-              <div class="commentInlineReplyActions">
-                <button class="miniBtn" type="button" data-cancel-reply="${escapeHtml(item.id)}">Cancelar</button>
-                <button class="miniBtn" type="button" data-submit-reply="${escapeHtml(item.id)}">Publicar respuesta</button>
-              </div>
-            </div>` : ""}
+          ${deletedMeta}
+          ${actionsHtml}
+          ${replyBoxHtml}
           ${replies.map(reply => renderCommentItem(rowId, columnKey, reply, true)).join("")}
-        </div>`;
+        </div>
+      `;
     }
 
     function bindCommentThreadEvents(rowId, columnKey){
