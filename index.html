@@ -434,6 +434,7 @@
       max-width:420px;
       width:min(420px, calc(100vw - 24px));
       max-height:min(86vh, 760px);
+      min-height:220px;
       padding:0;
       overflow:hidden;
       display:flex;
@@ -456,17 +457,28 @@
     .commentThreadHead span{display:block;margin-top:4px;font-size:11px;color:var(--muted);line-height:1.4}
 
 
-    .commentThreadBody{max-height:420px;overflow:auto;padding:12px 12px 6px}.commentThreadBody{
+    .commentThreadBody{
       flex:1 1 auto;
       min-height:120px;
-      max-height:none;
+      min-width:0;
       overflow-y:auto;
       overflow-x:hidden;
       padding:12px 12px 6px;
     }
 
     .commentEmpty{padding:18px 12px;text-align:center;color:var(--muted);font-size:12px}
-    .commentItem{border:1px solid #e3edf5;border-radius:12px;background:#fff;padding:10px 10px 8px;margin-bottom:8px}
+
+
+    .commentItem{
+      border:1px solid #e3edf5;
+      border-radius:12px;
+      background:#fff;
+      padding:10px 10px 8px;
+      margin-bottom:8px;
+      overflow:hidden;
+    }
+
+    
     .commentItemReply{margin-left:18px;background:#fbfdff}
     .commentMeta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
     .commentAuthor{
@@ -654,12 +666,16 @@
       width:min(1120px, calc(100vw - 24px));
       max-width:min(1120px, calc(100vw - 24px));
       min-width:min(820px, calc(100vw - 24px));
+      max-height:min(86vh, 760px);
       padding:0;
       overflow:hidden;
+      display:flex;
+      flex-direction:column;
     }
 
     .rowLogOuter{
-      max-height:min(78vh, 760px);
+      flex:1 1 auto;
+      min-height:0;
       overflow-y:auto;
       overflow-x:hidden;
       background:#f8fbff;
@@ -679,7 +695,7 @@
       width:320px;
       min-width:320px;
       max-width:320px;
-      max-height:min(68vh, 720px);
+      height:min(68vh, 640px);
       display:flex;
       flex-direction:column;
       background:#fff;
@@ -736,6 +752,7 @@
     .rowLogColumnBody{
       flex:1 1 auto;
       min-height:0;
+      min-width:0;
       overflow-y:auto;
       overflow-x:hidden;
       padding:12px;
@@ -785,8 +802,14 @@
         max-height:82vh;
       }
 
+      .rowLogPopup{
+        max-height:82vh;
+      }
+
       .rowLogColumn{
-        max-height:70vh;
+        width:min(88vw, 320px);
+        min-width:min(88vw, 320px);
+        height:66vh;
       }
 
 
