@@ -748,6 +748,17 @@
       color:#61758b;
     }
 
+    .rowLogPreview{
+      margin-top:4px;
+      font-size:12px;
+      color:#18324a !important;
+      line-height:1.35;
+      white-space:normal !important;
+      overflow:visible !important;
+      text-overflow:clip !important;
+      font-weight:700;
+    }
+
     .rowLogColumnBody{
       flex:1 1 auto;
       min-height:0;
@@ -1277,6 +1288,7 @@
         ? `Fila`
         : `${columnKey}`;
 
+      const preview = getCommentTargetPreview(row, columnKey);
       const topLevel = items.filter(item => !item.parentId);
 
       return `
@@ -1285,11 +1297,17 @@
             <span class="rowLogLetter">${escapeHtml(letter)}</span>
             <div class="rowLogTitleWrap">
               <strong>${escapeHtml(title)}</strong>
-              <span>${items.length} registro(s)</span>
+              <span class="rowLogPreview">
+                ${escapeHtml(preview)}
+              </span>
+              <span>${items.filter(item => !item.isDeleted).length} comentario(s) visibles · ${items.length} registro(s)</span>
             </div>
           </div>
           <div class="rowLogColumnBody">
-            ${topLevel.map(item => renderCommentItem(row._id, columnKey, item, false)).join("")}
+            ${topLevel.length
+              ? topLevel.map(item => renderCommentItem(row._id, columnKey, item, false)).join("")
+              : `<div class="commentEmpty">Esta celda aún no tiene comentarios.</div>`
+            }
           </div>
         </section>
       `;
@@ -1327,78 +1345,143 @@
     }
 
     function bindCommentThreadEventsForRowLog(rowId, groups){
-      if(!canComment()) return;
+      if(!canComment() && !canDeleteComments()) return;
 
-      commentThreadPopup.querySelectorAll("[data-reply-comment]").forEach(btn => btn.addEventListener("click", () => {
-        const commentId = btn.dataset.replyComment;
+      const row = getAllRows().find(r => r._id === rowId);
+      if(!row) return;
 
-        let targetColumnKey = null;
+      const findColumnKeyByCommentId = (commentId) => {
         for (const group of groups) {
           if ((group.logItems || []).some(item => item.id === commentId)) {
-            targetColumnKey = group.columnKey;
-            break;
+            return group.columnKey;
           }
         }
-        if(!targetColumnKey) return;
+        return null;
+      };
 
-        const row = getAllRows().find(r => r._id === rowId);
-        if(!row) return;
+      commentThreadPopup.querySelectorAll("[data-reply-box]").forEach(box => {
+        const ta = box.querySelector("textarea");
+        const submitBtn = box.querySelector("[data-submit-reply]");
+        if(!ta || !submitBtn) return;
 
-        const remembered = getRememberedCommentPopupPosition({ left: 120, top: 120 });
+        const syncReplyBtn = () => {
+          submitBtn.disabled = !ta.value.trim();
+        };
 
-        closeCommentOverlays();
+        ta.addEventListener("input", syncReplyBtn);
+        syncReplyBtn();
+      });
 
-        openCommentThread(
-          rowId,
-          targetColumnKey,
-          {
-            left: remembered.left + 20,
-            top: remembered.top + 20,
-            width: 0,
-            height: 0
-          },
-          true
-        );
-      }));
+      commentThreadPopup.querySelectorAll("[data-reply-comment]").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
 
-      commentThreadPopup.querySelectorAll("[data-delete-comment]").forEach(btn => btn.addEventListener("click", async () => {
-        if(!confirm("¿Eliminar este comentario?")) return;
+          commentThreadPopup.querySelectorAll("[data-reply-box]").forEach(box => {
+            box.classList.add("hidden");
+          });
 
-        let targetColumnKey = null;
-        for (const group of groups) {
-          if ((group.logItems || []).some(item => item.id === btn.dataset.deleteComment)) {
-            targetColumnKey = group.columnKey;
-            break;
+          const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.replyComment}"]`);
+          if(box){
+            box.classList.remove("hidden");
+
+            setTimeout(() => {
+              box.scrollIntoView({ behavior:"smooth", block:"center", inline:"nearest" });
+              const ta = box.querySelector("textarea");
+              if(ta) ta.focus();
+            }, 20);
           }
-        }
-        if(!targetColumnKey) return;
+        });
+      });
 
-        const ok = await deleteComment(rowId, targetColumnKey, btn.dataset.deleteComment);
-        if(!ok) return;
+      commentThreadPopup.querySelectorAll("[data-cancel-reply]").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
 
-        rememberCommentPopupPosition();
-        renderTable();
-        const row = getAllRows().find(r => r._id === rowId);
-        if(row){
+          const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.cancelReply}"]`);
+          if(box){
+            box.classList.add("hidden");
+            const ta = box.querySelector("textarea");
+            if(ta) ta.value = "";
+            const submitBtn = box.querySelector("[data-submit-reply]");
+            if(submitBtn) submitBtn.disabled = true;
+          }
+        });
+      });
+
+      commentThreadPopup.querySelectorAll("[data-submit-reply]").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const commentId = btn.dataset.submitReply;
+          const columnKey = findColumnKeyByCommentId(commentId);
+          if(!columnKey) return;
+
+          const box = commentThreadPopup.querySelector(`[data-reply-box="${commentId}"]`);
+          const ta = box?.querySelector("textarea");
+          const text = ta?.value?.trim() || "";
+          if(!text) return;
+
+          const ok = await addComment(rowId, columnKey, text, commentId);
+          if(!ok) return;
+
+          rememberCommentPopupPosition();
+          renderTable();
+
           const pos = getRememberedCommentPopupPosition({ left: 80, top: 80 });
-          openRowCommentLogPopup(row, pos.left, pos.top);
-        }
-      }));
+          const freshRow = getAllRows().find(r => r._id === rowId);
+          if(freshRow){
+            openRowCommentLogPopup(freshRow, pos.left, pos.top);
+          }
+        });
+      });
 
-      commentThreadPopup.querySelectorAll("[data-purge-comment]").forEach(btn => btn.addEventListener("click", async () => {
-        if(!confirm("¿Borrar definitivamente este registro de la bitácora?")) return;
+      commentThreadPopup.querySelectorAll("[data-delete-comment]").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
 
-        const ok = await purgeComment(btn.dataset.purgeComment);
-        if(!ok) return;
+          if(!confirm("¿Eliminar este comentario?")) return;
 
-        rememberCommentPopupPosition();
-        renderTable();
-        const row = getAllRows().find(r => r._id === rowId);
-        if(row){
+          const columnKey = findColumnKeyByCommentId(btn.dataset.deleteComment);
+          if(!columnKey) return;
+
+          const ok = await deleteComment(rowId, columnKey, btn.dataset.deleteComment);
+          if(!ok) return;
+
+          rememberCommentPopupPosition();
+          renderTable();
+
           const pos = getRememberedCommentPopupPosition({ left: 80, top: 80 });
-          openRowCommentLogPopup(row, pos.left, pos.top);
-        }
-      }));
+          const freshRow = getAllRows().find(r => r._id === rowId);
+          if(freshRow){
+            openRowCommentLogPopup(freshRow, pos.left, pos.top);
+          }
+        });
+      });
+
+      commentThreadPopup.querySelectorAll("[data-purge-comment]").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if(!confirm("¿Borrar definitivamente este registro de la bitácora?")) return;
+
+          const ok = await purgeComment(btn.dataset.purgeComment);
+          if(!ok) return;
+
+          rememberCommentPopupPosition();
+          renderTable();
+
+          const pos = getRememberedCommentPopupPosition({ left: 80, top: 80 });
+          const freshRow = getAllRows().find(r => r._id === rowId);
+          if(freshRow){
+            openRowCommentLogPopup(freshRow, pos.left, pos.top);
+          }
+        });
+      });
     }
 
 
@@ -1528,6 +1611,22 @@
       const sheet = getActiveSheet();
       const letter = sheet ? getColumnLetter(sheet, columnKey) : "";
       return `${columnKey}${letter ? ` (${letter})` : ""}`;
+    }
+
+    function getCommentTargetPreview(row, columnKey){
+      if(!row) return "—";
+
+      if(columnKey === SPECIAL_ROW_NUMBER_KEY){
+        return `Fila ${row._excelRowNumber || "—"}`;
+      }
+
+      const value = row.values?.[columnKey];
+
+      if (isDocRowValue(value)) {
+        return safe(value.text || value.display || value.url || "Documento");
+      }
+
+      return safe(value);
     }
 
     function buildCommentTarget(rowId, columnKey){
