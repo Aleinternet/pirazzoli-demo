@@ -490,6 +490,70 @@ def graph_get_bytes(url, token):
     res.raise_for_status()
     return res.content
 
+EXCEL_EXTENSIONS = (".xlsx", ".xlsm", ".xls")
+
+def is_excel_filename(name: str) -> bool:
+    return str(name or "").lower().endswith(EXCEL_EXTENSIONS)
+
+def fetch_excel_files(token=None):
+    token = token or get_token()
+
+    site = graph_get(
+        f"https://graph.microsoft.com/v1.0/sites/{SHAREPOINT_HOSTNAME}:{SHAREPOINT_SITE_PATH}",
+        token
+    )
+    site_id = site["id"]
+
+    drives = graph_get(
+        f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives",
+        token
+    ).get("value", [])
+
+    available_drive_names = [d.get("name") for d in drives]
+
+    target_drive = next((d for d in drives if d.get("name") == TARGET_DRIVE_NAME), None)
+    if not target_drive:
+        raise RuntimeError(
+            f"No se encontró el drive '{TARGET_DRIVE_NAME}'. Disponibles: {available_drive_names}"
+        )
+
+    drive_id = target_drive["id"]
+
+    children = graph_get(
+        f"https://graph.microsoft.com/v1.0/drives/{drive_id}/root/children",
+        token
+    ).get("value", [])
+
+    excel_items = [
+        i for i in children
+        if is_excel_filename(i.get("name"))
+    ]
+
+    if not excel_items:
+        available_root_items = [i.get("name") for i in children]
+        raise RuntimeError(
+            f"No se encontraron archivos Excel en la raíz del drive. Elementos en raíz: {available_root_items}"
+        )
+
+    results = []
+    for item in excel_items:
+        file_id = item["id"]
+        file_name = item["name"]
+        last_modified = item.get("lastModifiedDateTime")
+
+        content = graph_get_bytes(
+            f"https://graph.microsoft.com/v1.0/drives/{drive_id}/items/{file_id}/content",
+            token
+        )
+
+        results.append({
+            "file_name": file_name,
+            "last_modified": last_modified,
+            "content": content
+        })
+
+    return results
+
 
 def fetch_excel_bytes(token=None):
     token = token or get_token()
