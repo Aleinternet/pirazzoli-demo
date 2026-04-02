@@ -969,33 +969,43 @@
         updateCommentNavigator();
         return;
       }
+
       const { data, error } = await supabaseClient
         .from("cell_comments")
         .select("id, file_key, sheet_name, row_id, column_key, parent_id, author_user, author_label, author_role, body, created_at, is_deleted, deleted_at, deleted_by_user, deleted_by_label, deleted_by_role")
         .eq("file_key", activeFileKey)
         .eq("sheet_name", activeSheetName)
         .order("created_at", { ascending:true });
+
       if(error){
         console.error("Error cargando comentarios:", error);
         commentStore = {};
         updateCommentNavigator();
         return;
       }
-      commentStore[key].push({
-        id: item.id,
-        parentId: item.parent_id,
-        text: item.body,
-        authorUser: item.author_user,
-        authorLabel: item.author_label,
-        authorRole: item.author_role,
-        createdAt: item.created_at,
-        isDeleted: !!item.is_deleted,
-        deletedAt: item.deleted_at,
-        deletedByUser: item.deleted_by_user,
-        deletedByLabel: item.deleted_by_label,
-        deletedByRole: item.deleted_by_role
+
+      commentStore = {};
+
+      (data || []).forEach(item => {
+        const key = `${item.file_key}__${item.sheet_name}__${item.row_id}__${item.column_key}`;
+        if(!Array.isArray(commentStore[key])) commentStore[key] = [];
+
+        commentStore[key].push({
+          id: item.id,
+          parentId: item.parent_id,
+          text: item.body,
+          authorUser: item.author_user,
+          authorLabel: item.author_label,
+          authorRole: item.author_role,
+          createdAt: item.created_at,
+          isDeleted: !!item.is_deleted,
+          deletedAt: item.deleted_at,
+          deletedByUser: item.deleted_by_user,
+          deletedByLabel: item.deleted_by_label,
+          deletedByRole: item.deleted_by_role
+        });
       });
-        
+
       updateCommentNavigator();
     }
     function getSheetCommentKeyParts(rowId, columnKey){
