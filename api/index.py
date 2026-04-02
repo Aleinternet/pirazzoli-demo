@@ -686,6 +686,13 @@ def parse_workbook_to_payload(content: bytes, token: str, file_name: str, run_au
         transport_key = detect_transport_key(sheet_name)
         operation_type = detect_operation_type(sheet_name)
 
+        # Solo aceptamos hojas con patrón tipo:
+        # IMPO/EXPO + TERR/MAR/AEREA
+        if not transport_key or not operation_type:
+            continue
+
+        headers = []
+
         headers = []
         header_meta = []
         visible_columns = []

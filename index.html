@@ -676,16 +676,14 @@
       flex:1 1 auto;
       min-height:0;
       overflow-y:auto;
-      overflow-x:hidden;
+      overflow-x:auto;
       background:#f8fbff;
     }
 
     .rowLogScroller{
-      display:inline-flex;
+      display:flex;
       gap:14px;
       align-items:flex-start;
-      overflow-x:auto;
-      overflow-y:hidden;
       padding:14px;
       width:max-content;
       min-width:100%;
@@ -1331,35 +1329,7 @@
       if(!canComment()) return;
 
       commentThreadPopup.querySelectorAll("[data-reply-comment]").forEach(btn => btn.addEventListener("click", () => {
-        commentThreadPopup.querySelectorAll("[data-reply-box]").forEach(box => box.classList.add("hidden"));
-        const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.replyComment}"]`);
-        if(box){
-          box.classList.remove("hidden");
-          box.scrollIntoView({ behavior:"smooth", block:"nearest" });
-          const ta = box.querySelector("textarea");
-          if(ta) ta.focus();
-        }
-      }));
-
-      commentThreadPopup.querySelectorAll("[data-cancel-reply]").forEach(btn => btn.addEventListener("click", () => {
-        const box = commentThreadPopup.querySelector(`[data-reply-box="${btn.dataset.cancelReply}"]`);
-        if(box){
-          box.classList.add("hidden");
-          const ta = box.querySelector("textarea");
-          if(ta) ta.value = "";
-          const submitBtn = box.querySelector("[data-submit-reply]");
-          if(submitBtn) submitBtn.disabled = true;
-        }
-      }));
-
-      commentThreadPopup.querySelectorAll("[data-submit-reply]").forEach(btn => btn.addEventListener("click", async () => {
-        const commentId = btn.dataset.submitReply;
-        const box = commentThreadPopup.querySelector(`[data-reply-box="${commentId}"]`);
-        const ta = box?.querySelector("textarea");
-        const text = ta?.value?.trim() || "";
-        if(!text){
-          return;
-        }
+        const commentId = btn.dataset.replyComment;
 
         let targetColumnKey = null;
         for (const group of groups) {
@@ -1370,15 +1340,19 @@
         }
         if(!targetColumnKey) return;
 
-        const ok = await addComment(rowId, targetColumnKey, text, commentId);
-        if(!ok) return;
-
-        rememberCommentPopupPosition();
-        renderTable();
         const row = getAllRows().find(r => r._id === rowId);
-        if(row){
-          const pos = getRememberedCommentPopupPosition({ left: 80, top: 80 });
-          openRowCommentLogPopup(row, pos.left, pos.top);
+        if(!row) return;
+
+        closeCommentOverlays();
+
+        const targetSelector = `[data-comment-cell="${encodeURIComponent(rowId)}__${encodeURIComponent(targetColumnKey)}"]`;
+        const targetEl = document.querySelector(targetSelector);
+
+        if(targetEl){
+          const rect = targetEl.getBoundingClientRect();
+          openCommentThread(rowId, targetColumnKey, rect, true);
+        } else {
+          openCommentThread(rowId, targetColumnKey, { left: 120, top: 120, width: 0, height: 0 }, true);
         }
       }));
 
@@ -1420,19 +1394,6 @@
           openRowCommentLogPopup(row, pos.left, pos.top);
         }
       }));
-
-      commentThreadPopup.querySelectorAll("[data-reply-box]").forEach(box => {
-        const ta = box.querySelector("textarea");
-        const submitBtn = box.querySelector("[data-submit-reply]");
-        if(!ta || !submitBtn) return;
-
-        const syncReplyBtn = () => {
-          submitBtn.disabled = !ta.value.trim();
-        };
-
-        ta.addEventListener("input", syncReplyBtn);
-        syncReplyBtn();
-      });
     }
 
 
@@ -1973,6 +1934,11 @@
       commentThreadPopup.classList.remove("rowLogPopup");
       commentMenu.innerHTML = "";
       commentThreadPopup.innerHTML = "";
+      commentThreadPopup.style.left = "";
+      commentThreadPopup.style.top = "";
+      commentThreadPopup.style.width = "";
+      commentThreadPopup.style.maxWidth = "";
+      commentThreadPopup.style.minWidth = "";
       activeCommentTarget = null;
     }
 
@@ -2509,15 +2475,7 @@
             </div>`
           : "";
 
-      const replyBoxHtml = (!item.isDeleted && canEdit)
-        ? `<div class="commentInlineReply hidden" data-reply-box="${escapeHtml(item.id)}">
-            <textarea placeholder="Escribe una respuesta..."></textarea>
-            <div class="commentInlineReplyActions">
-              <button class="miniBtn secondary" type="button" data-cancel-reply="${escapeHtml(item.id)}">Cancelar</button>
-              <button class="miniBtn primary" type="button" data-submit-reply="${escapeHtml(item.id)}" disabled>Publicar respuesta</button>
-            </div>
-          </div>`
-        : "";
+      const replyBoxHtml = "";
 
       return `
         <div class="commentItem ${isReply ? "commentItemReply" : ""}" data-comment-item="${escapeHtml(item.id)}">
@@ -2745,23 +2703,34 @@
     }
 
     function renderHomeDashboard(){
-      const operationStore = buildOperationStore();
+      dashboardGrid.innerHTML = CATEGORY_DEFS.map(cat => {
+        const files = categoryStore[cat.key]?.files || [];
 
-      dashboardGrid.innerHTML = OPERATION_DEFS.map(op => {
-        const items = operationStore[op.key] || [];
+        const items = [];
+        files.forEach(fileObj => {
+          (fileObj.sheets || []).forEach(sheet => {
+            items.push({
+              file: fileObj.file,
+              companyName: fileObj.companyName,
+              sheetName: sheet.name,
+              transportKey: sheet.transportKey,
+              operationType: sheet.operationType
+            });
+          });
+        });
 
         return `
           <div class="dashboardCard">
             <div>
               <div class="dashboardTop">
-                <div class="dashboardTitle">${escapeHtml(op.label)}</div>
+                <div class="dashboardTitle">${escapeHtml(cat.label)}</div>
                 <div class="dashboardNumber">${items.length}</div>
               </div>
               <div class="dashboardMeta">
                 ${
                   items.length
-                    ? `${items.length} hoja(s) clasificadas como ${op.label.toLowerCase()}.`
-                    : `No hay hojas de ${op.label.toLowerCase()}.`
+                    ? `${items.length} hoja(s) clasificadas como ${cat.label.toLowerCase()}.`
+                    : `No hay hojas de tipo ${cat.label.toLowerCase()}.`
                 }
               </div>
               <div class="dashboardFileList">
@@ -2782,7 +2751,7 @@
                 }
               </div>
             </div>
-            <div class="dashboardFooter">${escapeHtml(op.label)}</div>
+            <div class="dashboardFooter">${escapeHtml(cat.label)}</div>
           </div>
         `;
       }).join("");
