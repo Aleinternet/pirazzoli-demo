@@ -453,7 +453,27 @@
     .commentItem{border:1px solid #e3edf5;border-radius:12px;background:#fff;padding:10px 10px 8px;margin-bottom:8px}
     .commentItemReply{margin-left:18px;background:#fbfdff}
     .commentMeta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
-    .commentAuthor{font-size:11px;font-weight:900;color:#0d67a7}
+    .commentAuthor{
+      font-size:11px;
+      font-weight:900;
+      color:#0d67a7;
+    }
+
+    .commentAuthor.author-pirazzoli{
+      color:#6d28d9;
+    }
+
+    .commentAuthor.author-minerva{
+      color:#b85c00;
+    }
+
+    .commentAuthor.author-civi{
+      color:#92400e;
+    }
+
+    .commentAuthor.author-default{
+      color:#0d67a7;
+    }
     .commentDate{font-size:10px;color:var(--muted)}
     .commentText{font-size:12px;line-height:1.45;color:var(--text);white-space:pre-wrap;word-break:break-word}
     .commentActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
@@ -874,8 +894,10 @@
     let selectedId = null;
     let sidebarOpen = false;
     let currentUserSession = null;
+
     let commentStore = {};
     let activeCommentTarget = null;
+    let activeCommentPopupPosition = null;
     let commentNavigatorIndex = -1;
     let initialDataPromise = null;
 
@@ -1007,6 +1029,14 @@
     
     
     function userDisplayName(){ return currentUserSession?.label || currentUserSession?.user || "Usuario"; }
+
+    function getAuthorClass(item){
+      const user = String(item?.authorUser || "").toUpperCase();
+      if (user === "PIRAZZOLI") return "author-pirazzoli";
+      if (user === "MINERVA") return "author-minerva";
+      if (user === "CIVI") return "author-civi";
+      return "author-default";
+    }
 
 
     function updateProfileBadge(){
@@ -1202,6 +1232,7 @@
       commentThreadPopup.classList.add("rowLogPopup");
       positionPopupInViewport(commentThreadPopup, x, y);
 
+      rememberCommentPopupPosition();
       bindCommentThreadEventsForRowLog(row._id, groups);
     }
 
@@ -1250,10 +1281,12 @@
         const ok = await addComment(rowId, targetColumnKey, text, commentId);
         if(!ok) return;
 
+        rememberCommentPopupPosition();
         renderTable();
         const row = getAllRows().find(r => r._id === rowId);
         if(row){
-          openRowCommentLogPopup(row, window.innerWidth / 2 - 200, 80);
+          const pos = getRememberedCommentPopupPosition({ left: 80, top: 80 });
+          openRowCommentLogPopup(row, pos.left, pos.top);
         }
       }));
 
@@ -1272,10 +1305,12 @@
         const ok = await deleteComment(rowId, targetColumnKey, btn.dataset.deleteComment);
         if(!ok) return;
 
+        rememberCommentPopupPosition();
         renderTable();
         const row = getAllRows().find(r => r._id === rowId);
         if(row){
-          openRowCommentLogPopup(row, window.innerWidth / 2 - 200, 80);
+          const pos = getRememberedCommentPopupPosition({ left: 80, top: 80 });
+          openRowCommentLogPopup(row, pos.left, pos.top);
         }
       }));
 
@@ -1285,10 +1320,12 @@
         const ok = await purgeComment(btn.dataset.purgeComment);
         if(!ok) return;
 
+        rememberCommentPopupPosition();
         renderTable();
         const row = getAllRows().find(r => r._id === rowId);
         if(row){
-          openRowCommentLogPopup(row, window.innerWidth / 2 - 200, 80);
+          const pos = getRememberedCommentPopupPosition({ left: 80, top: 80 });
+          openRowCommentLogPopup(row, pos.left, pos.top);
         }
       }));
 
@@ -1823,6 +1860,21 @@
       activeCommentTarget = null;
     }
 
+    function rememberCommentPopupPosition(){
+      const rect = commentThreadPopup.getBoundingClientRect();
+      activeCommentPopupPosition = {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height
+      };
+    }
+
+    function getRememberedCommentPopupPosition(fallbackRectLike){
+      if (activeCommentPopupPosition) return activeCommentPopupPosition;
+      return fallbackRectLike;
+    }
+
     function getOrderedHeaders(sheet){
       const headers = [...sheet.headers];
       const refHeader = getReferenceHeader(sheet);
@@ -2354,7 +2406,7 @@
       return `
         <div class="commentItem ${isReply ? "commentItemReply" : ""}" data-comment-item="${escapeHtml(item.id)}">
           <div class="commentMeta">
-            <div class="commentAuthor">${escapeHtml(item.authorLabel || item.authorUser || "Usuario")}</div>
+            <div class="commentAuthor ${getAuthorClass(item)}">${escapeHtml(item.authorLabel || item.authorUser || "Usuario")}</div>
             <div class="commentDate">${escapeHtml(formatDateTime(new Date(item.createdAt)))}</div>
           </div>
           ${deletedMeta}
@@ -2385,8 +2437,9 @@
             const ok = await addComment(rowId, columnKey, text, null);
             if(!ok) return;
 
+            rememberCommentPopupPosition();
             renderTable();
-            openCommentThread(rowId, columnKey, commentThreadPopup.getBoundingClientRect(), false);
+            openCommentThread(rowId, columnKey, getRememberedCommentPopupPosition(commentThreadPopup.getBoundingClientRect()), false);
           });
         }
 
@@ -2433,8 +2486,9 @@
           const ok = await addComment(rowId, columnKey, text, btn.dataset.submitReply);
           if(!ok) return;
 
+          rememberCommentPopupPosition();
           renderTable();
-          openCommentThread(rowId, columnKey, commentThreadPopup.getBoundingClientRect(), false);
+          openCommentThread(rowId, columnKey, getRememberedCommentPopupPosition(commentThreadPopup.getBoundingClientRect()), false);
         }));
 
         commentThreadPopup.querySelectorAll("[data-delete-comment]").forEach(btn => btn.addEventListener("click", async () => {
@@ -2443,8 +2497,9 @@
           const ok = await deleteComment(rowId, columnKey, btn.dataset.deleteComment);
           if(!ok) return;
 
+          rememberCommentPopupPosition();
           renderTable();
-          openCommentThread(rowId, columnKey, commentThreadPopup.getBoundingClientRect(), false);
+          openCommentThread(rowId, columnKey, getRememberedCommentPopupPosition(commentThreadPopup.getBoundingClientRect()), false);
         }));
       }
     }
@@ -2511,12 +2566,16 @@
       commentThreadPopup.style.left = `${left}px`;
       commentThreadPopup.style.top = `${top}px`;
 
+      rememberCommentPopupPosition();
       bindCommentThreadEvents(rowId, columnKey);
 
       if(focusComposer && canComment()){
         const ta = document.getElementById("rootCommentText");
         if(ta) setTimeout(() => ta.focus(), 40);
       }
+
+
+
     }
 
     function renderDetailValue(header, value){
@@ -2676,13 +2735,16 @@
       }
 
       currentUserSession = { ...auth };
-      loginError.textContent = "";
+      loginError.textContent = "Cargando información...";
+      loginError.style.color = "#61758b";
       statProfile.textContent = currentUserSession?.label || currentUserSession?.user || "—";
       updateProfileBadge();
 
       loginSubmitBtn.disabled = true;
+      loginSubmitBtn.textContent = "Ingresando...";
 
       try {
+        renderLoadingHome();
         await ensureInitialData();
         loginScreen.classList.add("hidden");
         app.classList.remove("hidden");
@@ -2692,6 +2754,8 @@
         document.body.innerHTML = `<div style="padding:32px;font-family:Arial,Helvetica,sans-serif;"><h2 style="margin:0 0 10px;">Error al cargar la demo</h2><p style="color:#666;">${escapeHtml(err.message)}</p></div>`;
       } finally {
         loginSubmitBtn.disabled = false;
+        loginSubmitBtn.textContent = "Entrar";
+        loginError.style.color = "";
       }
     });
 
