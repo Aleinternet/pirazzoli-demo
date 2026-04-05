@@ -466,15 +466,6 @@
       box-shadow:0 1px 2px rgba(21,115,71,.08);
       transition:transform .14s ease, box-shadow .14s ease, background .14s ease, border-color .14s ease
     }
-    .demoDisabledAction{
-  opacity:.52;
-  filter:grayscale(.18);
-}
-
-.demoDisabledAction:hover{
-  transform:none !important;
-  box-shadow:0 1px 2px rgba(21,115,71,.08) !important;
-}
     .commentIconBtn:hover{
       background:linear-gradient(180deg,#e7f8ed 0%, #cfeeda 100%);
       border-color:#7dc59a;transform:translateY(-1px);
@@ -1257,11 +1248,6 @@
     const FALLBACK_FILES = ["minerva.xlsx", "Minerva.xlsx", "terrestre.xlsx", "aereo.xlsx", "maritimo.xlsx"];
     const SPECIAL_ROW_NUMBER_KEY = "__ROWNUM__";
 
-    /* ===== DEMO MÓVIL TEMPORAL ===== */
-    const DEMO_MOBILE_MODE = true;
-    const DEMO_MOBILE_ONLY_TRANSPORT = "aereo";
-    const DEMO_MOBILE_ONLY_OPERATION = "importacion";
-
     let categoryStore = {};
     let allLoadedFiles = [];
     let activeCategoryKey = null;
@@ -1433,27 +1419,7 @@ async function applyHistoryState(state){
     function looksLikeUrl(v){ const s = String(v || "").trim(); return /^https?:\/\//i.test(s) || /^www\./i.test(s); }
     function toUrl(v){ const s = String(v || "").trim(); if (!s) return ""; if (/^https?:\/\//i.test(s)) return s; if (/^www\./i.test(s)) return "https://" + s; return s; }
     function getFileBaseName(name){ return String(name || "").replace(/\.(xlsx|xlsm|xls)$/i, ""); }
-    
-    
-    function isDemoMobileMode(){
-      return DEMO_MOBILE_MODE && isMobileLayout();
-    }
 
-    function isDemoMobileAllowedEntry(item){
-      if (!item) return false;
-      return item.transportKey === DEMO_MOBILE_ONLY_TRANSPORT
-        && (item.operationType || "importacion") === DEMO_MOBILE_ONLY_OPERATION;
-    }
-
-    function showDemoMobileBlocked(message){
-      alert(message || "Para esta demo en celular, esta acción está desactivada temporalmente.");
-    }
-
-    function isCurrentMobileDemoAllowedSheet(){
-      const sheet = getActiveSheet();
-      if (!sheet) return false;
-      return isDemoMobileAllowedEntry(sheet);
-    }
     function operationLabel(operationType){
       return operationType === "exportacion" ? "Exportaciones" : "Importaciones";
     }
@@ -2412,16 +2378,10 @@ async function applyHistoryState(state){
     }
 
     function toggleSort(key){
-      if (isDemoMobileMode()) {
-        showDemoMobileBlocked("Para esta demo en celular, ordenar está desactivado temporalmente.");
-        return;
-      }
-
       if (currentSort.key !== key) currentSort = { key, direction:1 };
       else if (currentSort.direction === 1) currentSort = { key, direction:-1 };
       else if (currentSort.direction === -1) currentSort = { key:null, direction:0 };
       else currentSort = { key, direction:1 };
-
       renderTable();
       renderSummary();
     }
@@ -2591,33 +2551,22 @@ async function applyHistoryState(state){
       const activeFile = getActiveFile();
       const sheets = activeFile?.sheets || [];
       columnTabs.innerHTML = sheets.length ? sheets.map(sheet => `<button class="columnTab ${sheet.name === activeSheetName ? "active" : ""}" data-sheet="${escapeHtml(sheet.name)}">${escapeHtml(sheet.name)}</button>`).join("") : `<div class="emptyState" style="padding:12px 0 16px;text-align:left;">No hay hojas disponibles.</div>`;
-      
-      
       columnTabs.querySelectorAll("[data-sheet]").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const targetSheetName = btn.dataset.sheet;
-        const activeFile = getActiveFile();
-        const targetSheet = activeFile?.sheets?.find(s => s.name === targetSheetName) || null;
-
-        if (isDemoMobileMode() && !isDemoMobileAllowedEntry(targetSheet)) {
-          showDemoMobileBlocked("Para esta demo en celular, solo está habilitada la hoja de importaciones aéreas.");
-          return;
-        }
-
-        activeSheetName = targetSheetName;
-        currentSort = { key:null, direction:0 };
-        currentColumnFilters = {};
-        selectedRowIds.clear();
-        selectedColumnHeaders.clear();
-        selectedSummaryHeader = null;
-        selectedId = null;
-        commentNavigatorIndex = -1;
-        closeCommentOverlays();
-        await loadCommentsFromSupabaseForActiveSheet();
-        renderAll();
-        pushHistoryState();
+        btn.addEventListener("click", async () => {
+          activeSheetName = btn.dataset.sheet;
+          currentSort = { key:null, direction:0 };
+          currentColumnFilters = {};
+          selectedRowIds.clear();
+          selectedColumnHeaders.clear();
+          selectedSummaryHeader = null;
+          selectedId = null;
+          commentNavigatorIndex = -1;
+          closeCommentOverlays();
+          await loadCommentsFromSupabaseForActiveSheet();
+          renderAll();
+          pushHistoryState();
+        });
       });
-    });
     }
 
     function renderActiveFilters(){
@@ -2650,10 +2599,6 @@ async function applyHistoryState(state){
     }
 
     function openFilterPopup(header, anchorEl){
-        if (isDemoMobileMode()) {
-    showDemoMobileBlocked("Para esta demo en celular, filtrar está desactivado temporalmente.");
-    return;
-  }
       closePopups();
       const allValues = getDistinctValuesForHeader(header, getAllRows());
       const currentSet = currentColumnFilters[header] ? new Set(currentColumnFilters[header]) : new Set();
@@ -2732,21 +2677,14 @@ async function applyHistoryState(state){
     function buildCommentButton(rowId, columnKey){
       const count = getCommentCountForTarget(rowId, columnKey);
       if(!count) return "";
-
-      const demoAttrs = isDemoMobileMode()
-        ? `data-demo-disabled="1" title="Comentarios desactivados temporalmente en celular"`
-        : `title="${count} comentario(s)"`;
-
-      const extraClass = isDemoMobileMode() ? " demoDisabledAction" : "";
-
       return `<button
-        class="commentIconBtn hasComments${extraClass}"
+        class="commentIconBtn hasComments"
         type="button"
         data-comment-toggle="${encodeURIComponent(rowId)}__${encodeURIComponent(columnKey)}"
+        title="${count} comentario(s)"
         aria-label="${count} comentario(s)"
-        ${demoAttrs}
       >✉</button>`;
-}
+    }
 
     function renderCellValueWithComment(row, header, value, contentHtml){
       const count = getCommentCountForTarget(row._id, header);
@@ -2930,20 +2868,14 @@ async function applyHistoryState(state){
       }));
 
       tableBody.querySelectorAll("[data-row-log-toggle]").forEach(btn => btn.addEventListener("click", e => {
-  e.stopPropagation();
+        e.stopPropagation();
+        const rowId = decodeURIComponent(btn.dataset.rowLogToggle);
+        const row = getAllRows().find(r => r._id === rowId);
+        if(!row) return;
 
-  if (isDemoMobileMode()) {
-    showDemoMobileBlocked("Para esta demo en celular, comentar está desactivado temporalmente.");
-    return;
-  }
-
-  const rowId = decodeURIComponent(btn.dataset.rowLogToggle);
-  const row = getAllRows().find(r => r._id === rowId);
-  if(!row) return;
-
-  const rect = btn.getBoundingClientRect();
-  openRowCommentLogPopup(row, rect.left, rect.bottom + 8);
-}));
+        const rect = btn.getBoundingClientRect();
+        openRowCommentLogPopup(row, rect.left, rect.bottom + 8);
+      }));
 
       tableBody.querySelectorAll("td[data-comment-cell]").forEach(td => {
         td.addEventListener("contextmenu", e => {
@@ -2976,10 +2908,6 @@ async function applyHistoryState(state){
     }
 
     function openCommentMenu(rowId, columnKey, x, y){
-      if (isDemoMobileMode()) {
-  showDemoMobileBlocked("Para esta demo en celular, comentar está desactivado temporalmente.");
-  return;
-}
       closeCommentOverlays();
       const row = getAllRows().find(r => r._id === rowId);
       if(!row) return;
@@ -3202,10 +3130,6 @@ async function applyHistoryState(state){
     }
 
     function openCommentThread(rowId, columnKey, rectLike, focusComposer=false){
-      if (isDemoMobileMode()) {
-  showDemoMobileBlocked("Comentar está Inhabilitado temporalmente.");
-  return;
-}
       const row = getAllRows().find(r => r._id === rowId);
       if(!row) return;
 
@@ -3336,18 +3260,14 @@ async function applyHistoryState(state){
         const items = [];
         files.forEach(fileObj => {
           (fileObj.sheets || []).forEach(sheet => {
-            const entry = {
+            items.push({
               file: fileObj.file,
               companyName: fileObj.companyName,
               sheetName: sheet.name,
               transportKey: sheet.transportKey,
               operationType: sheet.operationType,
               friendlyName: getSheetFriendlyName(sheet, fileObj)
-            };
-
-            if (!isDemoMobileMode() || isDemoMobileAllowedEntry(entry)) {
-              items.push(entry);
-            }
+            });
           });
         });
 
@@ -3360,14 +3280,10 @@ async function applyHistoryState(state){
               </div>
               <div class="dashboardMeta">
                 ${
-                items.length
-                  ? `${items.length} hoja(s) clasificadas como ${cat.label.toLowerCase()}.`
-                  : (
-                      isDemoMobileMode()
-                        ? `En móvil solo habilitado vista de importaciones aéreas.`
-                        : `No hay hojas de tipo ${cat.label.toLowerCase()}.`
-                    )
-              }
+                  items.length
+                    ? `${items.length} hoja(s) clasificadas como ${cat.label.toLowerCase()}.`
+                    : `No hay hojas de tipo ${cat.label.toLowerCase()}.`
+                }
               </div>
               <div class="dashboardFileList">
                 ${
@@ -3442,17 +3358,6 @@ async function applyHistoryState(state){
 
   const fileObj = category.files.find(f => f.file === fileKey);
   if (!fileObj) return;
-
-  const candidateSheet = preferredSheetName
-    ? fileObj.sheets.find(s => s.name === preferredSheetName)
-    : (fileObj.sheets[0] || null);
-
-  if (isDemoMobileMode()) {
-    if (!candidateSheet || !isDemoMobileAllowedEntry(candidateSheet)) {
-      showDemoMobileBlocked("Para esta demo en celular, solo está habilitada la vista de importaciones aéreas.");
-      return;
-    }
-  }
 
   currentView = "data";
   activeCategoryKey = categoryKey;
@@ -3581,13 +3486,7 @@ async function applyHistoryState(state){
     clearFiltersBtn.addEventListener("click", () => { currentColumnFilters = {}; selectedId = null; renderTable(); renderSummary(); renderDetail(); });
     clearSelectionBtn.addEventListener("click", () => { clearAllSelections(); renderTable(); renderSummary(); renderDetail(); });
     exportSelectionBtn.addEventListener("click", exportCurrentSelection);
-    commentNavigatorBtn.addEventListener("click", () => {
-  if (isDemoMobileMode()) {
-    showDemoMobileBlocked("Para esta demo en celular, comentarios está desactivado temporalmente.");
-    return;
-  }
-  goToNextComment();
-});
+    commentNavigatorBtn.addEventListener("click", goToNextComment);
     window.addEventListener("popstate", async (event) => {
       if (!currentUserSession) return;
       await applyHistoryState(event.state);
