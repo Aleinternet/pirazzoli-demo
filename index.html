@@ -510,9 +510,60 @@
     .summaryHeaderActive{background:#e8f4fd !important;box-shadow:inset 0 0 0 1px #b9d7ef}
     .summaryColumnActive{background:#f4faff !important}
 
-    .commentThreadHead{padding:12px 14px;border-bottom:1px solid var(--line);background:#f8fbff}
-    .commentThreadHead strong{display:block;font-size:13px;color:#23415d}
-    .commentThreadHead span{display:block;margin-top:4px;font-size:11px;color:var(--muted);line-height:1.4}
+    .commentThreadHead{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      background:#f8fbff;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .commentThreadHeadText{
+      min-width:0;
+      flex:1;
+    }
+
+    .commentThreadHead strong{
+      display:block;
+      font-size:13px;
+      color:#23415d;
+    }
+
+    .commentThreadHead span{
+      display:block;
+      margin-top:4px;
+      font-size:11px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .commentCloseBtn{
+      width:34px;
+      min-width:34px;
+      height:34px;
+      border:1px solid #cfe0ee;
+      border-radius:10px;
+      background:#fff;
+      color:#23415d;
+      font-size:18px;
+      line-height:1;
+      font-weight:900;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .commentCloseBtn:hover{
+      background:#eef7fd;
+      border-color:#9fc5e2;
+      color:#0d67a7;
+    }
+    
+    
     .commentThreadBody{
       min-height:0;min-width:0;overflow-y:auto;overflow-x:hidden;padding:12px 12px 8px;
       overscroll-behavior:contain
@@ -827,7 +878,8 @@
 
       .main{
         border-radius:0;
-        overflow:hidden;
+        overflow:visible;
+        min-width:0;
       }
 
       .sidebar{
@@ -942,13 +994,15 @@
       .tableWrap{
         overflow:auto;
         -webkit-overflow-scrolling:touch;
-        overscroll-behavior:contain;
+        overscroll-behavior:auto;
+        touch-action:pan-x pan-y pinch-zoom;
         border-top:1px solid var(--line);
         background:#fff;
       }
 
       table{
         min-width:max-content;
+        touch-action:pan-x pan-y pinch-zoom;
       }
 
       thead th,
@@ -993,17 +1047,18 @@
       }
 
       .commentThreadPopup{
-      display:none;
-      width:calc(100vw - 16px);
-      max-width:calc(100vw - 16px);
-      min-width:0;
-      max-height:calc(100vh - 16px);
-      border-radius:18px 18px 12px 12px;
-    }
+        display:none;
+        width:calc(100vw - 16px);
+        max-width:calc(100vw - 16px);
+        min-width:0;
+        height:min(84vh, 720px);
+        max-height:min(84vh, 720px);
+        border-radius:18px 18px 12px 12px;
+      }
 
-    .commentThreadPopup.show{
-      display:grid;
-    }
+      .commentThreadPopup.show{
+        display:grid;
+      }
 
       .rowLogPopup{
         display:none;
@@ -1561,11 +1616,14 @@
       const totalLog = groups.reduce((acc, g) => acc + g.logItems.length, 0);
 
       commentThreadPopup.innerHTML = `
-        <div class="commentThreadHead rowLogHead">
+      <div class="commentThreadHead rowLogHead">
+        <div class="commentThreadHeadText">
           <strong>Bitácora de comentarios de la fila</strong>
           <span>Fila ${escapeHtml(String(row._excelRowNumber || "—"))} · ${escapeHtml(row._sheet || "")} · ${totalVisible} comentario(s) visibles · ${totalLog} registro(s)</span>
         </div>
-        <div class="rowLogOuter">
+        <button class="commentCloseBtn" type="button" id="commentCloseBtn" aria-label="Cerrar bitácora">×</button>
+      </div>
+      <div class="rowLogOuter">
           ${
             groups.length
               ? `<div class="rowLogScroller">
@@ -1581,6 +1639,16 @@
       positionPopupInViewport(commentThreadPopup, x, y);
 
       rememberCommentPopupPosition();
+
+      const commentCloseBtn = document.getElementById("commentCloseBtn");
+      if(commentCloseBtn){
+        commentCloseBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeCommentOverlays();
+        });
+      }
+
       bindCommentThreadEventsForRowLog(row._id, groups);
     }
 
@@ -3014,11 +3082,16 @@
       const allComments = getCommentsForTarget(rowId, columnKey);
 
       commentThreadPopup.innerHTML = `
-        <div class="commentThreadHead">
+      <div class="commentThreadHead">
+        <div class="commentThreadHeadText">
           <strong>${escapeHtml(getCellLabel(row, columnKey))}</strong>
           <span>Fila ${escapeHtml(String(row._excelRowNumber || "—"))} · ${escapeHtml(activeSheetName || "")} · ${allComments.length} comentario(s)</span>
         </div>
-        <div class="commentThreadBody">
+        <button class="commentCloseBtn" type="button" id="commentCloseBtn" aria-label="Cerrar comentarios">×</button>
+      </div>
+      <div class="commentThreadBody">
+
+
           ${topLevels.length
             ? topLevels.map(item => renderCommentItem(rowId, columnKey, item, false)).join("")
             : `<div class="commentEmpty">Todavía no hay comentarios en esta celda.</div>`}
@@ -3052,6 +3125,15 @@
 
       rememberCommentPopupPosition();
       bindCommentThreadEvents(rowId, columnKey);
+
+      const commentCloseBtn = document.getElementById("commentCloseBtn");
+      if(commentCloseBtn){
+        commentCloseBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeCommentOverlays();
+        });
+      }
 
       if(focusComposer && canComment()){
         const ta = document.getElementById("rootCommentText");
