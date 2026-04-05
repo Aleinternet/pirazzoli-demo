@@ -1271,6 +1271,13 @@
     let initialDataPromise = null;
     let isApplyingHistoryState = false;
 
+    function ensureInitialData(){
+      if (!initialDataPromise) {
+        initialDataPromise = Promise.all([loadData(), updateExchangeRates()]);
+      }
+      return initialDataPromise;
+    }
+
     function buildHistoryState(){
   return {
     appView: currentView,
