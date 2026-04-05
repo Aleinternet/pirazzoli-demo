@@ -1269,13 +1269,63 @@
     let activeCommentPopupPosition = null;
     let commentNavigatorIndex = -1;
     let initialDataPromise = null;
+    let isApplyingHistoryState = false;
 
-    function ensureInitialData(){
-      if (!initialDataPromise) {
-        initialDataPromise = Promise.all([loadData(), updateExchangeRates()]);
+    function buildHistoryState(){
+  return {
+    appView: currentView,
+    categoryKey: activeCategoryKey,
+    fileKey: activeFileKey,
+    sheetName: activeSheetName,
+    selectedId: selectedId || null,
+    search: searchInput?.value || "",
+    sidebarOpen: !!sidebarOpen
+  };
+}
+
+function pushHistoryState(){
+  if (isApplyingHistoryState) return;
+  const state = buildHistoryState();
+  window.history.pushState(state, "", window.location.pathname + window.location.search);
+}
+
+function replaceHistoryState(){
+  const state = buildHistoryState();
+  window.history.replaceState(state, "", window.location.pathname + window.location.search);
+}
+
+async function applyHistoryState(state){
+  if (!state) {
+    goToHomeView();
+    replaceHistoryState();
+    return;
+  }
+
+  isApplyingHistoryState = true;
+
+  try {
+    if (state.appView === "data" && state.categoryKey && state.fileKey) {
+      await goToDataView(state.categoryKey, state.fileKey, state.sheetName || null, false);
+
+      currentSearch = String(state.search || "").trim().toLowerCase();
+      if (searchInput) {
+        searchInput.value = state.search || "";
       }
-      return initialDataPromise;
+
+      selectedId = state.selectedId || null;
+      setSidebarOpen(isMobileLayout() ? true : !!state.sidebarOpen);
+      renderAll();
+    } else {
+      goToHomeView(false);
+      if (searchInput) searchInput.value = "";
+      currentSearch = "";
+      selectedId = null;
+      renderAll();
     }
+  } finally {
+    isApplyingHistoryState = false;
+  }
+}
 
     function renderLoadingHome(){
       currentView = "home";
@@ -2507,6 +2557,7 @@
           closeCommentOverlays();
           await loadCommentsFromSupabaseForActiveSheet();
           renderAll();
+          pushHistoryState();
         });
       });
     }
@@ -3258,8 +3309,15 @@
       }));
     }
 
-    function goToHomeView(){
+    function goToHomeView(pushToHistory = true){
       currentView = "home";
+      activeCategoryKey = null;
+      activeFileKey = null;
+      activeSheetName = null;
+      selectedId = null;
+      currentSearch = "";
+      if (searchInput) searchInput.value = "";
+
       homeView.classList.remove("hidden");
       content.classList.add("hidden");
       toolbar.classList.add("hidden");
@@ -3267,38 +3325,59 @@
       activeFiltersEl.classList.add("hidden");
       backHomeBtn.classList.add("hidden");
       viewLabel.textContent = "Inicio";
-      statProfile.textContent = currentUserSession?.label || currentUserSession?.user || "—"; statTransport.textContent = "—"; statCompany.textContent = "—"; statTotal.textContent = "0"; statVisible.textContent = "0"; statDocs.textContent = "0"; sheetInfo.textContent = "";
+      statProfile.textContent = currentUserSession?.label || currentUserSession?.user || "—";
+      statTransport.textContent = "—";
+      statCompany.textContent = "—";
+      statTotal.textContent = "0";
+      statVisible.textContent = "0";
+      statDocs.textContent = "0";
+      sheetInfo.textContent = "";
+
       updateActionButtonsState();
       renderHomeDashboard();
       renderEmptyDetail();
       closePopups();
       closeCommentOverlays();
       updateCommentNavigator();
+
+      if (pushToHistory) {
+        pushHistoryState();
+      }
     }
 
-    async function goToDataView(categoryKey, fileKey, preferredSheetName = null){
-      const category = categoryStore[categoryKey];
-      if (!category || !category.files.length) return;
-      const fileObj = category.files.find(f => f.file === fileKey);
-      if (!fileObj) return;
-      currentView = "data";
-      activeCategoryKey = categoryKey;
-      activeFileKey = fileObj.file;
-      activeSheetName = preferredSheetName && fileObj.sheets.some(s => s.name === preferredSheetName)
-      ? preferredSheetName
-      : (fileObj.sheets[0]?.name || null);
-      resetDataViewState();
-      homeView.classList.add("hidden");
-      content.classList.remove("hidden");
-      toolbar.classList.remove("hidden");
-      backHomeBtn.classList.remove("hidden");
-      const activeSheetObj = fileObj.sheets.find(s => s.name === activeSheetName);
-      viewLabel.textContent = activeSheetObj
-        ? getSheetFriendlyName(activeSheetObj, fileObj)
-        : `${category.label} · ${fileObj.companyName}`;
-      await loadCommentsFromSupabaseForActiveSheet();
-      renderAll();
-    }
+    async function goToDataView(categoryKey, fileKey, preferredSheetName = null, pushToHistory = true){
+  const category = categoryStore[categoryKey];
+  if (!category || !category.files.length) return;
+
+  const fileObj = category.files.find(f => f.file === fileKey);
+  if (!fileObj) return;
+
+  currentView = "data";
+  activeCategoryKey = categoryKey;
+  activeFileKey = fileObj.file;
+  activeSheetName = preferredSheetName && fileObj.sheets.some(s => s.name === preferredSheetName)
+    ? preferredSheetName
+    : (fileObj.sheets[0]?.name || null);
+
+  resetDataViewState();
+
+  homeView.classList.add("hidden");
+  content.classList.remove("hidden");
+  toolbar.classList.remove("hidden");
+  backHomeBtn.classList.remove("hidden");
+
+  const activeSheetObj = fileObj.sheets.find(s => s.name === activeSheetName);
+  viewLabel.textContent = activeSheetObj
+    ? getSheetFriendlyName(activeSheetObj, fileObj)
+    : `${category.label} · ${fileObj.companyName}`;
+
+  await loadCommentsFromSupabaseForActiveSheet();
+  renderAll();
+
+  if (pushToHistory) {
+    pushHistoryState();
+  }
+}
 
     async function updateExchangeRates(){
       function formatIndicatorValue(n){
@@ -3374,7 +3453,8 @@
         await ensureInitialData();
         loginScreen.classList.add("hidden");
         app.classList.remove("hidden");
-        goToHomeView();
+        goToHomeView(false);
+        replaceHistoryState();
       } catch (err) {
         console.error(err);
         document.body.innerHTML = `<div style="padding:32px;font-family:Arial,Helvetica,sans-serif;"><h2 style="margin:0 0 10px;">Error al cargar la demo</h2><p style="color:#666;">${escapeHtml(err.message)}</p></div>`;
@@ -3386,14 +3466,24 @@
     });
 
     searchInput.addEventListener("input", () => { currentSearch = searchInput.value.trim().toLowerCase(); selectedId = null; renderTable(); if (sidebarOpen || isMobileLayout()) renderDetail(); });
-    backHomeBtn.addEventListener("click", () => goToHomeView());
+    backHomeBtn.addEventListener("click", () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        goToHomeView();
+        replaceHistoryState();
+      }
+    });
     sidebarToggle.addEventListener("click", () => { if (isMobileLayout()) return; setSidebarOpen(false); });
     sidebarOpenHandle.addEventListener("click", () => { if (isMobileLayout()) return; setSidebarOpen(true); renderDetail(); });
     clearFiltersBtn.addEventListener("click", () => { currentColumnFilters = {}; selectedId = null; renderTable(); renderSummary(); renderDetail(); });
     clearSelectionBtn.addEventListener("click", () => { clearAllSelections(); renderTable(); renderSummary(); renderDetail(); });
     exportSelectionBtn.addEventListener("click", exportCurrentSelection);
     commentNavigatorBtn.addEventListener("click", goToNextComment);
-    window.addEventListener("resize", () => { if (currentView !== "data") return; const shouldBeOpen = isMobileLayout() ? true : sidebarOpen; setSidebarOpen(shouldBeOpen); renderAll(); });
+    window.addEventListener("popstate", async (event) => {
+      if (!currentUserSession) return;
+      await applyHistoryState(event.state);
+    });
     document.addEventListener("click", e => {
       if (!e.target.closest(".popup") && !e.target.closest("[data-filter]") && !e.target.closest("[data-comment-toggle]")) {
         closePopups();
