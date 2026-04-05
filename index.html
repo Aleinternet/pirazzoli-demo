@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿
+
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -917,7 +920,7 @@
     <section class="homeView" id="homeView">
       <div class="homeHero">
         <h2>Resumen de archivos disponibles</h2>
-        <p>La clasificación se construye por nombre de hoja, no por nombre de archivo. Un mismo Excel puede alimentar terrestre, marítimo y aéreo según sus tabs.</p>
+        <p>La plataforma detecta automáticamente la empresa desde el nombre del archivo y el tipo de operación/transporte desde el nombre de cada hoja. Si el archivo y la hoja cumplen el formato definido, aparecerán ordenados en esta vista.</p>
       </div>
       <div class="dashboardGrid" id="dashboardGrid"></div>
     </section>
@@ -1090,6 +1093,30 @@
     function looksLikeUrl(v){ const s = String(v || "").trim(); return /^https?:\/\//i.test(s) || /^www\./i.test(s); }
     function toUrl(v){ const s = String(v || "").trim(); if (!s) return ""; if (/^https?:\/\//i.test(s)) return s; if (/^www\./i.test(s)) return "https://" + s; return s; }
     function getFileBaseName(name){ return String(name || "").replace(/\.(xlsx|xlsm|xls)$/i, ""); }
+
+    function operationLabel(operationType){
+      return operationType === "exportacion" ? "Exportaciones" : "Importaciones";
+    }
+
+    function transportFriendlyLabel(transportKey){
+      if (transportKey === "terrestre") return "terrestres";
+      if (transportKey === "aereo") return "aéreas";
+      if (transportKey === "maritimo") return "marítimas";
+      return "logísticas";
+    }
+
+    function buildFriendlySheetName(companyName, operationType, transportKey){
+      return `${String(companyName || "EMPRESA").toUpperCase()} · ${operationLabel(operationType)} ${transportFriendlyLabel(transportKey)}`;
+    }
+
+    function getSheetFriendlyName(sheet, fileObj){
+      if (sheet?.friendlyName) return sheet.friendlyName;
+      return buildFriendlySheetName(
+        fileObj?.companyName || sheet?.companyName || "EMPRESA",
+        sheet?.operationType || "importacion",
+        sheet?.transportKey || ""
+      );
+    }
 
 
     function prettifyCompanyName(baseName){
@@ -2884,7 +2911,8 @@
               companyName: fileObj.companyName,
               sheetName: sheet.name,
               transportKey: sheet.transportKey,
-              operationType: sheet.operationType
+              operationType: sheet.operationType,
+              friendlyName: getSheetFriendlyName(sheet, fileObj)
             });
           });
         });
@@ -2914,14 +2942,14 @@
                           data-file="${encodeURIComponent(item.file)}"
                           data-sheet="${encodeURIComponent(item.sheetName)}"
                         >
-                          ${escapeHtml(item.companyName)} · ${escapeHtml(item.sheetName)}
+                          ${escapeHtml(item.friendlyName)}
                         </button>
                       `).join("")
                     : `<div class="dashboardEmptyText">Sin archivos para mostrar.</div>`
                 }
               </div>
             </div>
-            <div class="dashboardFooter">${escapeHtml(cat.label)}</div>
+            <div class="dashboardFooter" style="display:none;"></div>
           </div>
         `;
       }).join("");
@@ -2968,7 +2996,10 @@
       content.classList.remove("hidden");
       toolbar.classList.remove("hidden");
       backHomeBtn.classList.remove("hidden");
-      viewLabel.textContent = `${category.label} · ${fileObj.companyName}`;
+      const activeSheetObj = fileObj.sheets.find(s => s.name === activeSheetName);
+      viewLabel.textContent = activeSheetObj
+        ? getSheetFriendlyName(activeSheetObj, fileObj)
+        : `${category.label} · ${fileObj.companyName}`;
       await loadCommentsFromSupabaseForActiveSheet();
       renderAll();
     }

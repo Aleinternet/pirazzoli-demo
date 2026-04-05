@@ -1,3 +1,5 @@
+# C:\ale\zz_ale_cosas\otras_personas\Pirazzoli\pirazzoli-demo\api\index.py
+
 import os
 import io
 import re
@@ -83,36 +85,120 @@ def normalize_text(value):
 
 
 def detect_transport_key(sheet_name: str):
-    s = normalize_text(sheet_name).upper()
-    if "TERR" in s:
-        return "terrestre"
-    if "AERE" in s:
-        return "aereo"
-    if "MAR" in s:
-        return "maritimo"
-    return None
+    parsed = detect_sheet_pattern(sheet_name)
+    return parsed["transportKey"] if parsed else None
 
 
 def detect_operation_type(sheet_name: str):
-    s = normalize_text(sheet_name).upper()
+    parsed = detect_sheet_pattern(sheet_name)
+    return parsed["operationType"] if parsed else None
+
+
+def parse_excel_file_name(file_name: str):
+    """
+    Espera nombres tipo:
+    Comex_EMPRESA_AÑO_NUMERO_descripcion.xlsx
+
+    Ejemplos válidos:
+    - Comex_Minerva_2026_01_importaciones.xlsx
+    - Comex_Minerva_2026_02.xlsx
+    - Comex_CocaCola_2025_03_exportaciones_mayo.xlsm
+
+    Devuelve metadata paramétrica sin depender de la descripción.
+    """
+    original = file_name or ""
+    base = original.rsplit(".", 1)[0].strip()
+
+    parts = [p.strip() for p in re.split(r"[_\-]+", base) if p.strip()]
+    result = {
+        "file_name": original,
+        "base_name": base,
+        "prefix": "",
+        "company_name": "Empresa",
+        "year": "",
+        "number": "",
+        "description": "",
+    }
+
+    if not parts:
+        return result
+
+    # Debe comenzar con Comex, pero si no, igual intentamos rescatar info.
+    if parts:
+        result["prefix"] = parts[0]
+
+    # Formato esperado: Comex, EMPRESA, AÑO, NUMERO, ...
+    if len(parts) >= 2:
+        result["company_name"] = parts[1].upper()
+
+    if len(parts) >= 3:
+        result["year"] = parts[2]
+
+    if len(parts) >= 4:
+        result["number"] = parts[3]
+
+    if len(parts) >= 5:
+        result["description"] = " ".join(parts[4:])
+
+    return result
+
+def normalize_sheet_token(sheet_name: str):
+    return normalize_text(sheet_name).upper()
+
+
+def detect_sheet_pattern(sheet_name: str):
+    """
+    Espera hojas tipo:
+    IMPO TERR
+    IMPO MAR
+    IMPO AEREA
+    EXPO TERR
+    EXPO MAR
+    EXPO AEREA
+    """
+    s = normalize_sheet_token(sheet_name)
+
+    operation_type = None
+    transport_key = None
+
     if "IMPO" in s:
-        return "importacion"
-    if "EXPO" in s:
-        return "exportacion"
-    return None
+        operation_type = "importacion"
+    elif "EXPO" in s:
+        operation_type = "exportacion"
+
+    if "TERR" in s:
+        transport_key = "terrestre"
+    elif "AERE" in s:
+        transport_key = "aereo"
+    elif "MAR" in s:
+        transport_key = "maritimo"
+
+    if not operation_type or not transport_key:
+        return None
+
+    return {
+        "operationType": operation_type,
+        "transportKey": transport_key
+    }
 
 
-def prettify_company_name(file_name: str):
-    base = file_name.rsplit(".", 1)[0]
-    base = base.replace("_", " ").replace("-", " ").strip()
-    lowered = base.lower()
-    for prefix in ["piloto datos ", "datos ", "piloto "]:
-        if lowered.startswith(prefix):
-            base = base[len(prefix):].strip()
-            break
-    return base.title() if base else "Empresa"
+def operation_label(operation_type: str):
+    return {
+        "importacion": "Importaciones",
+        "exportacion": "Exportaciones"
+    }.get(operation_type, "Operaciones")
 
 
+def transport_label(transport_key: str):
+    return {
+        "terrestre": "terrestres",
+        "aereo": "aéreas",
+        "maritimo": "marítimas"
+    }.get(transport_key, "logísticas")
+
+
+def build_friendly_sheet_label(company_name: str, operation_type: str, transport_key: str):
+    return f"{(company_name or 'EMPRESA').upper()} · {operation_label(operation_type)} {transport_label(transport_key)}"
 
 def normalize_header(value):
     text = normalize_text(value)
@@ -667,12 +753,19 @@ def parse_workbook_to_payload(content: bytes, token: str, file_name: str, run_au
     wb_values = load_workbook(io.BytesIO(content), data_only=True)
     wb_raw = load_workbook(io.BytesIO(content), data_only=False)
 
-    company_name = prettify_company_name(file_name)
+    file_meta = parse_excel_file_name(file_name)
+    company_name = file_meta["company_name"]
 
     files = [{
         "file": file_name,
-        "baseName": file_name.rsplit(".", 1)[0],
+        "baseName": file_meta["base_name"],
         "companyName": company_name,
+        "fileMeta": {
+            "prefix": file_meta["prefix"],
+            "year": file_meta["year"],
+            "number": file_meta["number"],
+            "description": file_meta["description"],
+        },
         "sheets": []
     }]
 
@@ -683,13 +776,13 @@ def parse_workbook_to_payload(content: bytes, token: str, file_name: str, run_au
         if sheet_name.strip().upper() in {"MATRIZ DATOS", "HOJA1"}:
             continue
 
-        transport_key = detect_transport_key(sheet_name)
-        operation_type = detect_operation_type(sheet_name)
-
-        # Solo aceptamos hojas con patrón tipo:
-        # IMPO/EXPO + TERR/MAR/AEREA
-        if not transport_key or not operation_type:
+        sheet_meta = detect_sheet_pattern(sheet_name)
+        if not sheet_meta:
             continue
+
+        transport_key = sheet_meta["transportKey"]
+        operation_type = sheet_meta["operationType"]
+        friendly_name = build_friendly_sheet_label(company_name, operation_type, transport_key)
 
         headers = []
 
@@ -886,7 +979,8 @@ def parse_workbook_to_payload(content: bytes, token: str, file_name: str, run_au
             "rows": rows,
             "transportKey": transport_key,
             "operationType": operation_type,
-            "companyName": company_name
+            "companyName": company_name,
+            "friendlyName": friendly_name
         })
 
     return files
