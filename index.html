@@ -52,23 +52,43 @@
     body{margin:0;font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
     .hidden{display:none !important}
 
+    body.auth-mode{
+      overflow:hidden !important;
+    }
+
+    body.auth-mode .app{
+      display:none !important;
+    }
+
+    body.auth-mode .loginScreen{
+      display:grid !important;
+    }
+
     .loginScreen{
-      min-height:100vh;
+      position:fixed;
+      inset:0;
+      min-height:100dvh;
       display:grid;
       place-items:center;
       padding:24px;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
       background:
         radial-gradient(circle at top right, rgba(17,119,191,.09), transparent 32%),
         radial-gradient(circle at bottom left, rgba(17,119,191,.07), transparent 28%),
         var(--bg);
+      z-index:5000;
     }
     .loginCard{
+      position:relative;
+      z-index:2;
       width:min(100%, 420px);
       background:#fff;
       border:1px solid var(--line);
       border-radius:24px;
       box-shadow:0 18px 38px rgba(17,119,191,.10);
       padding:28px;
+      margin:0 auto;
     }
     .loginBrand{display:flex;align-items:center;gap:14px;margin-bottom:22px}
     .loginLogo{
@@ -650,13 +670,15 @@
 
       .loginScreen{
         padding:16px;
-        place-items:start center;
+        padding-top:max(16px, env(safe-area-inset-top));
+        align-items:start;
+        justify-items:center;
       }
 
       .loginCard{
         width:100%;
         max-width:420px;
-        margin-top:24px;
+        margin-top:12px;
         padding:22px 18px;
         border-radius:20px;
       }
@@ -1225,6 +1247,20 @@
     const loginScreen = document.getElementById("loginScreen");
     const profileStatBox = document.getElementById("profileStatBox");
     const app = document.getElementById("app");
+
+    function showLoginMode(){
+      document.body.classList.add("auth-mode");
+      loginScreen.classList.remove("hidden");
+      app.classList.add("hidden");
+    }
+
+    function showAppMode(){
+      document.body.classList.remove("auth-mode");
+      loginScreen.classList.add("hidden");
+      app.classList.remove("hidden");
+    }
+
+
     const loginForm = document.getElementById("loginForm");
     const loginUser = document.getElementById("loginUser");
     const loginPass = document.getElementById("loginPass");
@@ -3263,8 +3299,7 @@
       try {
         renderLoadingHome();
         await ensureInitialData();
-        loginScreen.classList.add("hidden");
-        app.classList.remove("hidden");
+        showAppMode();
         goToHomeView();
       } catch (err) {
         console.error(err);
@@ -3329,6 +3364,7 @@
 
     loginUser.value = "";
     loginPass.value = "";
+    showLoginMode();
 
    (async () => {
       ensureInitialData().then(async () => {
