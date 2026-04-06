@@ -485,6 +485,11 @@ def fetch_cmf_dollar_for_date(target_date: date, cmf_cache: dict):
     if target_date is None:
         return None
 
+    # Evita fechas inválidas / basura de Excel
+    if target_date.year < 2000:
+        cmf_cache[target_date.isoformat()] = None
+        return None
+
     cache_key = target_date.isoformat()
     if cache_key in cmf_cache:
         return cmf_cache[cache_key]
@@ -520,7 +525,12 @@ def fetch_cmf_dollar_for_date(target_date: date, cmf_cache: dict):
         f"?apikey={CMF_API_KEY}&formato=json"
     )
     prev_res = requests.get(prev_url, headers=headers, timeout=60)
-    prev_res.raise_for_status()
+
+    # Si la CMF no tiene datos para esa fecha o responde 404, no botamos todo el backend
+    if not prev_res.ok:
+        cmf_cache[cache_key] = None
+        return None
+
     data = prev_res.json()
     dolares = data.get("Dolares", []) or data.get("Dolar", [])
 
@@ -732,7 +742,7 @@ def enrich_exchange_rate_columns(rows, headers, token):
 
                     pdf_date_cache[pdf_url] = source_date
 
-            if source_date is not None:
+            if source_date is not None and source_date.year >= 2000:
                 dolar_val = fetch_cmf_dollar_for_date(source_date, cmf_cache)
                 if dolar_val is not None:
                     values[hdr_tc_legalizacion] = dolar_val
@@ -742,7 +752,7 @@ def enrich_exchange_rate_columns(rows, headers, token):
             liberacion_val = values.get(hdr_fecha_liberacion) if hdr_fecha_liberacion else None
             source_date = parse_excel_like_date(liberacion_val)
 
-            if source_date is not None:
+            if source_date is not None and source_date.year >= 2000:
                 dolar_val = fetch_cmf_dollar_for_date(source_date, cmf_cache)
                 if dolar_val is not None:
                     values[hdr_tc_liberacion] = dolar_val
