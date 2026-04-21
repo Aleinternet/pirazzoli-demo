@@ -1285,10 +1285,44 @@
     let initialDataPromise = null;
     let isApplyingHistoryState = false;
 
-    function ensureInitialData(){
-      if (!initialDataPromise) {
-        initialDataPromise = Promise.all([loadData(), updateExchangeRates()]);
+    function sleep(ms){
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function withRetries(task, attempts = 3, baseDelay = 900){
+      let lastError;
+
+      for(let i = 1; i <= attempts; i++){
+        try{
+          return await task();
+        }catch(err){
+          lastError = err;
+          if(i < attempts){
+            await sleep(baseDelay * i);
+          }
+        }
       }
+
+      throw lastError;
+    }
+
+    async function ensureInitialData(forceRefresh = false){
+      if (forceRefresh) {
+        initialDataPromise = null;
+      }
+
+      if (!initialDataPromise) {
+        initialDataPromise = (async () => {
+          try {
+            await withRetries(() => loadData(forceRefresh), 3, 1000);
+            await updateExchangeRates();
+          } catch (err) {
+            initialDataPromise = null;
+            throw err;
+          }
+        })();
+      }
+
       return initialDataPromise;
     }
 
@@ -3564,10 +3598,15 @@ async function applyHistoryState(state){
         app.classList.remove("hidden");
         goToHomeView(false);
         replaceHistoryState();
+
       } catch (err) {
         console.error(err);
-        document.body.innerHTML = `<div style="padding:32px;font-family:Arial,Helvetica,sans-serif;"><h2 style="margin:0 0 10px;">Error al cargar la demo</h2><p style="color:#666;">${escapeHtml(err.message)}</p></div>`;
+        initialDataPromise = null;
+        loginError.textContent = `Error temporal al cargar los datos. Reintenta en unos segundos. Detalle: ${err.message}`;
+        loginError.style.color = "var(--danger-text)";
+        return;
       } finally {
+
         loginSubmitBtn.disabled = false;
         loginSubmitBtn.textContent = "Entrar";
         loginError.style.color = "";
@@ -3644,25 +3683,9 @@ async function applyHistoryState(state){
     loginUser.value = "";
     loginPass.value = "";
 
-   (async () => {
-      ensureInitialData().then(async () => {
-        setSidebarOpen(isMobileLayout());
-        updateActionButtonsState();
-        updateCommentNavigator();
-
-        if (currentUserSession) {
-          if (currentView === "home") {
-            renderHomeDashboard();
-          } else {
-            await loadCommentsFromSupabaseForActiveSheet();
-            renderAll();
-          }
-        }
-      }).catch(err => {
-        console.error(err);
-        document.body.innerHTML = `<div style="padding:32px;font-family:Arial,Helvetica,sans-serif;"><h2 style="margin:0 0 10px;">Error al cargar la demo</h2><p style="color:#666;">${escapeHtml(err.message)}</p></div>`;
-      });
-    })();
+   updateActionButtonsState();
+  updateCommentNavigator();
+  setSidebarOpen(isMobileLayout());
 
 
 

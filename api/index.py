@@ -13,6 +13,26 @@ from pypdf import PdfReader
 import unicodedata
 import time
 
+
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+SESSION = requests.Session()
+
+RETRY = Retry(
+    total=3,
+    connect=3,
+    read=3,
+    backoff_factor=1.2,
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=frozenset(["GET", "POST"])
+)
+
+ADAPTER = HTTPAdapter(max_retries=RETRY, pool_connections=20, pool_maxsize=20)
+SESSION.mount("https://", ADAPTER)
+SESSION.mount("http://", ADAPTER)
+
+
 app = Flask(__name__)
 
 TENANT_ID = os.getenv("TENANT_ID")
@@ -568,23 +588,33 @@ def get_token():
         "grant_type": "client_credentials",
         "scope": "https://graph.microsoft.com/.default",
     }
-    res = requests.post(url, data=data, timeout=30)
-    res.raise_for_status()
-    return res.json()["access_token"]
+
+    try:
+        res = SESSION.post(url, data=data, timeout=30)
+        res.raise_for_status()
+        return res.json()["access_token"]
+    except requests.RequestException as e:
+        raise RuntimeError(f"Error obteniendo token de Microsoft Graph: {e}") from e
 
 
 def graph_get(url, token):
     headers = {"Authorization": f"Bearer {token}"}
-    res = requests.get(url, headers=headers, timeout=60)
-    res.raise_for_status()
-    return res.json()
+    try:
+        res = SESSION.get(url, headers=headers, timeout=60)
+        res.raise_for_status()
+        return res.json()
+    except requests.RequestException as e:
+        raise RuntimeError(f"Error GET Graph: {url} :: {e}") from e
 
 
 def graph_get_bytes(url, token):
     headers = {"Authorization": f"Bearer {token}"}
-    res = requests.get(url, headers=headers, timeout=120)
-    res.raise_for_status()
-    return res.content
+    try:
+        res = SESSION.get(url, headers=headers, timeout=120)
+        res.raise_for_status()
+        return res.content
+    except requests.RequestException as e:
+        raise RuntimeError(f"Error descarga binaria Graph: {url} :: {e}") from e
 
 EXCEL_EXTENSIONS = (".xlsx", ".xlsm", ".xls")
 
@@ -998,10 +1028,20 @@ def parse_workbook_to_payload(content: bytes, token: str, file_name: str, run_au
 
 @app.route("/api", methods=["GET"])
 def api_root():
+    refresh = request.args.get("refresh") in ("1", "true", "True")
+
     try:
-        force_refresh = str(request.args.get("refresh", "")).lower() in {"1", "true", "yes"}
-        return jsonify(build_payload(force_refresh=force_refresh))
+        payload = build_payload(force_refresh=refresh)
+        return jsonify(payload), 200
+
     except Exception as e:
+        cached_payload = API_CACHE.get("payload")
+        if cached_payload:
+            fallback = dict(cached_payload)
+            fallback["stale"] = True
+            fallback["warning"] = f"Usando caché por falla temporal del backend: {e}"
+            return jsonify(fallback), 200
+
         return jsonify({
             "ok": False,
             "error": str(e)
