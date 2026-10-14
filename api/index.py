@@ -12,6 +12,7 @@ from openpyxl import load_workbook
 from pypdf import PdfReader
 import unicodedata
 import time
+import math
 
 
 from requests.adapters import HTTPAdapter
@@ -57,14 +58,46 @@ CACHE_SECONDS = 14400
 
 PDF_DATE_CACHE = {}
 CMF_RATE_CACHE = {}
+CMF_RETRY_AFTER = {}
+OPTIONAL_RETRY_SECONDS = 60
+OPTIONAL_BLOCKED_UNTIL = {}
+
+
+class EnrichmentBudget:
+    """One small network budget shared by every file in a payload build."""
+
+    def __init__(self):
+        self.deadline = None
+        self.pending = False
+
+    def timeout(self, source):
+        now = time.monotonic()
+        if self.deadline is None:
+            self.deadline = now + 8
+        remaining = self.deadline - now
+        if remaining <= 0.1 or OPTIONAL_BLOCKED_UNTIL.get(source, 0) > now:
+            self.pending = True
+            raise OptionalSourceUnavailable()
+        # No transport retries: a failed optional source must not stall login.
+        return (min(2, remaining / 2), min(3, remaining / 2))
+
+    def failed(self, source):
+        self.pending = True
+        OPTIONAL_BLOCKED_UNTIL[source] = time.monotonic() + OPTIONAL_RETRY_SECONDS
+
+
+class OptionalSourceUnavailable(Exception):
+    pass
 
 def build_payload(force_refresh=False):
     now = time.time()
+    cached_payload = API_CACHE["payload"]
+    cache_seconds = OPTIONAL_RETRY_SECONDS if cached_payload and cached_payload.get("ratesPending") else CACHE_SECONDS
 
     if (
         not force_refresh
         and API_CACHE["payload"] is not None
-        and (now - API_CACHE["last_build_ts"]) < CACHE_SECONDS
+        and (now - API_CACHE["last_build_ts"]) < cache_seconds
     ):
         return API_CACHE["payload"]
 
@@ -73,13 +106,15 @@ def build_payload(force_refresh=False):
 
     files = []
     last_modified_values = []
+    enrichment = EnrichmentBudget()
 
     for item in excel_files:
         parsed = parse_workbook_to_payload(
             item["content"],
             token,
             file_name=item["file_name"],
-            run_audit=force_refresh
+            run_audit=force_refresh,
+            enrichment=enrichment
         )
         files.extend(parsed)
 
@@ -90,11 +125,12 @@ def build_payload(force_refresh=False):
         "ok": True,
         "source": "sharepoint",
         "lastModified": max(last_modified_values) if last_modified_values else None,
-        "files": files
+        "files": files,
+        "ratesPending": enrichment.pending
     }
 
     API_CACHE["payload"] = payload
-    API_CACHE["last_build_ts"] = now
+    API_CACHE["last_build_ts"] = time.time()
     API_CACHE["last_modified"] = payload["lastModified"]
     return payload
 
@@ -451,7 +487,10 @@ def parse_cmf_value(raw):
     text = str(raw).strip()
     if not text:
         return None
-    return float(text.replace(".", "").replace(",", "."))
+    value = float(text.replace(".", "").replace(",", "."))
+    if not math.isfinite(value) or value <= 0:
+        raise ValueError("Invalid exchange rate")
+    return value
 
 
 def get_share_token_from_url(share_url: str):
@@ -460,18 +499,19 @@ def get_share_token_from_url(share_url: str):
     return f"u!{encoded}"
 
 
-def download_shared_pdf_bytes(share_url: str, token: str):
+def download_shared_pdf_bytes(share_url: str, token: str, enrichment=None):
+    enrichment = enrichment or EnrichmentBudget()
     share_token = get_share_token_from_url(share_url)
 
     meta_url = f"https://graph.microsoft.com/v1.0/shares/{share_token}/driveItem"
     headers = {"Authorization": f"Bearer {token}"}
-    meta_res = requests.get(meta_url, headers=headers, timeout=60)
+    meta_res = requests.get(meta_url, headers=headers, timeout=enrichment.timeout("pdf"))
     meta_res.raise_for_status()
     meta = meta_res.json()
 
     download_url = meta.get("@microsoft.graph.downloadUrl")
     if download_url:
-        file_res = requests.get(download_url, timeout=120)
+        file_res = requests.get(download_url, timeout=enrichment.timeout("pdf"))
         file_res.raise_for_status()
         return file_res.content
 
@@ -482,7 +522,7 @@ def download_shared_pdf_bytes(share_url: str, token: str):
         raise RuntimeError("No se pudo resolver el PDF compartido desde SharePoint.")
 
     content_url = f"https://graph.microsoft.com/v1.0/drives/{drive_id}/items/{item_id}/content"
-    file_res = requests.get(content_url, headers=headers, timeout=120)
+    file_res = requests.get(content_url, headers=headers, timeout=enrichment.timeout("pdf"))
     file_res.raise_for_status()
     return file_res.content
 
@@ -501,84 +541,66 @@ def extract_fecha_pago_from_pdf_bytes(pdf_bytes: bytes):
         return None
 
 
-def fetch_cmf_dollar_for_date(target_date: date, cmf_cache: dict):
+def fetch_cmf_dollar_for_date(target_date: date, cmf_cache: dict, enrichment=None):
+    enrichment = enrichment or EnrichmentBudget()
     if target_date is None:
         return None
 
     # Evita fechas inválidas / basura de Excel
     if target_date.year < 2000:
-        cmf_cache[target_date.isoformat()] = None
         return None
 
     cache_key = target_date.isoformat()
-    if cache_key in cmf_cache:
+    if cmf_cache.get(cache_key) is not None:
         return cmf_cache[cache_key]
 
-    if not CMF_API_KEY:
-        cmf_cache[cache_key] = None
+    if not CMF_API_KEY or CMF_RETRY_AFTER.get(cache_key, 0) > time.monotonic():
+        enrichment.pending = True
         return None
 
-    headers = {"User-Agent": "PirazzoliDemo/1.0"}
-
-    # intento exacto
-    exact_url = (
-        f"https://api.cmfchile.cl/api-sbifv3/recursos_api/dolar/"
-        f"{target_date.year}/{target_date.month:02d}/dias/{target_date.day:02d}"
-        f"?apikey={CMF_API_KEY}&formato=json"
-    )
-    exact_res = requests.get(exact_url, headers=headers, timeout=60)
-
-    if exact_res.ok:
-        data = exact_res.json()
-        dolares = data.get("Dolares", []) or data.get("Dolar", [])
-        if dolares:
-            value = parse_cmf_value(dolares[0].get("Valor"))
-            if value is not None:
-                formatted = format_clp_dollar(value)
+    try:
+        # Only an empty date/404 calls the historical fallback. An outage opens
+        # a circuit for all rows/files, instead of repeating the same timeout.
+        for prefix in ("", "anteriores/"):
+            url = (
+                "https://api.cmfchile.cl/api-sbifv3/recursos_api/dolar/"
+                f"{prefix}{target_date.year}/{target_date.month:02d}/dias/{target_date.day:02d}"
+            )
+            response = requests.get(
+                url,
+                params={"apikey": CMF_API_KEY, "formato": "json"},
+                headers={"User-Agent": "PirazzoliDemo/1.0"},
+                timeout=enrichment.timeout("cmf"),
+            )
+            if response.status_code == 404:
+                continue
+            response.raise_for_status()
+            data = response.json()
+            items = data.get("Dolares", []) or data.get("Dolar", [])
+            best_date, best_value = None, None
+            for item in items:
+                item_date = date.fromisoformat(item["Fecha"])
+                if (item_date == target_date or (prefix and item_date <= target_date)):
+                    value = parse_cmf_value(item.get("Valor"))
+                    if value is not None and (best_date is None or item_date > best_date):
+                        best_date, best_value = item_date, value
+            if best_value is not None:
+                formatted = format_clp_dollar(best_value)
                 cmf_cache[cache_key] = formatted
+                CMF_RETRY_AFTER.pop(cache_key, None)
                 return formatted
-
-    # fallback: fecha anterior disponible
-    prev_url = (
-        f"https://api.cmfchile.cl/api-sbifv3/recursos_api/dolar/anteriores/"
-        f"{target_date.year}/{target_date.month:02d}/dias/{target_date.day:02d}"
-        f"?apikey={CMF_API_KEY}&formato=json"
-    )
-    prev_res = requests.get(prev_url, headers=headers, timeout=60)
-
-    # Si la CMF no tiene datos para esa fecha o responde 404, no botamos todo el backend
-    if not prev_res.ok:
-        cmf_cache[cache_key] = None
+    except OptionalSourceUnavailable:
+        return None
+    except (requests.RequestException, ValueError, TypeError, KeyError, AttributeError) as exc:
+        enrichment.failed("cmf")
+        # Never log exception text: request URLs can contain the API key.
+        app.logger.warning("Optional CMF lookup unavailable (%s)", type(exc).__name__)
         return None
 
-    data = prev_res.json()
-    dolares = data.get("Dolares", []) or data.get("Dolar", [])
-
-    best_date = None
-    best_value = None
-
-    for item in dolares:
-        fecha_txt = item.get("Fecha")
-        valor_txt = item.get("Valor")
-        if not fecha_txt:
-            continue
-        try:
-            item_date = datetime.strptime(fecha_txt, "%Y-%m-%d").date()
-        except Exception:
-            continue
-
-        if item_date <= target_date:
-            if best_date is None or item_date > best_date:
-                best_date = item_date
-                best_value = parse_cmf_value(valor_txt)
-
-    if best_value is None:
-        cmf_cache[cache_key] = None
-        return None
-
-    formatted = format_clp_dollar(best_value)
-    cmf_cache[cache_key] = formatted
-    return formatted
+    # Missing values are retried later, never cached permanently as None.
+    enrichment.pending = True
+    CMF_RETRY_AFTER[cache_key] = time.monotonic() + OPTIONAL_RETRY_SECONDS
+    return None
 
 def get_token():
     url = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
@@ -728,7 +750,8 @@ def fetch_excel_bytes(token=None):
 
     return content, last_modified
 
-def enrich_exchange_rate_columns(rows, headers, token):
+def enrich_exchange_rate_columns(rows, headers, token, enrichment=None):
+    enrichment = enrichment or EnrichmentBudget()
     normalized_map = {normalize_header(h): h for h in headers}
 
     hdr_pago_tgr = next((h for n, h in normalized_map.items() if "COMPROBANTE PAGO TGR" in n), None)
@@ -765,15 +788,22 @@ def enrich_exchange_rate_columns(rows, headers, token):
                     source_date = pdf_date_cache[pdf_url]
                 else:
                     try:
-                        pdf_bytes = download_shared_pdf_bytes(pdf_url, token)
+                        pdf_bytes = download_shared_pdf_bytes(pdf_url, token, enrichment)
                         source_date = extract_fecha_pago_from_pdf_bytes(pdf_bytes)
-                    except Exception:
+                    except OptionalSourceUnavailable:
                         source_date = None
+                    except Exception as exc:
+                        source_date = None
+                        enrichment.failed("pdf")
+                        app.logger.warning("Optional PDF date unavailable (%s)", type(exc).__name__)
 
-                    pdf_date_cache[pdf_url] = source_date
+                    if source_date is not None:
+                        pdf_date_cache[pdf_url] = source_date
+                    else:
+                        enrichment.pending = True
 
             if source_date is not None and source_date.year >= 2000:
-                dolar_val = fetch_cmf_dollar_for_date(source_date, cmf_cache)
+                dolar_val = fetch_cmf_dollar_for_date(source_date, cmf_cache, enrichment)
                 if dolar_val is not None:
                     values[hdr_tc_legalizacion] = dolar_val
 
@@ -783,13 +813,14 @@ def enrich_exchange_rate_columns(rows, headers, token):
             source_date = parse_excel_like_date(liberacion_val)
 
             if source_date is not None and source_date.year >= 2000:
-                dolar_val = fetch_cmf_dollar_for_date(source_date, cmf_cache)
+                dolar_val = fetch_cmf_dollar_for_date(source_date, cmf_cache, enrichment)
                 if dolar_val is not None:
                     values[hdr_tc_liberacion] = dolar_val
 
     return rows
 
-def parse_workbook_to_payload(content: bytes, token: str, file_name: str, run_audit: bool = False):
+def parse_workbook_to_payload(content: bytes, token: str, file_name: str, run_audit: bool = False, enrichment=None):
+    enrichment = enrichment or EnrichmentBudget()
     wb_values = load_workbook(io.BytesIO(content), data_only=True)
     wb_raw = load_workbook(io.BytesIO(content), data_only=False)
 
@@ -896,7 +927,7 @@ def parse_workbook_to_payload(content: bytes, token: str, file_name: str, run_au
                 "values": values
             })
 
-        rows = enrich_exchange_rate_columns(rows, headers, token)
+        rows = enrich_exchange_rate_columns(rows, headers, token, enrichment)
 
         if run_audit:
             try:
@@ -1035,17 +1066,18 @@ def api_root():
         return jsonify(payload), 200
 
     except Exception as e:
+        app.logger.warning("Data load unavailable (%s)", type(e).__name__)
         cached_payload = API_CACHE.get("payload")
         if cached_payload:
             fallback = dict(cached_payload)
             fallback["stale"] = True
-            fallback["warning"] = f"Usando caché por falla temporal del backend: {e}"
+            fallback["warning"] = "Mostrando la última información disponible. La actualización está pendiente."
             return jsonify(fallback), 200
 
         return jsonify({
             "ok": False,
-            "error": str(e)
-        }), 500
+            "error": "Los datos no están disponibles temporalmente. Intenta nuevamente en unos momentos."
+        }), 503
 
 
 @app.route("/api/row-history", methods=["GET"])
@@ -1078,7 +1110,8 @@ def api_row_history():
         })
 
     except Exception as e:
+        app.logger.warning("Row history unavailable (%s)", type(e).__name__)
         return jsonify({
             "ok": False,
-            "error": str(e)
-        }), 500
+            "error": "El historial no está disponible temporalmente. Intenta nuevamente en unos momentos."
+        }), 503
